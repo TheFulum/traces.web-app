@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Следы прошлого</title>
+  <meta name="description" content="Следы прошлого — гид по памятным местам: каталог, карта, исторический гид и подробные страницы объектов." />
+  <link rel="preconnect" href="https://res.cloudinary.com" />
+  <link rel="preconnect" href="https://www.gstatic.com" />
+  <link rel="preconnect" href="https://firestore.googleapis.com" />
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    /* ── Home v2 ───────────────────────────────────────────────────────── */
+    .home-hero {
+      position: relative;
+      min-height: min(100svh, 820px);
+      display: grid;
+      align-items: end;
+      padding: 84px 0 56px;
+      border-bottom: 1px solid var(--c-border-light);
+      background: #0f0f10;
+      color: #fff;
+      overflow: hidden;
+    }
+    .home-hero__bg {
+      position: absolute;
+      inset: 0;
+      background: center/cover no-repeat;
+      opacity: .9;
+      transform: scale(1.02);
+      filter: saturate(1.05) contrast(1.05);
+    }
+    .home-hero__overlay {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(1100px 520px at 20% 25%, rgba(139,94,60,.45) 0%, rgba(15,15,16,0) 60%),
+        linear-gradient(180deg, rgba(15,15,16,.28) 0%, rgba(15,15,16,.85) 72%, rgba(15,15,16,.96) 100%);
+    }
+    .home-hero__inner {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 32px;
+      align-items: end;
+    }
+    .home-hero__eyebrow {
+      font-size: .72rem;
+      font-weight: 600;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.85);
+      margin-bottom: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity .55s cubic-bezier(.22,1,.36,1), transform .55s cubic-bezier(.22,1,.36,1);
+    }
+    .home-hero__eyebrow::before {
+      content: '';
+      width: 26px;
+      height: 2px;
+      background: rgba(255,255,255,.75);
+      border-radius: 1px;
+    }
+    .home-hero__title {
+      font-weight: 600;
+      margin-bottom: 14px;
+      color: #fff;
+      font-size: clamp(2.6rem, 7vw, 5.2rem);
+      letter-spacing: -.02em;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity .7s cubic-bezier(.22,1,.36,1), transform .7s cubic-bezier(.22,1,.36,1);
+      transition-delay: .08s;
+    }
+    .home-hero__title em { font-style: italic; font-weight: 400; color: #fff; opacity: .95; }
+    .home-hero__sub {
+      font-size: 1.05rem;
+      line-height: 1.75;
+      color: rgba(255,255,255,.82);
+      max-width: 58ch;
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity .65s cubic-bezier(.22,1,.36,1), transform .65s cubic-bezier(.22,1,.36,1);
+      transition-delay: .16s;
+    }
+    .home-hero__cta {
+      margin-top: 22px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity .65s cubic-bezier(.22,1,.36,1), transform .65s cubic-bezier(.22,1,.36,1);
+      transition-delay: .24s;
+    }
+    .home-hero .btn--outline {
+      border-color: rgba(255,255,255,.35);
+      color: #fff;
+      background: rgba(255,255,255,.06);
+    }
+    .home-hero .btn--outline:hover { border-color: rgba(255,255,255,.65); color: #fff; }
+    .home-stats {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      justify-self: end;
+      width: 100%;
+      max-width: 360px;
+    }
+    .home-stat {
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      backdrop-filter: blur(10px);
+      border-radius: var(--radius-lg);
+      padding: 14px 16px;
+    }
+    .home-stat__num {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      line-height: 1.05;
+      font-weight: 600;
+      color: #fff;
+    }
+    .home-stat__label {
+      margin-top: 6px;
+      font-size: .72rem;
+      font-weight: 600;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.72);
+    }
+    .home-scroll {
+      position: absolute;
+      left: 50%;
+      bottom: 18px;
+      transform: translateX(-50%);
+      width: 28px;
+      height: 44px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.35);
+      display: grid;
+      place-items: center;
+      opacity: .85;
+      transition: opacity .45s ease;
+    }
+    .home-hero.is-ready .home-hero__eyebrow,
+    .home-hero.is-ready .home-hero__title,
+    .home-hero.is-ready .home-hero__sub,
+    .home-hero.is-ready .home-hero__cta {
+      opacity: 1;
+      transform: none;
+    }
+    .home-hero:not(.is-ready) .home-scroll { opacity: 0; }
+    .home-scroll::after {
+      content: '';
+      width: 4px;
+      height: 8px;
+      border-radius: 3px;
+      background: rgba(255,255,255,.75);
+      animation: homeScroll 1.4s ease-in-out infinite;
+    }
+    @keyframes homeScroll {
+      0% { transform: translateY(-6px); opacity: .4; }
+      40% { transform: translateY(4px); opacity: 1; }
+      100% { transform: translateY(10px); opacity: 0; }
+    }
+
+    .home-section { padding: 56px 0; }
+    .home-section__eyebrow {
+      font-size: .75rem;
+      font-weight: 600;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--c-text-muted);
+      margin-bottom: 12px;
+    }
+    .home-section__head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+    .home-section__desc { color: var(--c-text-muted); max-width: 70ch; }
+
+    .home-collections {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 22px;
+    }
+    .home-collection {
+      position: relative;
+      min-height: 210px;
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      border: 1px solid var(--c-border-light);
+      background: var(--c-surface);
+      box-shadow: var(--shadow-sm);
+      transition: transform var(--transition), box-shadow var(--transition);
+    }
+    .home-collection:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+    .home-collection__bg {
+      position: absolute;
+      inset: 0;
+      background: center/cover no-repeat;
+      filter: saturate(1.05) contrast(1.05);
+      transform: scale(1.02);
+    }
+    .home-collection__overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(15,15,16,.12) 0%, rgba(15,15,16,.82) 88%, rgba(15,15,16,.9) 100%);
+    }
+    .home-collection__body {
+      position: relative;
+      height: 100%;
+      display: grid;
+      align-content: end;
+      gap: 8px;
+      padding: 18px 18px 16px;
+      color: #fff;
+    }
+    .home-collection__title { font-family: var(--font-display); font-size: 1.25rem; line-height: 1.2; }
+    .home-collection__meta { font-size: .86rem; color: rgba(255,255,255,.82); max-width: 40ch; }
+    .home-collection__cta {
+      margin-top: 8px;
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      font-size: .75rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.9);
+    }
+
+    .home-teasers {
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 16px;
+      margin-top: 18px;
+    }
+    .home-teaser {
+      border: 1px solid var(--c-border-light);
+      border-radius: var(--radius-xl);
+      background: var(--c-surface);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+    }
+    .home-teaser__inner { padding: 22px 22px 20px; }
+    .home-teaser__title { font-family: var(--font-display); font-size: 1.25rem; margin-bottom: 8px; }
+    .home-teaser__text { color: var(--c-text-muted); }
+    .home-teaser__actions { margin-top: 14px; display: flex; gap: 12px; flex-wrap: wrap; }
+    .home-map-placeholder {
+      height: 220px;
+      background: radial-gradient(600px 240px at 30% 20%, rgba(139,94,60,.18) 0%, rgba(250,248,244,0) 60%),
+                  linear-gradient(135deg, var(--c-surface-warm) 0%, var(--c-bg) 100%);
+      border-bottom: 1px solid var(--c-border-light);
+    }
+
+    @media (max-width: 900px) {
+      .home-hero__inner { grid-template-columns: 1fr; }
+      .home-stats { justify-self: start; max-width: 420px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .home-collections { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .home-teasers { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 600px) {
+      .home-hero { padding: 56px 0 40px; min-height: min(92svh, 760px); }
+      .home-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .home-collections { grid-template-columns: 1fr; }
+      .home-section { padding: 40px 0; }
+      .home-scroll { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .home-hero__eyebrow,
+      .home-hero__title,
+      .home-hero__sub,
+      .home-hero__cta {
+        opacity: 1;
+        transform: none;
+        transition: none;
+      }
+      .home-scroll::after { animation: none; }
+    }
+  </style>
+</head>
+<body>
+  <!-- nav -->
+  <nav class="nav"></nav>
+
+  <!-- hero -->
+  <header class="home-hero" id="top">
+    <div class="home-hero__bg" id="hero-bg" aria-hidden="true"></div>
+    <div class="home-hero__overlay" aria-hidden="true"></div>
+
+    <div class="container">
+      <div class="home-hero__inner">
+        <div>
+          <p class="home-hero__eyebrow" id="hero-eyebrow" data-i18n="home.heroEyebrow">Путеводитель по памятным местам</p>
+          <h1 class="home-hero__title" id="hero-title" data-i18n-html="home.heroTitle">Следы <em>прошлого</em></h1>
+          <p class="home-hero__sub" id="hero-subtitle" data-i18n="home.heroSubtitle">
+            История, запечатлённая в местах. Исследуйте памятники, мемориалы и места событий, изменивших мир.
+          </p>
+
+          <div class="home-hero__cta">
+            <a class="btn btn--primary" href="catalog.html" id="cta-catalog" data-i18n="home.ctaCatalog">Открыть каталог</a>
+            <a class="btn btn--outline" href="map.html" id="cta-map" data-i18n="home.ctaMap">На карту</a>
+          </div>
+        </div>
+
+        <div class="home-stats" aria-label="Статистика проекта">
+          <div class="home-stat">
+            <div class="home-stat__num" id="stat-places">—</div>
+            <div class="home-stat__label" data-i18n="home.statPlaces">Мест</div>
+          </div>
+          <div class="home-stat">
+            <div class="home-stat__num" id="stat-cities">—</div>
+            <div class="home-stat__label" data-i18n="home.statCities">Городов</div>
+          </div>
+          <div class="home-stat">
+            <div class="home-stat__num" id="stat-years">—</div>
+            <div class="home-stat__label" data-i18n="home.statRange">Диапазон</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <a class="home-scroll" href="#intro" aria-label="Прокрутить вниз"></a>
+  </header>
+
+  <main>
+    <!-- intro -->
+    <section class="home-section reveal" id="intro">
+      <div class="container">
+        <div class="home-section__head">
+          <div>
+            <div class="home-section__eyebrow" data-i18n="home.aboutEyebrow">О проекте</div>
+            <h2 id="intro-title" data-i18n="home.aboutTitle">Что вы здесь найдёте</h2>
+          </div>
+        </div>
+        <p class="home-section__desc" id="intro-text" data-i18n="home.aboutText">
+          Памятники, мемориалы, скульптуры и места событий. У каждой карточки — история: автор, эпоха, фотографии, иногда — 3D-модель.
+          Соберите маршрут по городу или исследуйте эпохи.
+        </p>
+        <div class="home-hero__cta" style="margin-top:18px">
+          <a class="btn btn--outline" href="catalog.html" data-i18n="home.quickCatalog">Каталог →</a>
+          <a class="btn btn--outline" href="map.html" data-i18n="home.quickMap">Карта →</a>
+          <a class="btn btn--outline" href="chat.html" data-i18n="home.quickGuide">Гид →</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- collections -->
+    <section class="home-section reveal" id="collections">
+      <div class="container">
+        <div class="home-section__head">
+          <div>
+            <div class="home-section__eyebrow" data-i18n="home.collectionsEyebrow">Подборки</div>
+            <h2 data-i18n="home.collectionsTitle">Тематические маршруты</h2>
+          </div>
+          <div class="text-muted" data-i18n="home.collectionsHint">Откройте каталог уже с готовым фильтром</div>
+        </div>
+        <div class="home-collections" id="collections-grid"></div>
+      </div>
+    </section>
+
+    <!-- highlighted -->
+    <section class="home-section reveal" id="highlights">
+      <div class="container">
+        <div class="home-section__head">
+          <div>
+            <div class="home-section__eyebrow" data-i18n="home.highlightsEyebrow">Выбор редакции</div>
+            <h2 data-i18n="home.highlightsTitle">Места, с которых стоит начать</h2>
+          </div>
+          <a class="btn btn--outline btn--sm" href="catalog.html" data-i18n="home.allPlaces">Все места →</a>
+        </div>
+        <div class="card-grid" id="highlights-grid"></div>
+        <div class="state-error hidden" id="error">
+          <h3 data-i18n="common.loadingError">Не удалось загрузить данные</h3>
+          <p data-i18n="common.internetRetry">Проверьте подключение к интернету и обновите страницу.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- teasers -->
+    <section class="home-section reveal" id="teasers">
+      <div class="container">
+        <div class="home-section__head">
+          <div>
+            <div class="home-section__eyebrow" data-i18n="home.toolsEyebrow">Инструменты</div>
+            <h2 data-i18n="home.toolsTitle">Карта и гид</h2>
+          </div>
+        </div>
+
+        <div class="home-teasers">
+          <div class="home-teaser">
+            <div class="home-map-placeholder" aria-hidden="true"></div>
+            <div class="home-teaser__inner">
+              <div class="home-teaser__title" data-i18n="home.mapTeaserTitle">Карта памятных мест</div>
+              <div class="home-teaser__text" data-i18n="home.mapTeaserText">Откройте карту, чтобы быстро сориентироваться и построить маршрут.</div>
+              <div class="home-teaser__actions">
+                <a class="btn btn--primary btn--sm" href="map.html" data-i18n="home.openMap">Открыть карту</a>
+                <a class="btn btn--outline btn--sm" href="catalog.html" data-i18n="home.toCatalog">В каталог</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="home-teaser">
+            <div class="home-teaser__inner">
+              <div class="home-teaser__title" data-i18n="home.guideTeaserTitle">Спросите гида</div>
+              <div class="home-teaser__text" data-i18n="home.guideTeaserText">Не знаете, с чего начать? Опишите интерес — и получите подборку мест.</div>
+              <div class="home-teaser__actions">
+                <a class="btn btn--primary btn--sm" href="chat.html" data-i18n="home.openGuide">Открыть гида</a>
+                <a class="btn btn--outline btn--sm" href="feedback.html" data-i18n="home.suggestPlace">Предложить место</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__inner">
+        <span data-i18n="common.copyright">© 2026 Следы прошлого</span>
+        <div class="footer__links">
+          <a href="map.html" data-i18n="nav.map">Карта</a>
+          <a href="chat.html" data-i18n="nav.chat">Чат с гидом</a>
+          <a href="feedback.html" data-i18n="nav.feedback">Обратная связь</a>
+          <a href="api.html" id="footer-api-link" class="hidden">API</a>
+          <a href="#" id="footer-github-link" class="hidden" target="_blank" rel="noopener">GitHub</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <div id="toast" class="toast"></div>
+  <script type="module" src="js/scroll.js"></script>
+  <script type="module" src="js/transitions.js"></script>
+  <script type="module" src="js/reveal.js"></script>
+  <script type="module" src="js/index.js"></script>
+</body>
+</html>

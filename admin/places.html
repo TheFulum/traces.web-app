@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Места — Админ</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    .admin-layout {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      min-height: calc(100vh - var(--nav-h));
+    }
+
+    /* ── sidebar ── */
+    .admin-sidebar {
+      border-right: 1px solid var(--c-border);
+      padding: 32px 0;
+    }
+    .admin-sidebar__label {
+      font-size: .7rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--c-text-muted);
+      padding: 0 24px;
+      margin-bottom: 8px;
+    }
+    .admin-nav a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 24px;
+      font-size: .875rem;
+      color: var(--c-text-muted);
+      transition: color var(--transition), background var(--transition);
+    }
+    .admin-nav a:hover,
+    .admin-nav a.active {
+      color: var(--c-text);
+      background: var(--c-accent-soft);
+    }
+    .admin-nav a.active { font-weight: 500; }
+    .sidebar-bottom {
+      padding: 24px;
+      margin-top: 24px;
+      border-top: 1px solid var(--c-border);
+    }
+
+    /* ── main ── */
+    .admin-main { padding: 32px 40px; }
+    .admin-main__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .admin-main__title { font-family: var(--font-display); font-size: 1.6rem; }
+
+    /* ── table ── */
+    .places-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .875rem;
+    }
+    .places-table th {
+      text-align: left;
+      font-size: .72rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--c-text-muted);
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--c-border);
+      font-weight: 400;
+    }
+    .places-table td {
+      padding: 14px;
+      border-bottom: 1px solid var(--c-border);
+      vertical-align: middle;
+    }
+    .places-table tr:last-child td { border-bottom: none; }
+    .places-table tr:hover td { background: var(--c-accent-soft); }
+
+    .table-thumb {
+      width: 52px; height: 38px;
+      object-fit: cover;
+      border-radius: var(--radius-sm);
+      background: var(--c-accent-soft);
+      display: block;
+    }
+    .table-thumb--empty {
+      width: 52px; height: 38px;
+      border-radius: var(--radius-sm);
+      background: var(--c-accent-soft);
+      display: flex; align-items: center; justify-content: center;
+      font-size: .6rem; color: var(--c-text-muted);
+    }
+    .table-name { font-weight: 400; }
+    .table-addr { font-size: .8rem; color: var(--c-text-muted); margin-top: 2px; }
+    .table-model-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: .7rem;
+      font-weight: 500;
+      padding: 2px 8px;
+      border-radius: 10px;
+      background: var(--c-accent-soft);
+      color: var(--c-accent);
+    }
+    .table-actions { display: flex; gap: 8px; }
+    .btn-icon {
+      width: 32px; height: 32px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--c-border);
+      background: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--c-text-muted);
+      transition: color var(--transition), border-color var(--transition), background var(--transition);
+    }
+    .btn-icon:hover { color: var(--c-text); border-color: var(--c-accent); }
+    .btn-icon--danger:hover { color: var(--c-danger); border-color: var(--c-danger); background: #fff5f5; }
+
+    /* ── modal ── */
+    .modal-backdrop {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,.4);
+      z-index: 200;
+      display: flex; align-items: center; justify-content: center;
+      padding: 24px;
+      animation: fadeIn .15s ease;
+    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .modal-backdrop.hidden { display: none; }
+
+    .modal {
+      background: var(--c-surface);
+      border-radius: var(--radius-lg);
+      width: 100%; max-width: 620px;
+      max-height: 90vh; overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0,0,0,.18);
+      animation: slideUp .18s ease;
+    }
+    @keyframes slideUp { from { transform: translateY(12px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+    .modal__header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 24px 28px 0; margin-bottom: 24px;
+    }
+    .modal__title { font-family: var(--font-display); font-size: 1.4rem; }
+    .modal__close {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      border: 1px solid var(--c-border);
+      background: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--c-text-muted);
+      transition: color var(--transition), border-color var(--transition);
+    }
+    .modal__close:hover { color: var(--c-text); border-color: var(--c-accent); }
+    .modal__body { padding: 0 28px 28px; }
+
+    /* photo upload */
+    .photo-upload-area {
+      border: 1.5px dashed var(--c-border);
+      border-radius: var(--radius-md);
+      padding: 24px; text-align: center; cursor: pointer;
+      transition: border-color var(--transition), background var(--transition);
+      margin-bottom: 12px;
+    }
+    .photo-upload-area:hover,
+    .photo-upload-area.drag { border-color: var(--c-accent); background: var(--c-accent-soft); }
+    .photo-upload-area p { font-size: .875rem; color: var(--c-text-muted); margin: 0; }
+    .photo-upload-area span { font-size: .8rem; color: var(--c-text-muted); }
+
+    .photo-previews { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+    .photo-preview { position: relative; width: 80px; height: 60px; }
+    .photo-preview img {
+      width: 100%; height: 100%; object-fit: cover;
+      border-radius: var(--radius-sm); border: 1px solid var(--c-border);
+    }
+    .photo-preview__del {
+      position: absolute; top: -6px; right: -6px;
+      width: 20px; height: 20px;
+      border-radius: 50%; background: var(--c-danger);
+      color: #fff; border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: .7rem; line-height: 1;
+    }
+    .photo-progress { font-size: .8125rem; color: var(--c-text-muted); margin-bottom: 12px; min-height: 18px; }
+    .modal__footer {
+      display: flex; gap: 10px; justify-content: flex-end;
+      padding-top: 8px; border-top: 1px solid var(--c-border); margin-top: 24px;
+    }
+
+    /* map picker */
+    #coord-map {
+      width: 100%; height: 200px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--c-border);
+      margin-top: 8px; margin-bottom: 4px;
+    }
+    .coord-hint { font-size: .78rem; color: var(--c-text-muted); margin-bottom: 16px; }
+    .coord-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .lang-tabs { display:flex; gap:8px; margin-bottom:10px; }
+    .lang-tab {
+      border:1px solid var(--c-border);
+      background:var(--c-surface);
+      border-radius:999px;
+      padding:6px 12px;
+      font-size:.75rem;
+      font-weight:600;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      cursor:pointer;
+      color:var(--c-text-muted);
+    }
+    .lang-tab.active {
+      color:#fff;
+      background:var(--c-accent);
+      border-color:var(--c-accent);
+    }
+    .lang-panel.hidden { display:none; }
+    .field-error {
+      border-color: var(--c-danger) !important;
+      box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.12);
+    }
+    .field-help-error {
+      font-size:.78rem;
+      color:var(--c-danger);
+      margin-top:6px;
+      min-height:18px;
+    }
+
+    /* ── model type switcher ── */
+    .model-type-switcher {
+      display: flex;
+      gap: 0;
+      margin-bottom: 16px;
+      border: 1px solid var(--c-border);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+    }
+    .model-type-switcher__btn {
+      flex: 1;
+      padding: 10px 14px;
+      font-size: .8125rem;
+      font-weight: 500;
+      text-align: center;
+      cursor: pointer;
+      background: var(--c-surface);
+      color: var(--c-text-muted);
+      border: none;
+      border-right: 1px solid var(--c-border);
+      transition: background var(--transition), color var(--transition);
+      font-family: var(--font-body);
+    }
+    .model-type-switcher__btn:last-child { border-right: none; }
+    .model-type-switcher__btn:hover { background: var(--c-accent-soft); }
+    .model-type-switcher__btn.active {
+      background: var(--c-accent);
+      color: #fff;
+    }
+
+    .model-panel { display: none; }
+    .model-panel.active { display: block; }
+
+    .sketchfab-hint {
+      font-size: .78rem;
+      color: var(--c-text-muted);
+      margin-top: 8px;
+      line-height: 1.6;
+    }
+    .sketchfab-hint code {
+      background: var(--c-accent-soft);
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-size: .75rem;
+    }
+
+    @media (max-width: 700px) {
+      .admin-layout { grid-template-columns: 1fr; }
+      .admin-sidebar { display: none; }
+      .admin-main { padding: 20px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="nav"></nav>
+
+  <div class="admin-layout">
+    <aside class="admin-sidebar">
+      <p class="admin-sidebar__label">Навигация</p>
+      <nav class="admin-nav">
+        <a href="places.html" class="active">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          Места
+        </a>
+        <a href="home.html">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          Главная
+        </a>
+        <a href="feedback.html">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Отзывы
+        </a>
+      </nav>
+      <div class="sidebar-bottom">
+        <button class="btn btn--outline btn--sm btn--full" id="logout-btn">Выйти</button>
+      </div>
+    </aside>
+
+    <main class="admin-main">
+      <div class="admin-main__header">
+        <h1 class="admin-main__title">Места</h1>
+        <button class="btn btn--primary" id="add-btn">+ Добавить</button>
+      </div>
+
+      <div id="table-wrap">
+        <table class="places-table">
+          <thead>
+            <tr>
+              <th>Фото</th>
+              <th>Название / адрес</th>
+              <th>Дата</th>
+              <th>Языки</th>
+              <th>3D</th>
+              <th>Действия</th>
+            </tr>
+          </thead>
+          <tbody id="places-tbody"></tbody>
+        </table>
+        <div class="state-empty hidden" id="empty-state">
+          <h3>Нет добавленных мест</h3>
+          <p>Нажмите «Добавить» чтобы создать первое место.</p>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ── modal ── -->
+  <div class="modal-backdrop hidden" id="modal">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div class="modal__header">
+        <h2 class="modal__title" id="modal-title">Добавить место</h2>
+        <button class="modal__close" id="modal-close">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      <div class="modal__body">
+
+        <div class="form-group" style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+          <label class="toggle" style="border:1px solid var(--c-border);border-radius:12px;padding:10px 12px;display:inline-flex;gap:10px;align-items:center;background:var(--c-surface);">
+            <input type="checkbox" id="f-featured" />
+            <span style="font-size:.8rem;font-weight:600;color:var(--c-text-muted)">Показывать на главной (featured)</span>
+          </label>
+          <div style="display:inline-flex;gap:10px;align-items:center">
+            <label class="form-label" for="f-featured-order" style="margin:0">Порядок</label>
+            <input type="number" id="f-featured-order" class="form-control" style="width:120px" placeholder="например: 10" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="lang-tabs">
+            <button type="button" class="lang-tab active" data-lang-tab="ru">RU</button>
+            <button type="button" class="lang-tab" data-lang-tab="en">EN</button>
+          </div>
+          <div class="lang-panel" data-lang-panel="ru">
+            <label class="form-label" for="f-name-ru">Название (RU) *</label>
+            <input type="text" id="f-name-ru" class="form-control" maxlength="200" />
+          </div>
+          <div class="lang-panel hidden" data-lang-panel="en">
+            <label class="form-label" for="f-name-en">Название (EN)</label>
+            <input type="text" id="f-name-en" class="form-control" maxlength="200" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Координаты (кликните по карте)</label>
+          <div id="coord-map"></div>
+          <p class="coord-hint" id="coord-hint">Координаты не выбраны</p>
+          <div class="coord-row">
+            <div>
+              <label class="form-label" for="f-lat">Широта</label>
+              <input type="number" id="f-lat" class="form-control" step="any" placeholder="53.9006" />
+            </div>
+            <div>
+              <label class="form-label" for="f-lng">Долгота</label>
+              <input type="number" id="f-lng" class="form-control" step="any" placeholder="27.5590" />
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="lang-panel" data-lang-panel="ru">
+            <label class="form-label" for="f-address-ru">Адрес (RU)</label>
+            <input type="text" id="f-address-ru" class="form-control" maxlength="300" />
+          </div>
+          <div class="lang-panel hidden" data-lang-panel="en">
+            <label class="form-label" for="f-address-en">Адрес (EN)</label>
+            <input type="text" id="f-address-en" class="form-control" maxlength="300" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Создан / открыт (структурированная дата)</label>
+
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px">
+            <label style="display:inline-flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid var(--c-border);border-radius:12px;background:var(--c-surface)">
+              <input type="radio" name="created-precision" value="year" id="cp-year" checked />
+              <span style="font-size:.8rem;font-weight:600;color:var(--c-text-muted)">Год</span>
+            </label>
+            <label style="display:inline-flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid var(--c-border);border-radius:12px;background:var(--c-surface)">
+              <input type="radio" name="created-precision" value="month" id="cp-month" />
+              <span style="font-size:.8rem;font-weight:600;color:var(--c-text-muted)">Год + месяц</span>
+            </label>
+            <label style="display:inline-flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid var(--c-border);border-radius:12px;background:var(--c-surface)">
+              <input type="radio" name="created-precision" value="day" id="cp-day" />
+              <span style="font-size:.8rem;font-weight:600;color:var(--c-text-muted)">Полная дата</span>
+            </label>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
+            <div>
+              <label class="form-label" for="f-created-year">Год</label>
+              <input type="number" id="f-created-year" class="form-control" placeholder="1965" />
+            </div>
+            <div>
+              <label class="form-label" for="f-created-month">Месяц</label>
+              <select id="f-created-month" class="form-control">
+                <option value="">—</option>
+                <option value="1">Январь</option>
+                <option value="2">Февраль</option>
+                <option value="3">Март</option>
+                <option value="4">Апрель</option>
+                <option value="5">Май</option>
+                <option value="6">Июнь</option>
+                <option value="7">Июль</option>
+                <option value="8">Август</option>
+                <option value="9">Сентябрь</option>
+                <option value="10">Октябрь</option>
+                <option value="11">Ноябрь</option>
+                <option value="12">Декабрь</option>
+              </select>
+            </div>
+            <div>
+              <label class="form-label" for="f-created-day">День</label>
+              <select id="f-created-day" class="form-control">
+                <option value="">—</option>
+                <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>
+                <option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option>
+                <option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option>
+                <option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option>
+                <option value="21">21</option><option value="22">22</option><option value="23">23</option><option value="24">24</option><option value="25">25</option>
+                <option value="26">26</option><option value="27">27</option><option value="28">28</option><option value="29">29</option><option value="30">30</option>
+                <option value="31">31</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-top:10px">
+            <label class="form-label" for="f-created-manual">Ручной ввод даты</label>
+            <input type="text" id="f-created-manual" class="form-control" placeholder="DD.MM.YYYY | MM.YYYY | YYYY" maxlength="10" />
+            <p class="field-help-error" id="f-created-manual-error"></p>
+          </div>
+
+          <div class="form-group" style="margin-top:10px">
+            <label class="form-label" for="f-created-day-picker">Календарь (полная дата)</label>
+            <input type="text" id="f-created-day-picker" class="form-control" placeholder="Выберите дату" />
+          </div>
+
+          <div class="form-group" style="margin-top:10px">
+            <label class="form-label" for="f-created-display">Подпись (опционально)</label>
+            <input type="text" id="f-created-display" class="form-control" placeholder="например: лето 1944, начало XX в." maxlength="120" />
+          </div>
+
+          <div class="form-group" style="margin-top:10px">
+            <label class="form-label" for="f-opening-date">Legacy: Дата открытия (строка)</label>
+            <input type="text" id="f-opening-date" class="form-control" placeholder="например: 9 мая 1965 г." maxlength="100" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="lang-panel" data-lang-panel="ru">
+            <label class="form-label" for="f-opening-address-ru">Адрес открытия (RU)</label>
+            <input type="text" id="f-opening-address-ru" class="form-control" maxlength="300" />
+          </div>
+          <div class="lang-panel hidden" data-lang-panel="en">
+            <label class="form-label" for="f-opening-address-en">Адрес открытия (EN)</label>
+            <input type="text" id="f-opening-address-en" class="form-control" maxlength="300" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="lang-panel" data-lang-panel="ru">
+            <label class="form-label" for="f-author-ru">Автор / Скульптор (RU)</label>
+            <input type="text" id="f-author-ru" class="form-control" maxlength="200" />
+          </div>
+          <div class="lang-panel hidden" data-lang-panel="en">
+            <label class="form-label" for="f-author-en">Author / Sculptor (EN)</label>
+            <input type="text" id="f-author-en" class="form-control" maxlength="200" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Категории / Теги</label>
+          <div class="tags-input-wrap" id="tags-wrap" style="
+            display:flex;flex-wrap:wrap;gap:6px;padding:8px 10px;
+            border:1px solid var(--c-border);border-radius:var(--radius-sm);
+            background:var(--c-surface);cursor:text;min-height:44px;
+          "></div>
+          <input type="text" id="f-tags-input" class="form-control" placeholder="Введите тег и нажмите Enter…" style="margin-top:6px" />
+          <p style="font-size:.78rem;color:var(--c-text-muted);margin-top:4px">Например: Скульптура, Мемориал, ВОВ</p>
+        </div>
+
+        <div class="form-group">
+          <div class="lang-panel" data-lang-panel="ru">
+            <label class="form-label" for="f-desc-ru">Описание (RU)</label>
+            <textarea id="f-desc-ru" class="form-control" rows="6" maxlength="20000"></textarea>
+          </div>
+          <div class="lang-panel hidden" data-lang-panel="en">
+            <label class="form-label" for="f-desc-en">Description (EN)</label>
+            <textarea id="f-desc-en" class="form-control" rows="6" maxlength="20000"></textarea>
+          </div>
+        </div>
+
+        <!-- photos -->
+        <div class="form-group">
+          <label class="form-label">Фотографии (до 10)</label>
+          <div class="photo-previews" id="photo-previews"></div>
+          <div class="photo-upload-area" id="upload-area">
+            <p>Перетащите фото или нажмите для выбора</p>
+            <span>JPEG, PNG, WEBP · до 10 МБ каждое</span>
+          </div>
+          <p class="photo-progress" id="photo-progress"></p>
+          <input type="file" id="file-input" accept="image/*" multiple style="display:none" />
+        </div>
+
+        <!-- ═══ 3D MODEL: file OR Sketchfab ═══ -->
+        <div class="form-group">
+          <label class="form-label">3D-модель (необязательно)</label>
+
+          <div class="model-type-switcher">
+            <button type="button" class="model-type-switcher__btn active" data-model-type="file" id="mt-file-btn">
+              📦 Загрузить файл
+            </button>
+            <button type="button" class="model-type-switcher__btn" data-model-type="sketchfab" id="mt-sketchfab-btn">
+              🌐 Ссылка Sketchfab
+            </button>
+          </div>
+
+          <!-- Panel: file upload -->
+          <div class="model-panel active" id="model-panel-file">
+            <div class="photo-upload-area" id="model-upload-area">
+              <p>Перетащите .glb / .gltf или нажмите для выбора</p>
+              <span>Максимум 100 МБ</span>
+            </div>
+            <input type="file" id="model-file-input" accept=".glb,.gltf" style="display:none" />
+            <div id="model-preview" style="margin-top:10px;font-size:.875rem;color:var(--c-text-muted)"></div>
+            <p class="photo-progress" id="model-progress"></p>
+          </div>
+
+          <!-- Panel: Sketchfab URL -->
+          <div class="model-panel" id="model-panel-sketchfab">
+            <input type="text" id="f-sketchfab-url" class="form-control"
+              placeholder="https://sketchfab.com/3d-models/..." maxlength="500" />
+            <p class="sketchfab-hint">
+              Вставьте ссылку на модель со Sketchfab.<br>
+              Примеры форматов:<br>
+              <code>https://sketchfab.com/3d-models/название-abc123</code><br>
+              <code>https://sketchfab.com/models/abc123/embed</code>
+            </p>
+            <div id="sketchfab-preview" style="margin-top:12px"></div>
+          </div>
+        </div>
+
+        <div class="modal__footer">
+          <button class="btn btn--outline" id="modal-cancel">Отмена</button>
+          <button class="btn btn--primary" id="modal-save">Сохранить</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script type="module" src="js/places-admin.js"></script>
+</body>
+</html>

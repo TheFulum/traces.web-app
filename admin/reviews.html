@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Отзывы о местах — Админ</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    .admin-layout {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      min-height: calc(100vh - var(--nav-h));
+    }
+    .admin-sidebar {
+      border-right: 1px solid var(--c-border);
+      padding: 32px 0;
+    }
+    .admin-sidebar__label {
+      font-size: .7rem;
+      font-weight: 600;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--c-text-muted);
+      padding: 0 24px;
+      margin-bottom: 8px;
+    }
+    .admin-nav a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 24px;
+      font-size: .875rem;
+      font-weight: 400;
+      color: var(--c-text-muted);
+      transition: color var(--transition), background var(--transition);
+    }
+    .admin-nav a:hover, .admin-nav a.active {
+      color: var(--c-accent);
+      background: var(--c-accent-soft);
+    }
+    .admin-nav a.active { font-weight: 500; }
+    .sidebar-bottom {
+      padding: 24px;
+      margin-top: 24px;
+      border-top: 1px solid var(--c-border);
+    }
+
+    .admin-main { padding: 32px 40px; }
+    .admin-main__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .admin-main__title {
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      font-weight: 600;
+    }
+
+    /* stats bar */
+    .stats-bar {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+    }
+    .stat {
+      background: var(--c-surface);
+      border: 1px solid var(--c-border-light);
+      border-radius: var(--radius-md);
+      padding: 18px 24px;
+      min-width: 130px;
+      box-shadow: var(--shadow-xs);
+    }
+    .stat__value {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      font-weight: 600;
+      line-height: 1;
+      margin-bottom: 4px;
+      color: var(--c-accent);
+    }
+    .stat__label {
+      font-size: .75rem;
+      font-weight: 500;
+      color: var(--c-text-muted);
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+
+    /* review cards */
+    .feedback-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .feedback-item {
+      background: var(--c-surface);
+      border: 1px solid var(--c-border-light);
+      border-radius: var(--radius-md);
+      padding: 18px 22px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px 24px;
+      align-items: start;
+      box-shadow: var(--shadow-xs);
+      transition: box-shadow var(--transition);
+    }
+    .feedback-item:hover { box-shadow: var(--shadow-sm); }
+    .feedback-item__place {
+      font-size: .75rem;
+      font-weight: 600;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--c-accent);
+      margin-bottom: 4px;
+    }
+    .feedback-item__email {
+      font-size: .8125rem;
+      color: var(--c-text-muted);
+      margin-bottom: 6px;
+    }
+    .feedback-item__message {
+      font-size: .9375rem;
+      line-height: 1.65;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .feedback-item__meta {
+      text-align: right;
+      flex-shrink: 0;
+    }
+    .feedback-item__stars {
+      color: var(--c-star);
+      font-size: 1.1rem;
+      margin-bottom: 4px;
+      letter-spacing: 1px;
+    }
+    .feedback-item__date {
+      font-size: .75rem;
+      font-weight: 500;
+      color: var(--c-text-light);
+      white-space: nowrap;
+    }
+
+    /* filter */
+    .filter-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .filter-btn {
+      padding: 7px 16px;
+      border: 1px solid var(--c-border);
+      border-radius: 20px;
+      font-size: .8rem;
+      font-weight: 500;
+      cursor: pointer;
+      background: var(--c-surface);
+      color: var(--c-text-muted);
+      transition: all var(--transition);
+      font-family: var(--font-body);
+    }
+    .filter-btn.active,
+    .filter-btn:hover {
+      border-color: var(--c-accent);
+      color: var(--c-accent);
+      background: var(--c-accent-soft);
+    }
+
+    @media (max-width: 700px) {
+      .admin-layout { grid-template-columns: 1fr; }
+      .admin-sidebar { display: none; }
+      .admin-main { padding: 20px 16px; }
+      .stats-bar { gap: 10px; }
+      .stat { min-width: 100px; padding: 14px 16px; }
+      .stat__value { font-size: 1.5rem; }
+      .feedback-item { grid-template-columns: 1fr; }
+      .feedback-item__meta { text-align: left; display: flex; gap: 12px; align-items: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="nav"></nav>
+
+  <div class="admin-layout">
+    <aside class="admin-sidebar">
+      <p class="admin-sidebar__label">Навигация</p>
+      <nav class="admin-nav">
+        <a href="places.html">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          Места
+        </a>
+        <a href="feedback.html">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Обратная связь
+        </a>
+        <a href="reviews.html" class="active">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          Отзывы о местах
+        </a>
+      </nav>
+      <div class="sidebar-bottom">
+        <button class="btn btn--outline btn--sm btn--full" id="logout-btn">Выйти</button>
+      </div>
+    </aside>
+
+    <main class="admin-main">
+      <div class="admin-main__header">
+        <h1 class="admin-main__title">Отзывы о местах</h1>
+      </div>
+
+      <div class="stats-bar" id="stats-bar">
+        <div class="stat">
+          <div class="stat__value" id="stat-total">—</div>
+          <div class="stat__label">Всего</div>
+        </div>
+        <div class="stat">
+          <div class="stat__value" id="stat-avg">—</div>
+          <div class="stat__label">Средняя оценка</div>
+        </div>
+      </div>
+
+      <div class="filter-row" id="filter-row">
+        <button class="filter-btn active" data-rating="0">Все</button>
+        <button class="filter-btn" data-rating="5">★★★★★</button>
+        <button class="filter-btn" data-rating="4">★★★★</button>
+        <button class="filter-btn" data-rating="3">★★★</button>
+        <button class="filter-btn" data-rating="2">★★</button>
+        <button class="filter-btn" data-rating="1">★</button>
+      </div>
+
+      <div class="feedback-list" id="reviews-list"></div>
+      <div class="state-empty hidden" id="empty-state">
+        <h3>Отзывов пока нет</h3>
+        <p>Они появятся здесь, когда пользователи начнут оставлять отзывы о местах.</p>
+      </div>
+    </main>
+  </div>
+
+  <div id="toast" class="toast"></div>
+  <script type="module" src="js/reviews-admin.js"></script>
+</body>
+</html>
