@@ -436,8 +436,9 @@ function getEpochByYear(year) {
 const REVIEW_RATE_LIMIT_MS = 60_000;
 
 function initReviews(placeId) {
-  let lastDoc    = null;
-  let hasMore    = false;
+  let allReviews = [];
+  let page = 1;
+  const PAGE_SIZE = 10;
   let reviewRating = 0;
   let currentUser = null;
 
@@ -541,18 +542,21 @@ function initReviews(placeId) {
 
   async function loadReviews(reset) {
     if (reset) {
-      lastDoc = null;
-      hasMore = false;
+      page = 1;
+      allReviews = [];
       document.getElementById('reviews-list').innerHTML = '';
     }
 
     try {
-      const result = await getPlaceReviews(placeId, reset ? null : lastDoc);
-      lastDoc  = result.lastDoc;
-      hasMore  = result.hasMore;
-      renderReviews(result.docs, reset);
+      if (reset) {
+        allReviews = await getPlaceReviews(placeId);
+      } else {
+        page += 1;
+      }
+      const shown = allReviews.slice(0, page * PAGE_SIZE);
+      renderReviews(shown, true);
       document.getElementById('load-more-reviews')
-        .classList.toggle('hidden', !hasMore);
+        .classList.toggle('hidden', shown.length >= allReviews.length);
     } catch (err) {
       console.error(err);
       showToast(t('place.reviewsLoadError', dictI18n), 'error');
@@ -590,7 +594,7 @@ function initReviews(placeId) {
       `;
     }).join('');
 
-    listEl.insertAdjacentHTML('beforeend', html);
+    listEl.innerHTML = html;
   }
 }
 

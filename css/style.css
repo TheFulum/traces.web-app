@@ -147,6 +147,12 @@ p { max-width: 68ch; }
   gap: 32px;
 }
 
+.nav__auth-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .nav__links {
   display: flex;
   align-items: center;

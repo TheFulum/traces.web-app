@@ -177,7 +177,7 @@ function computeView(places, s) {
     }
 
     if (s.dateFrom != null || s.dateTo != null) {
-      const y = Number(p?.createdOn?.year);
+      const y = getYearForFilter(p);
       if (!Number.isFinite(y)) return false;
       if (s.dateFrom != null && y < s.dateFrom) return false;
       if (s.dateTo != null && y > s.dateTo) return false;
@@ -204,8 +204,13 @@ function sortPlaces(arr, sort) {
   const a = arr.slice();
   const getName = (p) => String(p?.name || '').toLowerCase();
   const getUpdated = (p) => Number(p?.updatedAt?.seconds ?? 0);
-  const getCreatedKey = (p) => Number(p?.createdOn?.sortKey ?? 0);
-  const hasCreated = (p) => Number.isFinite(Number(p?.createdOn?.sortKey));
+  const getCreatedKey = (p) => {
+    const direct = Number(p?.createdOn?.sortKey);
+    if (Number.isFinite(direct) && direct > 0) return direct;
+    const year = getYearForFilter(p);
+    return Number.isFinite(year) ? (year * 10000) : 0;
+  };
+  const hasCreated = (p) => getCreatedKey(p) > 0;
 
   switch (sort) {
     case 'updated_asc':
@@ -415,8 +420,26 @@ function extractCity(address) {
   const a = String(address || '').trim();
   if (!a) return '';
   const parts = a.split(',').map(s => s.trim()).filter(Boolean);
-  if (parts.length >= 2) return parts[0]; // "Минск, ..." — берём первую часть
-  return parts[0] || '';
+  if (!parts.length) return '';
+
+  const streetRe = /^(ул\.?|улица|просп\.?|проспект|пр-т|пер\.?|переулок|бул\.?|бульвар|наб\.?|набережная|пл\.?|площадь|шоссе|тракт|дом|д\.)\b/i;
+  const cityPrefixRe = /^(г\.?|город|city|town|деревня|поселок|посёлок)\s+/i;
+
+  for (const part of parts) {
+    if (cityPrefixRe.test(part)) return part.replace(cityPrefixRe, '').trim();
+  }
+
+  const nonStreet = parts.find(part => !streetRe.test(part));
+  return nonStreet || parts[parts.length - 1] || '';
+}
+
+function getYearForFilter(place) {
+  const fromCreated = Number(place?.createdOn?.year);
+  if (Number.isFinite(fromCreated) && fromCreated > 0) return fromCreated;
+  const opening = String(place?.openingDate || '');
+  const match = opening.match(/\b(1[0-9]{3}|20[0-9]{2})\b/);
+  if (!match) return NaN;
+  return Number(match[1]);
 }
 
 function placeCard(p, idx) {

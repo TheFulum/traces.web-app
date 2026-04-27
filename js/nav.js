@@ -39,13 +39,17 @@ export function initNav(root = '') {
     const authBtn = user
       ? (isAdminPath
           ? `<a href="${root}admin/places.html" class="nav__login nav__admin">${dict ? t('nav.admin', dict) : 'Админ'}</a>`
-          : `<a href="${withLang(`${root}profile.html`, lang)}" class="nav__login nav__admin">${dict ? t('nav.profile', dict) : 'Профиль'}</a>`)
+          : `<div class="nav__auth-group">
+               <a href="${root}admin/places.html" class="nav__login nav__admin">${dict ? t('nav.admin', dict) : 'Админ'}</a>
+               <a href="${withLang(`${root}profile.html`, lang)}" class="nav__login">${dict ? t('nav.profile', dict) : 'Профиль'}</a>
+             </div>`)
       : `<a href="${withLang(isAdminPath ? `${root}admin/login.html` : `${root}auth.html`, lang)}" class="nav__login">${dict ? t('nav.login', dict) : 'Войти'}</a>`;
 
     const drawerAuthBtn = user
       ? (isAdminPath
           ? `<a href="${root}admin/places.html" class="nav__drawer__login nav__drawer__admin">${dict ? t('nav.admin', dict) : 'Админ'}</a>`
-          : `<a href="${withLang(`${root}profile.html`, lang)}" class="nav__drawer__login nav__drawer__admin">${dict ? t('nav.profile', dict) : 'Профиль'}</a>`)
+          : `<a href="${root}admin/places.html" class="nav__drawer__login nav__drawer__admin">${dict ? t('nav.admin', dict) : 'Админ'}</a>
+             <a href="${withLang(`${root}profile.html`, lang)}" class="nav__drawer__login">${dict ? t('nav.profile', dict) : 'Профиль'}</a>`)
       : `<a href="${withLang(isAdminPath ? `${root}admin/login.html` : `${root}auth.html`, lang)}" class="nav__drawer__login">${dict ? t('nav.login', dict) : 'Войти'}</a>`;
 
     const langSwitch = `
@@ -58,7 +62,7 @@ export function initNav(root = '') {
       <div class="nav__inner">
         <a href="${withLang(`${root}index.html`, lang)}" class="nav__logo">
           <!-- LOGO: замените src на путь к вашему логотипу -->
-          <img class="nav__logo-img" src="${root}img/logo.png" alt="Лого"
+          <img class="nav__logo-img" src="${root}logo.svg" alt="Лого"
                onerror="this.style.display='none'" />
           Следы прошлого
         </a>

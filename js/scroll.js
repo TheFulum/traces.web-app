@@ -1,8 +1,9 @@
 const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const isTouchLike = window.matchMedia && window.matchMedia('(max-width: 768px)').matches;
+const isCoarsePointer = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
 const disableLenis = document.body?.dataset?.noLenis === 'true';
 
-if (!reduceMotion && !disableLenis) {
+if (!reduceMotion && !disableLenis && !isTouchLike && !isCoarsePointer) {
   initLenis();
 }
 
@@ -17,12 +18,6 @@ async function initLenis() {
       smoothWheel: true,
       smoothTouch: false
     });
-
-    if (isTouchLike) {
-      // Keep default mobile behavior close to native.
-      lenis.stop();
-      return;
-    }
 
     function raf(time) {
       lenis.raf(time);

@@ -1,6 +1,7 @@
 import { auth, db } from './firebase-init.js';
 import { initNav } from './nav.js';
-import { doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+import { doc, setDoc, serverTimestamp, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+import { getPlaces } from './places.js';
 import {
   onAuthStateChanged,
   updateProfile,
@@ -22,6 +23,7 @@ const securityStatusEl = document.getElementById('security-status');
 const currentPasswordEl = document.getElementById('current-password');
 const newPasswordEl = document.getElementById('new-password');
 const passwordSaveBtn = document.getElementById('password-save');
+const myReviewsListEl = document.getElementById('my-reviews-list');
 
 let currentUser = null;
 
@@ -33,6 +35,7 @@ onAuthStateChanged(auth, user => {
   currentUser = user;
   nameEl.value = user.displayName || '';
   emailEl.value = user.email || '';
+  loadMyReviews(user.uid);
 });
 
 saveBtn.addEventListener('click', async () => {
@@ -128,4 +131,53 @@ logoutBtn.addEventListener('click', async () => {
 function setStatus(el, text, type = '') {
   el.textContent = text;
   el.className = `profile-status${type ? ' ' + type : ''}`;
+}
+
+async function loadMyReviews(uid) {
+  if (!myReviewsListEl) return;
+  myReviewsListEl.innerHTML = '<p class="text-muted">Загрузка…</p>';
+  try {
+    const [reviewSnap, places] = await Promise.all([
+      getDocs(query(collection(db, 'placeReviews'), where('uid', '==', uid))),
+      getPlaces()
+    ]);
+    const placeMap = new Map(places.map(p => [p.id, p.name || p.id]));
+    const reviews = reviewSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+    reviews.sort((a, b) => (b?.createdAt?.seconds ?? 0) - (a?.createdAt?.seconds ?? 0));
+
+    if (!reviews.length) {
+      myReviewsListEl.innerHTML = '<p class="text-muted">Пока нет ваших отзывов.</p>';
+      return;
+    }
+
+    myReviewsListEl.innerHTML = reviews.slice(0, 20).map(r => {
+      const stars = '★'.repeat(Number(r.rating || 0)) + '☆'.repeat(Math.max(0, 5 - Number(r.rating || 0)));
+      const date = r?.createdAt?.toDate
+        ? r.createdAt.toDate().toLocaleDateString('ru-RU', { day: 'numeric', month: 'short', year: 'numeric' })
+        : '';
+      const placeName = placeMap.get(r.placeId) || r.placeId || '—';
+      return `
+        <article style="border:1px solid var(--c-border-light);border-radius:12px;padding:12px 14px;margin-bottom:10px">
+          <div style="display:flex;justify-content:space-between;gap:10px;align-items:center">
+            <strong>${esc(placeName)}</strong>
+            <span style="color:var(--c-star);white-space:nowrap">${stars}</span>
+          </div>
+          <p style="margin:8px 0 6px;white-space:pre-wrap">${esc(String(r.comment || ''))}</p>
+          <small class="text-muted">${esc(date)}</small>
+        </article>
+      `;
+    }).join('');
+  } catch (err) {
+    console.error(err);
+    myReviewsListEl.innerHTML = '<p class="text-muted">Не удалось загрузить отзывы.</p>';
+  }
+}
+
+function esc(str) {
+  return String(str ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }

@@ -1,11 +1,10 @@
 import { db } from './firebase-init.js';
 import {
   collection, addDoc, getDocs,
-  query, where, orderBy, limit, startAfter, serverTimestamp
+  query, where, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
 const COL = 'placeReviews';
-const PAGE_SIZE = 10;
 
 /**
  * Add a review for a specific place.
@@ -29,35 +28,21 @@ export async function addPlaceReview(placeId, user, rating, comment) {
 }
 
 /**
- * Get paginated reviews for a place.
+ * Get reviews for a place (sorted client-side).
  * @param {string} placeId
- * @param {import('firebase/firestore').QueryDocumentSnapshot|null} lastDoc
- * @returns {Promise<{ docs: Array, lastDoc: any, hasMore: boolean }>}
+ * @returns {Promise<Array>}
  */
-export async function getPlaceReviews(placeId, lastDoc = null) {
-  let q = query(
+export async function getPlaceReviews(placeId) {
+  const q = query(
     collection(db, COL),
-    where('placeId', '==', placeId),
-    orderBy('createdAt', 'desc'),
-    limit(PAGE_SIZE + 1)
+    where('placeId', '==', placeId)
   );
-
-  if (lastDoc) {
-    q = query(
-      collection(db, COL),
-      where('placeId', '==', placeId),
-      orderBy('createdAt', 'desc'),
-      startAfter(lastDoc),
-      limit(PAGE_SIZE + 1)
-    );
-  }
-
   const snap = await getDocs(q);
-  const hasMore = snap.docs.length > PAGE_SIZE;
-  const pageDocs = snap.docs.slice(0, PAGE_SIZE);
-
-  const docs = pageDocs.map(d => ({ id: d.id, ...d.data() }));
-  const newLastDoc = pageDocs.length ? pageDocs[pageDocs.length - 1] : null;
-
-  return { docs, lastDoc: newLastDoc, hasMore };
+  const docs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  docs.sort((a, b) => {
+    const aTs = a?.createdAt?.seconds ?? 0;
+    const bTs = b?.createdAt?.seconds ?? 0;
+    return bTs - aTs;
+  });
+  return docs;
 }

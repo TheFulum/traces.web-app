@@ -176,10 +176,10 @@ async function nominatimSearch(query) {
   searchResults.classList.add('open');
 
   try {
-    // Force Russian language in results
-    const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=5&accept-language=ru`;
+    const acceptLang = lang === 'en' ? 'en' : 'ru';
+    const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=5&accept-language=${encodeURIComponent(acceptLang)}`;
     const res  = await fetch(url, {
-      headers: { 'Accept-Language': 'ru', 'User-Agent': 'TracesOfThePast/1.0' }
+      headers: { 'Accept-Language': acceptLang, 'User-Agent': 'TracesOfThePast/1.0' }
     });
     const data = await res.json();
 
