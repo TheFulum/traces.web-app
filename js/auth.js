@@ -41,6 +41,8 @@ function switchMode(next) {
   const isRegister = mode === 'register';
   tabLogin.classList.toggle('active', !isRegister);
   tabRegister.classList.toggle('active', isRegister);
+  tabLogin.setAttribute('aria-selected', String(!isRegister));
+  tabRegister.setAttribute('aria-selected', String(isRegister));
   nameWrap.classList.toggle('hidden', !isRegister);
   submitBtn.textContent = isRegister ? 'Создать аккаунт' : 'Войти';
   statusEl.textContent = '';

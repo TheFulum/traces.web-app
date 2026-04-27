@@ -38,17 +38,17 @@ export function initNav(root = '') {
 
     const authBtn = user
       ? (isAdminPath
-          ? `<a href="${root}admin/places.html" class="nav__login nav__admin">${dict ? t('nav.admin', dict) : 'Админ'}</a>`
+          ? `<a href="${root}admin/dashboard.html" class="nav__login nav__admin">${dict ? t('nav.admin', dict) : 'Админ'}</a>`
           : `<div class="nav__auth-group">
-               <a href="${root}admin/places.html" class="nav__login nav__admin">${dict ? t('nav.admin', dict) : 'Админ'}</a>
+               <a href="${root}admin/dashboard.html" class="nav__login nav__admin">${dict ? t('nav.admin', dict) : 'Админ'}</a>
                <a href="${withLang(`${root}profile.html`, lang)}" class="nav__login">${dict ? t('nav.profile', dict) : 'Профиль'}</a>
              </div>`)
       : `<a href="${withLang(isAdminPath ? `${root}admin/login.html` : `${root}auth.html`, lang)}" class="nav__login">${dict ? t('nav.login', dict) : 'Войти'}</a>`;
 
     const drawerAuthBtn = user
       ? (isAdminPath
-          ? `<a href="${root}admin/places.html" class="nav__drawer__login nav__drawer__admin">${dict ? t('nav.admin', dict) : 'Админ'}</a>`
-          : `<a href="${root}admin/places.html" class="nav__drawer__login nav__drawer__admin">${dict ? t('nav.admin', dict) : 'Админ'}</a>
+          ? `<a href="${root}admin/dashboard.html" class="nav__drawer__login nav__drawer__admin">${dict ? t('nav.admin', dict) : 'Админ'}</a>`
+          : `<a href="${root}admin/dashboard.html" class="nav__drawer__login nav__drawer__admin">${dict ? t('nav.admin', dict) : 'Админ'}</a>
              <a href="${withLang(`${root}profile.html`, lang)}" class="nav__drawer__login">${dict ? t('nav.profile', dict) : 'Профиль'}</a>`)
       : `<a href="${withLang(isAdminPath ? `${root}admin/login.html` : `${root}auth.html`, lang)}" class="nav__drawer__login">${dict ? t('nav.login', dict) : 'Войти'}</a>`;
 

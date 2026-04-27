@@ -4,49 +4,89 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Вход и регистрация — Следы прошлого</title>
+  <meta name="description" content="Войдите или зарегистрируйтесь, чтобы оставлять отзывы, сохранять избранное и видеть историю просмотров." />
   <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/user-pages.css" />
   <style>
-    .auth-wrap {
-      max-width: 460px;
-      margin: 48px auto 80px;
-      padding: 0 16px;
-    }
-    .auth-card {
-      background: var(--c-surface);
-      border: 1px solid var(--c-border-light);
-      border-radius: var(--radius-lg);
-      padding: 28px 24px;
-      box-shadow: var(--shadow-sm);
-    }
-    .auth-tabs { display: flex; gap: 8px; margin-bottom: 18px; }
+    .auth-tabs { display: flex; gap: 8px; margin-bottom: 20px; }
     .auth-tab {
       flex: 1;
       border: 1px solid var(--c-border);
       border-radius: 999px;
       background: var(--c-surface);
-      padding: 8px 12px;
-      font-size: .8rem;
+      padding: 10px 14px;
+      font-size: 0.78rem;
       font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: .06em;
+      letter-spacing: 0.06em;
       color: var(--c-text-muted);
+      cursor: pointer;
+      font-family: var(--font-body);
+      transition: background var(--transition), color var(--transition), border-color var(--transition);
     }
-    .auth-tab.active { background: var(--c-accent); color: #fff; border-color: var(--c-accent); }
-    .auth-status { min-height: 18px; margin-bottom: 12px; font-size: .8125rem; font-weight: 500; }
+    .auth-tab:hover {
+      border-color: var(--c-accent);
+      color: var(--c-accent);
+    }
+    .auth-tab.active {
+      background: var(--c-accent);
+      color: #fff;
+      border-color: var(--c-accent);
+    }
+    .auth-card-inner {
+      background: var(--c-surface);
+      border: 1px solid var(--c-border-light);
+      border-radius: var(--radius-lg);
+      padding: 28px 28px 32px;
+      box-shadow: var(--shadow-md);
+    }
+    .auth-status {
+      min-height: 1.25em;
+      margin-bottom: 14px;
+      font-size: 0.8125rem;
+      font-weight: 500;
+    }
     .auth-status.error { color: var(--c-danger); }
     .auth-status.success { color: var(--c-success); }
+    .auth-footer {
+      margin-top: 22px;
+      text-align: center;
+      font-size: 0.8125rem;
+      color: var(--c-text-muted);
+    }
+    .auth-footer a {
+      color: var(--c-accent);
+      font-weight: 500;
+      text-decoration: none;
+    }
+    .auth-footer a:hover { text-decoration: underline; text-underline-offset: 3px; }
   </style>
 </head>
-<body>
+<body class="user-auth-page">
   <nav class="nav"></nav>
 
-  <main class="auth-wrap">
-    <div class="auth-card">
-      <div class="auth-tabs">
-        <button class="auth-tab active" id="tab-login" type="button">Вход</button>
-        <button class="auth-tab" id="tab-register" type="button">Регистрация</button>
+  <header class="user-hero">
+    <div class="container">
+      <p class="user-hero__eyebrow">Аккаунт</p>
+      <h1 class="user-hero__title">Вход и регистрация</h1>
+      <p class="user-hero__sub">
+        Один аккаунт для отзывов, избранного и истории просмотров. Пароль хранится у Firebase Authentication — мы не видим его в открытом виде.
+      </p>
+      <nav class="user-quick-nav" aria-label="Разделы сайта">
+        <a href="index.html">Главная</a>
+        <a href="catalog.html">Каталог</a>
+        <a href="map.html">Карта</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="user-auth-card">
+    <div class="auth-card-inner">
+      <div class="auth-tabs" role="tablist" aria-label="Режим">
+        <button class="auth-tab active" id="tab-login" type="button" role="tab" aria-selected="true">Вход</button>
+        <button class="auth-tab" id="tab-register" type="button" role="tab" aria-selected="false">Регистрация</button>
       </div>
-      <p class="auth-status" id="auth-status"></p>
+      <p class="auth-status" id="auth-status" role="status" aria-live="polite"></p>
 
       <div class="form-group hidden" id="name-wrap">
         <label class="form-label" for="auth-name">Имя</label>
@@ -63,9 +103,13 @@
         <input id="auth-password" type="password" class="form-control" autocomplete="new-password" />
       </div>
 
-      <button class="btn btn--primary btn--full" id="auth-submit">Войти</button>
+      <button class="btn btn--primary btn--full" type="button" id="auth-submit">Войти</button>
+
+      <p class="auth-footer">
+        Уже изучаете каталог? <a href="catalog.html">Перейти к местам</a>
+      </p>
     </div>
-  </main>
+  </div>
 
   <script type="module" src="js/scroll.js"></script>
   <script type="module" src="js/transitions.js"></script>

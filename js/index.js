@@ -44,6 +44,8 @@ async function applyHomeConfig() {
   const elSub = document.getElementById('hero-subtitle');
   const elIntro = document.getElementById('intro-text');
   const collectionsGrid = document.getElementById('collections-grid');
+  const teaserMapImage = document.getElementById('teaser-map-image');
+  const teaserGuideImage = document.getElementById('teaser-guide-image');
   const footerApi = document.getElementById('footer-api-link');
   const footerGithub = document.getElementById('footer-github-link');
 
@@ -54,7 +56,11 @@ async function applyHomeConfig() {
     heroTitle: { ru: t('home.heroTitle', dict), en: t('home.heroTitle', dict) },
     heroSubtitle: { ru: t('home.heroSubtitle', dict), en: t('home.heroSubtitle', dict) },
     introText: { ru: t('home.aboutText', dict), en: t('home.aboutText', dict) },
-    collections: []
+    collections: [],
+    teasers: {
+      mapImage: 'https://images.unsplash.com/photo-1478476868527-002ae3f3e159?auto=format&fit=crop&w=1600&q=80',
+      guideImage: 'https://images.unsplash.com/photo-1461360370896-922624d12aa1?auto=format&fit=crop&w=1600&q=80'
+    }
   };
 
   let cfg = null;
@@ -84,6 +90,10 @@ async function applyHomeConfig() {
       ? cols.slice(0, 6).map(collectionCard).join('')
       : defaultCollections().map(collectionCard).join('');
   }
+  const teaserMap = String(merged?.teasers?.mapImage || defaults.teasers.mapImage || '').trim();
+  const teaserGuide = String(merged?.teasers?.guideImage || defaults.teasers.guideImage || '').trim();
+  if (teaserMapImage && teaserMap) teaserMapImage.style.backgroundImage = `url("${teaserMap}")`;
+  if (teaserGuideImage && teaserGuide) teaserGuideImage.style.backgroundImage = `url("${teaserGuide}")`;
 
   if (footerApi) {
     const enabled = merged?.links?.apiEnabled === true;

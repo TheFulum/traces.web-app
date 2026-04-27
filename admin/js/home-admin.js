@@ -25,6 +25,8 @@ const el = {
   heroSubtitleEn: document.getElementById('hero-subtitle-en'),
   introTextRu: document.getElementById('intro-text-ru'),
   introTextEn: document.getElementById('intro-text-en'),
+  teaserMapImage: document.getElementById('teaser-map-image'),
+  teaserGuideImage: document.getElementById('teaser-guide-image'),
   previewImg: document.getElementById('preview-img'),
   previewTitle: document.getElementById('preview-title'),
   previewSub: document.getElementById('preview-sub'),
@@ -40,6 +42,7 @@ let state = {
   heroTitle: { ru: '', en: '' },
   heroSubtitle: { ru: '', en: '' },
   introText: { ru: '', en: '' },
+  teasers: { mapImage: '', guideImage: '' },
   collections: []
 };
 
@@ -62,6 +65,10 @@ async function load() {
         heroTitle: normalizeLocalized(d.heroTitle),
         heroSubtitle: normalizeLocalized(d.heroSubtitle),
         introText: normalizeLocalized(d.introText),
+        teasers: {
+          mapImage: String(d?.teasers?.mapImage || '').trim(),
+          guideImage: String(d?.teasers?.guideImage || '').trim()
+        },
         collections: Array.isArray(d.collections) ? d.collections.map(normalizeCollection) : []
       };
     }
@@ -84,6 +91,8 @@ function wire() {
     state.heroSubtitle.en = el.heroSubtitleEn.value.trim();
     state.introText.ru = el.introTextRu.value.trim();
     state.introText.en = el.introTextEn.value.trim();
+    state.teasers.mapImage = el.teaserMapImage.value.trim();
+    state.teasers.guideImage = el.teaserGuideImage.value.trim();
     renderPreview();
   };
 
@@ -99,6 +108,8 @@ function wire() {
     el.heroSubtitleEn.addEventListener(evt, onChange);
     el.introTextRu.addEventListener(evt, onChange);
     el.introTextEn.addEventListener(evt, onChange);
+    el.teaserMapImage.addEventListener(evt, onChange);
+    el.teaserGuideImage.addEventListener(evt, onChange);
   });
 
   el.addCollection.addEventListener('click', () => {
@@ -127,6 +138,8 @@ function render() {
   el.heroSubtitleEn.value = state.heroSubtitle.en || '';
   el.introTextRu.value = state.introText.ru || '';
   el.introTextEn.value = state.introText.en || '';
+  el.teaserMapImage.value = state.teasers.mapImage || '';
+  el.teaserGuideImage.value = state.teasers.guideImage || '';
   renderPreview();
   renderCollections();
 }
@@ -249,6 +262,10 @@ async function save() {
       heroTitle: state.heroTitle,
       heroSubtitle: state.heroSubtitle,
       introText: state.introText,
+      teasers: {
+        mapImage: String(state.teasers.mapImage || '').trim(),
+        guideImage: String(state.teasers.guideImage || '').trim()
+      },
       collections: (state.collections || []).map(normalizeCollection)
     };
 

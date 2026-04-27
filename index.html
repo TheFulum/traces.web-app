@@ -262,6 +262,16 @@
       background: radial-gradient(600px 240px at 30% 20%, rgba(139,94,60,.18) 0%, rgba(250,248,244,0) 60%),
                   linear-gradient(135deg, var(--c-surface-warm) 0%, var(--c-bg) 100%);
       border-bottom: 1px solid var(--c-border-light);
+      background-size: cover;
+      background-position: center;
+    }
+    .home-guide-placeholder {
+      height: 220px;
+      border-bottom: 1px solid var(--c-border-light);
+      background: radial-gradient(600px 240px at 70% 20%, rgba(139,94,60,.2) 0%, rgba(250,248,244,0) 62%),
+                  linear-gradient(135deg, var(--c-surface-warm) 0%, var(--c-bg) 100%);
+      background-size: cover;
+      background-position: center;
     }
 
     @media (max-width: 900px) {
@@ -287,6 +297,63 @@
         transition: none;
       }
       .home-scroll::after { animation: none; }
+    }
+
+    .home-steps {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 24px;
+    }
+    .home-step {
+      border: 1px solid var(--c-border-light);
+      border-radius: var(--radius-xl);
+      padding: 22px 20px 20px;
+      background: var(--c-surface);
+      box-shadow: var(--shadow-xs);
+      transition: transform var(--transition), box-shadow var(--transition);
+    }
+    .home-step:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+    .home-step__num {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      background: var(--c-accent-soft);
+      color: var(--c-accent);
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.05rem;
+      display: grid;
+      place-items: center;
+      margin-bottom: 14px;
+    }
+    .home-step__title {
+      font-family: var(--font-display);
+      font-size: 1.12rem;
+      font-weight: 600;
+      margin: 0 0 8px;
+      line-height: 1.25;
+    }
+    .home-step__text {
+      font-size: .9rem;
+      line-height: 1.65;
+      color: var(--c-text-muted);
+      margin: 0 0 14px;
+    }
+    .home-step__link {
+      font-size: .78rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--c-accent);
+      text-decoration: none;
+    }
+    .home-step__link:hover { text-decoration: underline; text-underline-offset: 3px; }
+    @media (max-width: 900px) {
+      .home-steps { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -356,6 +423,44 @@
       </div>
     </section>
 
+    <!-- steps -->
+    <section class="home-section reveal" id="steps">
+      <div class="container">
+        <div class="home-section__head">
+          <div>
+            <div class="home-section__eyebrow" data-i18n="home.stepsEyebrow">С чего начать</div>
+            <h2 data-i18n="home.stepsTitle">Три шага к маршруту</h2>
+          </div>
+        </div>
+        <div class="home-steps">
+          <article class="home-step">
+            <div class="home-step__num" aria-hidden="true">1</div>
+            <h3 class="home-step__title" data-i18n="home.step1Title">Найдите место</h3>
+            <p class="home-step__text" data-i18n="home.step1Text">
+              Каталог с фильтрами по тегам, 3D, фото и годам. Подборки открывают тематические списки одним кликом.
+            </p>
+            <a class="home-step__link" href="catalog.html" data-i18n="home.step1Cta">Каталог →</a>
+          </article>
+          <article class="home-step">
+            <div class="home-step__num" aria-hidden="true">2</div>
+            <h3 class="home-step__title" data-i18n="home.step2Title">Посмотрите на карте</h3>
+            <p class="home-step__text" data-i18n="home.step2Text">
+              Точки на интерактивной карте, поиск по адресу и быстрый переход к карточке объекта.
+            </p>
+            <a class="home-step__link" href="map.html" data-i18n="home.step2Cta">Карта →</a>
+          </article>
+          <article class="home-step">
+            <div class="home-step__num" aria-hidden="true">3</div>
+            <h3 class="home-step__title" data-i18n="home.step3Title">Спросите гида</h3>
+            <p class="home-step__text" data-i18n="home.step3Text">
+              Нужна идея для прогулки? Опишите интерес в чате — получите подборку и ссылки на места.
+            </p>
+            <a class="home-step__link" href="chat.html" data-i18n="home.step3Cta">Открыть гида →</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
     <!-- collections -->
     <section class="home-section reveal" id="collections">
       <div class="container">
@@ -400,7 +505,7 @@
 
         <div class="home-teasers">
           <div class="home-teaser">
-            <div class="home-map-placeholder" aria-hidden="true"></div>
+            <div class="home-map-placeholder" id="teaser-map-image" aria-hidden="true"></div>
             <div class="home-teaser__inner">
               <div class="home-teaser__title" data-i18n="home.mapTeaserTitle">Карта памятных мест</div>
               <div class="home-teaser__text" data-i18n="home.mapTeaserText">Откройте карту, чтобы быстро сориентироваться и построить маршрут.</div>
@@ -412,6 +517,7 @@
           </div>
 
           <div class="home-teaser">
+            <div class="home-guide-placeholder" id="teaser-guide-image" aria-hidden="true"></div>
             <div class="home-teaser__inner">
               <div class="home-teaser__title" data-i18n="home.guideTeaserTitle">Спросите гида</div>
               <div class="home-teaser__text" data-i18n="home.guideTeaserText">Не знаете, с чего начать? Опишите интерес — и получите подборку мест.</div>

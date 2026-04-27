@@ -190,10 +190,12 @@ function applyManualCreatedDate(raw) {
 cManual.addEventListener('blur', () => applyManualCreatedDate(cManual.value));
 
 if (window.flatpickr) {
+  const ruLocale = window.flatpickr?.l10ns?.ru || undefined;
   fullDatePicker = window.flatpickr(cDayPicker, {
     dateFormat: 'd.m.Y',
-    allowInput: false,
-    locale: 'ru',
+    allowInput: true,
+    clickOpens: true,
+    ...(ruLocale ? { locale: ruLocale } : {}),
     onChange(selectedDates) {
       const picked = selectedDates?.[0];
       if (!picked) return;

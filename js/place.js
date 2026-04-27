@@ -126,6 +126,8 @@ function render(place) {
   document.getElementById('btn-share').addEventListener('click', () => {
     sharePlace({ ...place, name: placeName });
   });
+  initFavoriteButton(place.id, placeName);
+  saveHistoryEntry(place.id, placeName);
 
   // show reviews section
   document.getElementById('reviews-section').classList.remove('hidden');
@@ -520,8 +522,8 @@ function initReviews(placeId) {
       paintStars(0);
       ratingTextEl.textContent = '';
       // reload list from scratch
-      lastDoc  = null;
-      hasMore  = false;
+      page = 1;
+      allReviews = [];
       loadReviews(true);
     } catch (err) {
       console.error(err);
@@ -609,4 +611,43 @@ function esc(str) {
   return String(str)
     .replace(/&/g, '&amp;').replace(/</g, '&lt;')
     .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function initFavoriteButton(placeId, placeName) {
+  const btn = document.getElementById('btn-favorite');
+  const label = document.getElementById('btn-favorite-label');
+  if (!btn || !label) return;
+  const key = 'profile_favorites';
+  const read = () => {
+    try { return JSON.parse(localStorage.getItem(key) || '[]'); } catch { return []; }
+  };
+  const write = (list) => localStorage.setItem(key, JSON.stringify(list));
+  const refresh = () => {
+    const list = read();
+    const exists = list.some(x => x.id === placeId);
+    label.textContent = exists ? 'Убрать из избранного' : 'В избранное';
+  };
+  refresh();
+  btn.addEventListener('click', () => {
+    const list = read();
+    const idx = list.findIndex(x => x.id === placeId);
+    if (idx >= 0) {
+      list.splice(idx, 1);
+      showToast('Удалено из избранного');
+    } else {
+      list.unshift({ id: placeId, name: placeName, addedAt: Date.now() });
+      showToast('Добавлено в избранное');
+    }
+    write(list.slice(0, 100));
+    refresh();
+  });
+}
+
+function saveHistoryEntry(placeId, placeName) {
+  const key = 'profile_history';
+  let list = [];
+  try { list = JSON.parse(localStorage.getItem(key) || '[]'); } catch {}
+  list = list.filter(x => x.id !== placeId);
+  list.unshift({ id: placeId, name: placeName, viewedAt: Date.now() });
+  localStorage.setItem(key, JSON.stringify(list.slice(0, 100)));
 }

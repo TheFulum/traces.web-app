@@ -27,6 +27,31 @@
 
     /* ── hide Leaflet default attribution entirely ── */
     .leaflet-control-attribution { display: none !important; }
+    .leaflet-top.leaflet-left {
+      top: auto;
+      bottom: 24px;
+    }
+    .leaflet-control-zoom {
+      margin-left: 16px !important;
+      margin-top: 0 !important;
+      border: 1px solid var(--c-border-light) !important;
+      border-radius: var(--radius-md) !important;
+      box-shadow: var(--shadow-md) !important;
+      overflow: hidden;
+    }
+    .leaflet-control-zoom a {
+      width: 34px !important;
+      height: 34px !important;
+      line-height: 34px !important;
+      color: var(--c-text) !important;
+      background: var(--c-surface) !important;
+      border: none !important;
+      font-weight: 600;
+    }
+    .leaflet-control-zoom a:hover {
+      background: var(--c-accent-soft) !important;
+      color: var(--c-accent) !important;
+    }
 
     /* ── search panel ── */
     .map-search {

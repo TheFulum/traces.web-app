@@ -4,67 +4,133 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Личный кабинет — Следы прошлого</title>
+  <meta name="description" content="Профиль, избранное, история просмотров и ваши отзывы о памятных местах." />
   <link rel="stylesheet" href="css/style.css" />
-  <style>
-    .profile-wrap {
-      max-width: 720px;
-      margin: 48px auto 80px;
-      padding: 0 16px;
-      display: grid;
-      gap: 14px;
-    }
-    .profile-card {
-      background: var(--c-surface);
-      border: 1px solid var(--c-border-light);
-      border-radius: var(--radius-lg);
-      padding: 24px;
-      box-shadow: var(--shadow-sm);
-    }
-    .profile-status { min-height: 18px; margin-top: 8px; font-size: .8125rem; font-weight: 500; }
-    .profile-status.error { color: var(--c-danger); }
-    .profile-status.success { color: var(--c-success); }
-  </style>
+  <link rel="stylesheet" href="css/user-pages.css" />
 </head>
 <body>
   <nav class="nav"></nav>
-  <main class="profile-wrap">
-    <section class="profile-card">
-      <h1 style="margin-bottom:14px">Личный кабинет</h1>
-      <div class="form-group">
-        <label class="form-label" for="profile-name">Имя</label>
-        <input id="profile-name" class="form-control" maxlength="120" />
-      </div>
-      <div class="form-group">
-        <label class="form-label" for="profile-email">Email</label>
-        <input id="profile-email" type="email" class="form-control" maxlength="254" />
-      </div>
-      <button class="btn btn--primary" id="profile-save">Сохранить профиль</button>
-      <p class="profile-status" id="profile-status"></p>
-    </section>
 
-    <section class="profile-card">
-      <h2 style="margin-bottom:14px">Безопасность</h2>
-      <div class="form-group">
-        <label class="form-label" for="current-password">Текущий пароль</label>
-        <input id="current-password" type="password" class="form-control" autocomplete="current-password" />
-      </div>
-      <div class="form-group">
-        <label class="form-label" for="new-password">Новый пароль</label>
-        <input id="new-password" type="password" class="form-control" autocomplete="new-password" />
-      </div>
-      <button class="btn btn--outline" id="password-save">Сменить пароль</button>
-      <p class="profile-status" id="security-status"></p>
-    </section>
+  <header class="user-hero">
+    <div class="container">
+      <p class="user-hero__eyebrow">Аккаунт</p>
+      <h1 class="user-hero__title">Личный кабинет</h1>
+      <p class="user-hero__sub">
+        Управляйте данными профиля, смотрите отзывы и места, которые вы сохраняли. Всё, что нужно для работы с каталогом, — в одном месте.
+      </p>
+      <nav class="user-quick-nav" aria-label="Быстрые разделы">
+        <a href="catalog.html">Каталог</a>
+        <a href="map.html">Карта</a>
+        <a href="chat.html">Гид</a>
+        <a href="feedback.html">Обратная связь</a>
+      </nav>
+    </div>
+  </header>
 
-    <section class="profile-card">
-      <button class="btn btn--outline" id="logout-btn">Выйти</button>
-    </section>
+  <main class="user-main">
+    <div class="container user-main__grid">
+      <div class="user-stack">
+        <section class="user-card" aria-labelledby="profile-account-h">
+          <div class="user-card__head">
+            <div>
+              <h2 id="profile-account-h">Профиль</h2>
+            </div>
+            <div class="user-card__icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+          </div>
+          <p class="user-card__hint">Имя и email отображаются в отзывах. Смена email выполняется в блоке «Безопасность» с подтверждением паролем.</p>
+          <div class="form-group">
+            <label class="form-label" for="profile-name">Имя</label>
+            <input id="profile-name" class="form-control" maxlength="120" autocomplete="name" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="profile-email">Email</label>
+            <input id="profile-email" type="email" class="form-control" maxlength="254" autocomplete="email" />
+          </div>
+          <div class="user-actions-row">
+            <button class="btn btn--primary" type="button" id="profile-save">Сохранить профиль</button>
+          </div>
+          <p class="user-status" id="profile-status" role="status" aria-live="polite"></p>
+        </section>
 
-    <section class="profile-card">
-      <h2 style="margin-bottom:14px">Мои отзывы</h2>
-      <div id="my-reviews-list"></div>
-    </section>
+        <section class="user-card user-card--muted" aria-labelledby="profile-security-h">
+          <div class="user-card__head">
+            <div>
+              <h2 id="profile-security-h">Безопасность</h2>
+            </div>
+            <div class="user-card__icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </div>
+          </div>
+          <p class="user-card__hint">Для смены пароля или email сначала введите текущий пароль — так мы убеждаемся, что это вы.</p>
+          <div class="form-group">
+            <label class="form-label" for="current-password">Текущий пароль</label>
+            <input id="current-password" type="password" class="form-control" autocomplete="current-password" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="new-password">Новый пароль</label>
+            <input id="new-password" type="password" class="form-control" autocomplete="new-password" />
+          </div>
+          <div class="user-actions-row">
+            <button class="btn btn--outline" type="button" id="password-save">Обновить пароль / email</button>
+          </div>
+          <p class="user-status" id="security-status" role="status" aria-live="polite"></p>
+        </section>
+
+        <section class="user-card" aria-label="Выход из аккаунта">
+          <div class="user-actions-row">
+            <button class="btn btn--outline" type="button" id="logout-btn">Выйти из аккаунта</button>
+          </div>
+        </section>
+      </div>
+
+      <div class="user-stack">
+        <section class="user-card" aria-labelledby="profile-reviews-h">
+          <div class="user-card__head">
+            <h2 id="profile-reviews-h">Мои отзывы</h2>
+            <div class="user-card__icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </div>
+          </div>
+          <p class="user-card__hint">Отзывы о местах проходят модерацию перед публикацией.</p>
+          <div class="user-list" id="my-reviews-list"></div>
+        </section>
+
+        <section class="user-card" aria-labelledby="profile-fav-h">
+          <div class="user-card__head">
+            <h2 id="profile-fav-h">Избранное</h2>
+            <div class="user-card__icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            </div>
+          </div>
+          <div class="user-list" id="favorites-list"></div>
+        </section>
+
+        <section class="user-card" aria-labelledby="profile-history-h">
+          <div class="user-card__head">
+            <h2 id="profile-history-h">История просмотров</h2>
+            <div class="user-card__icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+          </div>
+          <div class="user-list" id="history-list"></div>
+        </section>
+
+        <section class="user-card user-card--muted" aria-labelledby="profile-notify-h">
+          <div class="user-card__head">
+            <h2 id="profile-notify-h">Уведомления</h2>
+            <div class="user-card__icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            </div>
+          </div>
+          <p class="user-card__hint">Статусы модерации ваших отзывов.</p>
+          <div class="user-list" id="notifications-list"></div>
+        </section>
+      </div>
+    </div>
   </main>
+
   <script type="module" src="js/scroll.js"></script>
   <script type="module" src="js/transitions.js"></script>
   <script type="module" src="js/profile.js"></script>

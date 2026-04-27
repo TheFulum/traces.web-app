@@ -1,8 +1,11 @@
+import { initNav } from '../../js/nav.js';
 import { auth } from '../../js/firebase-init.js';
 import {
   signInWithEmailAndPassword,
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
+
+initNav('../');
 
 const emailEl    = document.getElementById('email');
 const passwordEl = document.getElementById('password');
@@ -11,7 +14,7 @@ const statusEl   = document.getElementById('form-status');
 
 // if already logged in — redirect immediately
 onAuthStateChanged(auth, user => {
-  if (user) window.location.href = 'places.html';
+  if (user) window.location.href = 'dashboard.html';
 });
 
 // enter key support
@@ -38,7 +41,7 @@ async function login() {
 
   try {
     await signInWithEmailAndPassword(auth, email, password);
-    window.location.href = 'places.html';
+    window.location.href = 'dashboard.html';
   } catch (err) {
     console.error(err);
     setStatus(friendlyError(err.code));

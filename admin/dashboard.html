@@ -3,19 +3,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Отзывы о местах — Админ</title>
+  <title>Dashboard — Админ</title>
   <link rel="stylesheet" href="../css/style.css" />
   <link rel="stylesheet" href="css/layout-v2.css" />
 </head>
 <body>
-
   <nav class="nav"></nav>
-
   <div class="admin-layout">
     <aside class="admin-sidebar">
       <p class="admin-sidebar__label">Навигация</p>
       <nav class="admin-nav">
-        <a href="dashboard.html">
+        <a href="dashboard.html" class="active">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="14" width="7" height="7"/></svg>
           Dashboard
         </a>
@@ -39,67 +37,41 @@
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
           Обратная связь
         </a>
-        <a href="reviews.html" class="active">
+        <a href="reviews.html">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
           Отзывы о местах
         </a>
       </nav>
-      <div class="sidebar-bottom">
-        <button class="btn btn--outline btn--sm btn--full" id="logout-btn">Выйти</button>
-      </div>
+      <div class="sidebar-bottom"><button class="btn btn--outline btn--sm btn--full" id="logout-btn">Выйти</button></div>
     </aside>
-
     <main class="admin-main">
       <div class="admin-topbar">
-        <p class="admin-breadcrumb">Админка / Отзывы о местах</p>
+        <p class="admin-breadcrumb">Админка / Dashboard</p>
       </div>
       <div class="admin-main__header">
-        <h1 class="admin-main__title">Отзывы о местах</h1>
+        <h1 class="admin-main__title">Dashboard</h1>
       </div>
-
-      <div class="stats-bar" id="stats-bar">
-        <div class="stat">
-          <div class="stat__value" id="stat-total">—</div>
-          <div class="stat__label">Всего</div>
-        </div>
-        <div class="stat">
-          <div class="stat__value" id="stat-avg">—</div>
-          <div class="stat__label">Средняя оценка</div>
-        </div>
-      </div>
-
-      <div class="filter-row" id="filter-row">
-        <button class="filter-btn active" data-rating="0">Все</button>
-        <button class="filter-btn" data-rating="5">★★★★★</button>
-        <button class="filter-btn" data-rating="4">★★★★</button>
-        <button class="filter-btn" data-rating="3">★★★</button>
-        <button class="filter-btn" data-rating="2">★★</button>
-        <button class="filter-btn" data-rating="1">★</button>
-      </div>
-
-      <div class="filter-row" id="status-filter-row">
-        <button class="filter-btn active" data-status="all">Все статусы</button>
-        <button class="filter-btn" data-status="approved">Опубликованные</button>
-        <button class="filter-btn" data-status="pending">На модерации</button>
-        <button class="filter-btn" data-status="rejected">Отклонённые</button>
-      </div>
-
-      <div class="moderation-row">
-        <button class="btn btn--outline btn--sm" id="bulk-approve-btn">Одобрить выбранные</button>
-        <button class="btn btn--outline btn--sm" id="bulk-reject-btn">Отклонить выбранные</button>
-        <button class="btn btn--outline btn--sm" id="bulk-delete-btn">Удалить выбранные</button>
-      </div>
-
-      <div class="feedback-list" id="reviews-list"></div>
-      <div class="state-empty hidden" id="empty-state">
-        <h3>Отзывов пока нет</h3>
-        <p>Они появятся здесь, когда пользователи начнут оставлять отзывы о местах.</p>
+      <div class="admin-kpi-grid">
+        <article class="admin-kpi-card">
+          <h3 class="admin-kpi-card__label">Места</h3>
+          <div class="admin-kpi-card__value" id="kpi-places">—</div>
+        </article>
+        <article class="admin-kpi-card">
+          <h3 class="admin-kpi-card__label">Отзывы о местах</h3>
+          <div class="admin-kpi-card__value" id="kpi-reviews">—</div>
+        </article>
+        <article class="admin-kpi-card">
+          <h3 class="admin-kpi-card__label">На модерации</h3>
+          <div class="admin-kpi-card__value" id="kpi-pending">—</div>
+        </article>
+        <article class="admin-kpi-card">
+          <h3 class="admin-kpi-card__label">Обратная связь</h3>
+          <div class="admin-kpi-card__value" id="kpi-feedback">—</div>
+        </article>
       </div>
     </main>
   </div>
-
-  <div id="toast" class="toast"></div>
   <script type="module" src="js/admin-shell.js"></script>
-  <script type="module" src="js/reviews-admin.js"></script>
+  <script type="module" src="js/dashboard-admin.js"></script>
 </body>
 </html>

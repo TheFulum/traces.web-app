@@ -9,39 +9,12 @@
   <link rel="preconnect" href="https://www.gstatic.com" />
   <link rel="preconnect" href="https://firestore.googleapis.com" />
   <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/user-pages.css" />
   <style>
     .feedback-wrap {
-      max-width: 560px;
+      max-width: 640px;
       margin: 0 auto;
-      padding: 48px 24px 80px;
-    }
-    .feedback-header { margin-bottom: 36px; }
-    .feedback-header__eyebrow {
-      font-size: .72rem;
-      font-weight: 600;
-      letter-spacing: .12em;
-      text-transform: uppercase;
-      color: var(--c-accent);
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .feedback-header__eyebrow::before {
-      content: '';
-      display: inline-block;
-      width: 20px; height: 2px;
-      background: var(--c-accent);
-      border-radius: 1px;
-    }
-    .feedback-header__title {
-      margin-bottom: 8px;
-      font-weight: 600;
-    }
-    .feedback-header__sub {
-      font-size: .95rem;
-      color: var(--c-text-muted);
-      line-height: 1.6;
+      padding: 0 24px 80px;
     }
 
     .feedback-card {
@@ -127,23 +100,31 @@
     }
 
     @media (max-width: 600px) {
-      .feedback-wrap { padding: 32px 16px 60px; }
+      .feedback-wrap { padding: 0 16px 60px; }
       .feedback-card { padding: 24px 20px; }
       .star { font-size: 2rem; }
     }
   </style>
 </head>
-<body>
+<body class="user-feedback-page">
 
   <nav class="nav"></nav>
 
-  <div class="feedback-wrap">
-    <div class="feedback-header">
-      <p class="feedback-header__eyebrow" data-i18n="feedback.eyebrow">Обратная связь</p>
-      <h1 class="feedback-header__title" data-i18n="feedback.title">Обратная связь</h1>
-      <p class="feedback-header__sub" data-i18n="feedback.subtitle">Ваше мнение помогает нам улучшать приложение и делать его полезнее.</p>
+  <header class="user-hero">
+    <div class="container">
+      <p class="user-hero__eyebrow" data-i18n="feedback.eyebrow">Обратная связь</p>
+      <h1 class="user-hero__title" data-i18n="feedback.title">Обратная связь</h1>
+      <p class="user-hero__sub" data-i18n="feedback.subtitle">Ваше мнение помогает нам улучшать приложение и делать его полезнее.</p>
+      <nav class="user-quick-nav" aria-label="Быстрые ссылки">
+        <a href="catalog.html" data-i18n="nav.catalog">Каталог</a>
+        <a href="map.html" data-i18n="nav.map">Карта</a>
+        <a href="chat.html" data-i18n="nav.chat">Гид</a>
+        <a href="profile.html">Кабинет</a>
+      </nav>
     </div>
+  </header>
 
+  <div class="feedback-wrap">
     <div class="feedback-card" id="form-card">
 
       <span class="rating-label" data-i18n="feedback.ratingLabel">Оценка</span>

@@ -23,6 +23,7 @@ export async function addPlaceReview(placeId, user, rating, comment) {
     email,
     rating:    Number(rating),
     comment:   String(comment).trim(),
+    status:    'pending',
     createdAt: serverTimestamp()
   });
 }
@@ -39,10 +40,12 @@ export async function getPlaceReviews(placeId) {
   );
   const snap = await getDocs(q);
   const docs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-  docs.sort((a, b) => {
+  // Public page shows only approved reviews (legacy docs without status are treated as approved)
+  const visible = docs.filter(r => !r.status || r.status === 'approved');
+  visible.sort((a, b) => {
     const aTs = a?.createdAt?.seconds ?? 0;
     const bTs = b?.createdAt?.seconds ?? 0;
     return bTs - aTs;
   });
-  return docs;
+  return visible;
 }

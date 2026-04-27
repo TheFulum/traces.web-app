@@ -24,6 +24,9 @@ const currentPasswordEl = document.getElementById('current-password');
 const newPasswordEl = document.getElementById('new-password');
 const passwordSaveBtn = document.getElementById('password-save');
 const myReviewsListEl = document.getElementById('my-reviews-list');
+const favoritesListEl = document.getElementById('favorites-list');
+const historyListEl = document.getElementById('history-list');
+const notificationsListEl = document.getElementById('notifications-list');
 
 let currentUser = null;
 
@@ -36,6 +39,8 @@ onAuthStateChanged(auth, user => {
   nameEl.value = user.displayName || '';
   emailEl.value = user.email || '';
   loadMyReviews(user.uid);
+  renderFavorites();
+  renderHistory();
 });
 
 saveBtn.addEventListener('click', async () => {
@@ -130,12 +135,13 @@ logoutBtn.addEventListener('click', async () => {
 
 function setStatus(el, text, type = '') {
   el.textContent = text;
-  el.className = `profile-status${type ? ' ' + type : ''}`;
+  const base = 'user-status';
+  el.className = type ? `${base} ${type}` : base;
 }
 
 async function loadMyReviews(uid) {
   if (!myReviewsListEl) return;
-  myReviewsListEl.innerHTML = '<p class="text-muted">Загрузка…</p>';
+  myReviewsListEl.innerHTML = '<p class="user-empty">Загрузка…</p>';
   try {
     const [reviewSnap, places] = await Promise.all([
       getDocs(query(collection(db, 'placeReviews'), where('uid', '==', uid))),
@@ -146,7 +152,7 @@ async function loadMyReviews(uid) {
     reviews.sort((a, b) => (b?.createdAt?.seconds ?? 0) - (a?.createdAt?.seconds ?? 0));
 
     if (!reviews.length) {
-      myReviewsListEl.innerHTML = '<p class="text-muted">Пока нет ваших отзывов.</p>';
+      myReviewsListEl.innerHTML = '<p class="user-empty">Пока нет отзывов. Откройте карточку места и поделитесь впечатлением.</p>';
       return;
     }
 
@@ -156,21 +162,91 @@ async function loadMyReviews(uid) {
         ? r.createdAt.toDate().toLocaleDateString('ru-RU', { day: 'numeric', month: 'short', year: 'numeric' })
         : '';
       const placeName = placeMap.get(r.placeId) || r.placeId || '—';
+      const status = r.status || 'approved';
+      const statusLabel = status === 'approved' ? 'Опубликован' : (status === 'rejected' ? 'Отклонён' : 'На модерации');
+      const chipClass = status === 'approved' ? 'user-chip user-chip--ok' : (status === 'rejected' ? 'user-chip user-chip--no' : 'user-chip user-chip--wait');
       return `
-        <article style="border:1px solid var(--c-border-light);border-radius:12px;padding:12px 14px;margin-bottom:10px">
-          <div style="display:flex;justify-content:space-between;gap:10px;align-items:center">
-            <strong>${esc(placeName)}</strong>
-            <span style="color:var(--c-star);white-space:nowrap">${stars}</span>
+        <article class="user-list-item">
+          <div class="user-list-item__row">
+            <a class="user-list-item__title" href="place.html?id=${encodeURIComponent(String(r.placeId || ''))}">${esc(placeName)}</a>
+            <span class="user-stars" aria-label="Оценка ${Number(r.rating || 0)} из 5">${stars}</span>
           </div>
-          <p style="margin:8px 0 6px;white-space:pre-wrap">${esc(String(r.comment || ''))}</p>
-          <small class="text-muted">${esc(date)}</small>
+          <p class="user-list-item__meta">${esc(String(r.comment || ''))}</p>
+          <div class="user-list-item__foot">
+            <span class="${chipClass}">${esc(statusLabel)}</span>
+            · ${esc(date)}
+          </div>
         </article>
       `;
     }).join('');
+    renderNotifications(reviews);
   } catch (err) {
     console.error(err);
-    myReviewsListEl.innerHTML = '<p class="text-muted">Не удалось загрузить отзывы.</p>';
+    myReviewsListEl.innerHTML = '<p class="user-empty">Не удалось загрузить отзывы. Проверьте соединение и обновите страницу.</p>';
   }
+}
+
+function renderFavorites() {
+  if (!favoritesListEl) return;
+  const list = readLs('profile_favorites');
+  if (!list.length) {
+    favoritesListEl.innerHTML = '<p class="user-empty">Добавляйте места в избранное на странице объекта — они появятся здесь.</p>';
+    return;
+  }
+  favoritesListEl.innerHTML = list.slice(0, 30).map(item => `
+    <article class="user-list-item">
+      <div class="user-list-item__row">
+        <a class="user-list-item__title" href="place.html?id=${encodeURIComponent(item.id)}">${esc(item.name || item.id)}</a>
+        <button type="button" data-fav-remove="${esc(item.id)}" class="btn btn--outline btn--sm">Убрать</button>
+      </div>
+    </article>
+  `).join('');
+  favoritesListEl.querySelectorAll('[data-fav-remove]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.getAttribute('data-fav-remove');
+      const next = readLs('profile_favorites').filter(x => x.id !== id);
+      localStorage.setItem('profile_favorites', JSON.stringify(next));
+      renderFavorites();
+    });
+  });
+}
+
+function renderHistory() {
+  if (!historyListEl) return;
+  const list = readLs('profile_history');
+  if (!list.length) {
+    historyListEl.innerHTML = '<p class="user-empty">Здесь будут недавно открытые карточки мест.</p>';
+    return;
+  }
+  historyListEl.innerHTML = list.slice(0, 30).map(item => `
+    <article class="user-list-item">
+      <a class="user-list-item__title" href="place.html?id=${encodeURIComponent(item.id)}">${esc(item.name || item.id)}</a>
+      <div class="user-list-item__foot">Просмотрено: ${new Date(item.viewedAt || Date.now()).toLocaleString('ru-RU')}</div>
+    </article>
+  `).join('');
+}
+
+function renderNotifications(reviews = []) {
+  if (!notificationsListEl) return;
+  const items = (reviews || [])
+    .filter(r => r.status === 'pending' || r.status === 'rejected')
+    .slice(0, 10)
+    .map(r => ({
+      text: r.status === 'rejected'
+        ? `Ваш отзыв отклонён модератором (${String(r.placeId || 'место')}).`
+        : `Ваш отзыв ожидает модерацию (${String(r.placeId || 'место')}).`
+    }));
+  if (!items.length) {
+    notificationsListEl.innerHTML = '<p class="user-empty">Новых уведомлений нет — все отзывы обработаны или ещё не отправлены.</p>';
+    return;
+  }
+  notificationsListEl.innerHTML = items.map(n => `
+    <article class="user-list-item user-list-item--notice">${esc(n.text)}</article>
+  `).join('');
+}
+
+function readLs(key) {
+  try { return JSON.parse(localStorage.getItem(key) || '[]'); } catch { return []; }
 }
 
 function esc(str) {
