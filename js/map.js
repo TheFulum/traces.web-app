@@ -15,8 +15,13 @@ try {
 } catch {}
 
 // ── map init ──────────────────────────────────────────────────────────────
-
+const loadingEl = document.getElementById('map-loading');
 const L = window.L;
+if (!L || !document.getElementById('map')) {
+  loadingEl?.classList.add('hidden');
+  showToast(t('common.loadingError', dictI18n), 'error');
+  throw new Error('Leaflet is not available or map container missing');
+}
 
 const map = L.map('map', {
   center: [53.9, 27.5667], // Minsk default (Belarus)
@@ -25,8 +30,6 @@ const map = L.map('map', {
   attributionControl: false // disable default attribution completely
 });
 
-// Use a tile provider that serves Russian labels
-// Option 1: CartoDB with Russian labels (best quality, no flags)
 L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
   maxZoom: 19,
   subdomains: 'abcd'
@@ -46,12 +49,11 @@ function makeIcon() {
 
 // ── load places ───────────────────────────────────────────────────────────
 
-const loadingEl = document.getElementById('map-loading');
 let allPlaces   = [];
 let markers     = [];
 
 try {
-  allPlaces = await getPlaces();
+  allPlaces = await withTimeout(getPlaces(), 12000);
   allPlaces.forEach(addMarker);
 
   // if came from place.html with ?lat=&lng=&id=
@@ -236,4 +238,11 @@ function esc(str) {
 
 function shortName(displayName) {
   return displayName.split(',')[0].trim();
+}
+
+function withTimeout(promise, ms) {
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout while loading map data')), ms))
+  ]);
 }

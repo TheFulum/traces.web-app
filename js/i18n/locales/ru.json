@@ -8,6 +8,7 @@
     "feedback": "Отзыв",
     "login": "Войти",
     "admin": "Админ",
+    "profile": "Профиль",
     "menu": "Меню"
   },
   "common": {
@@ -113,6 +114,8 @@
     "reviewRatingRequired": "Пожалуйста, поставьте оценку.",
     "reviewCommentRequired": "Напишите комментарий.",
     "reviewRateLimitPrefix": "Повторная отправка через",
+    "reviewLoginRequired": "Войдите в аккаунт, чтобы оставить отзыв.",
+    "reviewAuthOk": "Вы вошли. Отзыв будет опубликован от вашего аккаунта.",
     "reviewSending": "Отправка…",
     "reviewSent": "Отзыв отправлен. Спасибо!",
     "reviewSubmit": "Отправить",

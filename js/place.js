@@ -2,6 +2,8 @@ import { initNav } from './nav.js';
 import { getPlace } from './places.js';
 import { showToast, getParam, checkRateLimit, formatRemaining } from './utils.js';
 import { addPlaceReview, getPlaceReviews } from './placeReviews.js';
+import { auth } from './firebase-init.js';
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
 import { getLang, loadDict, applyDict, applyLanguageSeo, pickI18n, t } from './i18n.js';
 import { formatPlaceDate } from './placeDate.js';
 
@@ -437,6 +439,7 @@ function initReviews(placeId) {
   let lastDoc    = null;
   let hasMore    = false;
   let reviewRating = 0;
+  let currentUser = null;
 
   const starsEl      = document.getElementById('review-stars');
   const ratingTextEl = document.getElementById('review-rating-text');
@@ -468,21 +471,22 @@ function initReviews(placeId) {
   // submit
   const submitBtn  = document.getElementById('review-submit-btn');
   const statusEl   = document.getElementById('review-form-status');
+  const authHintEl = document.getElementById('review-auth-hint');
   submitBtn.textContent = t('place.reviewSubmit', dictI18n);
 
+  onAuthStateChanged(auth, user => {
+    currentUser = user || null;
+    submitBtn.disabled = !currentUser;
+    authHintEl.textContent = currentUser
+      ? t('place.reviewAuthOk', dictI18n)
+      : t('place.reviewLoginRequired', dictI18n);
+  });
+
   submitBtn.addEventListener('click', async () => {
-    const name    = document.getElementById('review-name').value.trim();
-    const email   = document.getElementById('review-email').value.trim();
     const comment = document.getElementById('review-comment').value.trim();
 
-    if (!name) {
-      setReviewStatus(t('place.reviewNameRequired', dictI18n), 'error');
-      document.getElementById('review-name').focus();
-      return;
-    }
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      setReviewStatus(t('place.reviewEmailInvalid', dictI18n), 'error');
-      document.getElementById('review-email').focus();
+    if (!currentUser) {
+      setReviewStatus(t('place.reviewLoginRequired', dictI18n), 'error');
       return;
     }
     if (!reviewRating) {
@@ -506,12 +510,10 @@ function initReviews(placeId) {
     setReviewStatus('');
 
     try {
-      await addPlaceReview(placeId, name, email, reviewRating, comment);
+      await addPlaceReview(placeId, currentUser, reviewRating, comment);
       setReviewStatus(t('place.reviewSent', dictI18n), 'success');
       submitBtn.textContent = t('place.reviewSubmit', dictI18n);
       // reset form
-      document.getElementById('review-name').value    = '';
-      document.getElementById('review-email').value   = '';
       document.getElementById('review-comment').value = '';
       reviewRating = 0;
       paintStars(0);

@@ -1,7 +1,8 @@
 const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const isTouchLike = window.matchMedia && window.matchMedia('(max-width: 768px)').matches;
+const disableLenis = document.body?.dataset?.noLenis === 'true';
 
-if (!reduceMotion) {
+if (!reduceMotion && !disableLenis) {
   initLenis();
 }
 

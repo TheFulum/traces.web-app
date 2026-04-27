@@ -7,6 +7,7 @@ export function initNav(root = '') {
   if (!navEl) return;
 
   const path = window.location.pathname;
+  const isAdminPath = path.includes('/admin/');
   const lang = getLang();
   let dict = null;
 
@@ -36,12 +37,16 @@ export function initNav(root = '') {
     }));
 
     const authBtn = user
-      ? `<a href="${root}admin/places.html" class="nav__login nav__admin">${dict ? t('nav.admin', dict) : 'Админ'}</a>`
-      : `<a href="${root}admin/login.html"  class="nav__login">${dict ? t('nav.login', dict) : 'Войти'}</a>`;
+      ? (isAdminPath
+          ? `<a href="${root}admin/places.html" class="nav__login nav__admin">${dict ? t('nav.admin', dict) : 'Админ'}</a>`
+          : `<a href="${withLang(`${root}profile.html`, lang)}" class="nav__login nav__admin">${dict ? t('nav.profile', dict) : 'Профиль'}</a>`)
+      : `<a href="${withLang(isAdminPath ? `${root}admin/login.html` : `${root}auth.html`, lang)}" class="nav__login">${dict ? t('nav.login', dict) : 'Войти'}</a>`;
 
     const drawerAuthBtn = user
-      ? `<a href="${root}admin/places.html" class="nav__drawer__login nav__drawer__admin">${dict ? t('nav.admin', dict) : 'Админ'}</a>`
-      : `<a href="${root}admin/login.html"  class="nav__drawer__login">${dict ? t('nav.login', dict) : 'Войти'}</a>`;
+      ? (isAdminPath
+          ? `<a href="${root}admin/places.html" class="nav__drawer__login nav__drawer__admin">${dict ? t('nav.admin', dict) : 'Админ'}</a>`
+          : `<a href="${withLang(`${root}profile.html`, lang)}" class="nav__drawer__login nav__drawer__admin">${dict ? t('nav.profile', dict) : 'Профиль'}</a>`)
+      : `<a href="${withLang(isAdminPath ? `${root}admin/login.html` : `${root}auth.html`, lang)}" class="nav__drawer__login">${dict ? t('nav.login', dict) : 'Войти'}</a>`;
 
     const langSwitch = `
       <button class="nav__login" id="lang-btn" style="padding:7px 12px">

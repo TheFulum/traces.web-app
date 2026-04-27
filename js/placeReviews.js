@@ -10,16 +10,18 @@ const PAGE_SIZE = 10;
 /**
  * Add a review for a specific place.
  * @param {string} placeId
- * @param {string} name
- * @param {string} email
+ * @param {{uid: string, displayName?: string, email?: string}} user
  * @param {number} rating  1–5
  * @param {string} comment
  */
-export async function addPlaceReview(placeId, name, email, rating, comment) {
+export async function addPlaceReview(placeId, user, rating, comment) {
+  const displayName = String(user?.displayName || user?.email || 'User').trim();
+  const email = String(user?.email || '').trim();
   await addDoc(collection(db, COL), {
     placeId,
-    name:      String(name).trim(),
-    email:     String(email).trim(),
+    uid:       String(user?.uid || ''),
+    name:      displayName,
+    email,
     rating:    Number(rating),
     comment:   String(comment).trim(),
     createdAt: serverTimestamp()

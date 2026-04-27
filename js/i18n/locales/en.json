@@ -8,6 +8,7 @@
     "feedback": "Feedback",
     "login": "Login",
     "admin": "Admin",
+    "profile": "Profile",
     "menu": "Menu"
   },
   "common": {
@@ -113,6 +114,8 @@
     "reviewRatingRequired": "Please select a rating.",
     "reviewCommentRequired": "Please enter a comment.",
     "reviewRateLimitPrefix": "You can post again in",
+    "reviewLoginRequired": "Sign in to leave a review.",
+    "reviewAuthOk": "Signed in. The review will be posted from your account.",
     "reviewSending": "Sending…",
     "reviewSent": "Review submitted. Thank you!",
     "reviewSubmit": "Submit",

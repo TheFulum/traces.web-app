@@ -57,6 +57,7 @@
     .chat-messages {
       flex: 1;
       overflow-y: auto;
+      overscroll-behavior: contain;
       padding: 24px 0;
       display: flex;
       flex-direction: column;
@@ -254,7 +255,7 @@
     }
   </style>
 </head>
-<body>
+<body data-no-lenis="true">
 
   <nav class="nav"></nav>
 

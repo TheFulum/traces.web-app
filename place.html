@@ -552,17 +552,9 @@
     <div class="reviews-form-card">
       <p class="reviews-form-card__heading" data-i18n="place.reviewHeading">Оставить отзыв</p>
 
-      <div class="form-group">
-        <label class="form-label" for="review-name" data-i18n="place.reviewNameLabel">Ваше имя</label>
-        <input type="text" id="review-name" class="form-control"
-          placeholder="Иван Иванов" maxlength="100" autocomplete="name" data-i18n-placeholder="place.reviewNamePlaceholder" />
-      </div>
-
-      <div class="form-group">
-        <label class="form-label" for="review-email" data-i18n="place.reviewEmailLabel">Электронная почта</label>
-        <input type="email" id="review-email" class="form-control"
-          placeholder="you@example.com" maxlength="254" autocomplete="email" />
-      </div>
+      <p id="review-auth-hint" style="font-size:.85rem;color:var(--c-text-muted);margin:-4px 0 14px">
+        Войдите в аккаунт, чтобы оставить отзыв.
+      </p>
 
       <div class="form-group">
         <label class="form-label" data-i18n="place.reviewRatingLabel">Оценка</label>

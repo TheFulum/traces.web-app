@@ -417,6 +417,8 @@ p { max-width: 68ch; }
   text-transform: uppercase;
   transition: background var(--transition), color var(--transition), border-color var(--transition), box-shadow var(--transition);
 }
+.btn:hover { transform: translateY(-1px); }
+.btn:active { transform: translateY(0); }
 
 .btn--primary {
   background: var(--c-accent);
@@ -434,6 +436,25 @@ p { max-width: 68ch; }
 
 .btn--sm { padding: 7px 16px; font-size: .75rem; }
 .btn--full { width: 100%; justify-content: center; }
+
+.feedback-card,
+.reviews-form-card,
+.place-meta,
+.chat-shell,
+.map-toolbar,
+.admin-main .card {
+  transition: box-shadow var(--transition), border-color var(--transition);
+}
+
+.feedback-card:hover,
+.reviews-form-card:hover,
+.place-meta:hover,
+.chat-shell:hover,
+.map-toolbar:hover,
+.admin-main .card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--c-border);
+}
 
 /* ── form ── */
 .form-group { margin-bottom: 20px; }
@@ -592,6 +613,17 @@ textarea.form-control { resize: vertical; min-height: 120px; }
 
 @media (prefers-reduced-motion: reduce) {
   .reveal { opacity: 1; transform: none; transition: none; }
+  .btn,
+  .card,
+  .feedback-card,
+  .reviews-form-card,
+  .place-meta,
+  .chat-shell,
+  .map-toolbar,
+  .admin-main .card {
+    transition: none !important;
+    transform: none !important;
+  }
   ::view-transition-old(root),
   ::view-transition-new(root) {
     animation: none;
