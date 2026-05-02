@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml" />
+  <title>Уведомления — Следы прошлого</title>
+  <meta name="description" content="Уведомления о модерации отзывов: последние события и статусы публикации." />
+  <link rel="stylesheet" href="../../css/style.css" />
+  <link rel="stylesheet" href="../../css/user-pages.css" />
+  <style>
+    .notifications-wrap {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 28px 16px 72px;
+    }
+    .notifications-card {
+      background: var(--c-surface);
+      border: 1px solid var(--c-border-light);
+      border-radius: var(--radius-lg);
+      padding: 22px 24px 24px;
+      box-shadow: var(--shadow-sm);
+    }
+    .notifications-tools {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      margin: 6px 0 16px;
+    }
+    .notifications-actions {
+      display: inline-flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .notifications-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav"></nav>
+
+  <header class="user-hero">
+    <div class="container">
+      <p class="user-hero__eyebrow" data-i18n="notifications.eyebrow">Аккаунт</p>
+      <h1 class="user-hero__title" data-i18n="notifications.title">Уведомления</h1>
+      <p class="user-hero__sub" data-i18n="notifications.subtitle">
+        Статусы модерации ваших отзывов. Сверху показаны последние изменения.
+      </p>
+    </div>
+  </header>
+
+  <main class="notifications-wrap">
+    <section class="notifications-card">
+      <div class="notifications-tools">
+        <p class="user-card__hint" style="margin:0" data-i18n="notifications.hint">По умолчанию отображаются 5 последних уведомлений.</p>
+        <div class="notifications-actions">
+          <button type="button" class="btn btn--outline btn--sm" id="btn-mark-read" data-i18n="notifications.markAllRead">Отметить все как прочитанные</button>
+          <button type="button" class="btn btn--outline btn--sm" id="btn-toggle-all" data-i18n="notifications.showAll">Показать все</button>
+        </div>
+      </div>
+      <div id="notifications-list" class="notifications-list"></div>
+    </section>
+  </main>
+
+  <script type="module" src="../../js/scroll.js"></script>
+  <script type="module" src="../../js/transitions.js"></script>
+  <script type="module" src="../../js/pages/notifications.js"></script>
+</body>
+</html>

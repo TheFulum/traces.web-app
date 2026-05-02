@@ -1,0 +1,38 @@
+{
+  "hosting": {
+    "public": ".",
+    "cleanUrls": false,
+    "trailingSlash": false,
+    "ignore": [
+      "firebase.json",
+      ".firebaserc",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "redirects": [
+      { "source": "/admin/login.html", "destination": "/admin/pages/login.html", "type": 302 },
+      { "source": "/admin/dashboard.html", "destination": "/admin/pages/dashboard.html", "type": 302 },
+      { "source": "/admin/places.html", "destination": "/admin/pages/places.html", "type": 302 },
+      { "source": "/admin/home.html", "destination": "/admin/pages/home.html", "type": 302 },
+      { "source": "/admin/pages.html", "destination": "/admin/pages/pages.html", "type": 302 },
+      { "source": "/admin/media.html", "destination": "/admin/pages/media.html", "type": 302 },
+      { "source": "/admin/feedback.html", "destination": "/admin/pages/feedback.html", "type": 302 },
+      { "source": "/admin/reviews.html", "destination": "/admin/pages/reviews.html", "type": 302 }
+    ],
+    "headers": [
+      {
+        "source": "**/*.@(css|js)",
+        "headers": [
+          { "key": "Cache-Control", "value": "public, max-age=3600" }
+        ]
+      },
+      {
+        "source": "**/*.@(png|jpg|jpeg|webp|gif|svg|ico)",
+        "headers": [
+          { "key": "Cache-Control", "value": "public, max-age=604800" }
+        ]
+      }
+    ]
+  }
+}
+

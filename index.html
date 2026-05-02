@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
   <title>Следы прошлого</title>
   <meta name="description" content="Следы прошлого — гид по памятным местам: каталог, карта, исторический гид и подробные страницы объектов." />
   <link rel="preconnect" href="https://res.cloudinary.com" />
@@ -169,7 +170,41 @@
       100% { transform: translateY(10px); opacity: 0; }
     }
 
-    .home-section { padding: 56px 0; }
+    .home-section { padding: 28px 0; }
+    .home-section + .home-section {
+      position: relative;
+      margin-top: 2px;
+    }
+    .home-section + .home-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(980px, calc(100% - 48px));
+      height: 1px;
+      background: linear-gradient(
+        90deg,
+        rgba(224, 219, 211, 0) 0%,
+        rgba(224, 219, 211, .9) 18%,
+        rgba(224, 219, 211, .9) 82%,
+        rgba(224, 219, 211, 0) 100%
+      );
+      pointer-events: none;
+    }
+    .home-section + .home-section::after {
+      content: '';
+      position: absolute;
+      top: -3px;
+      left: 50%;
+      transform: translateX(-50%) rotate(45deg);
+      width: 7px;
+      height: 7px;
+      background: var(--c-bg);
+      border: 1px solid var(--c-border);
+      border-radius: 1px;
+      pointer-events: none;
+    }
     .home-section__eyebrow {
       font-size: .75rem;
       font-weight: 600;
@@ -184,9 +219,43 @@
       justify-content: space-between;
       gap: 16px;
       flex-wrap: wrap;
-      margin-bottom: 18px;
+      margin-bottom: 14px;
     }
-    .home-section__desc { color: var(--c-text-muted); max-width: 70ch; }
+    .home-section__desc { color: var(--c-text-muted); max-width: 76ch; }
+    .home-intro-grid {
+      display: grid;
+      grid-template-columns: 1.25fr .75fr;
+      gap: 18px;
+      align-items: start;
+      margin-top: 10px;
+    }
+    .home-intro-copy p + p { margin-top: 10px; }
+    .home-intro-points {
+      display: grid;
+      gap: 10px;
+      align-self: start;
+      margin-top: -56px;
+    }
+    .home-intro-point {
+      border: 1px solid var(--c-border-light);
+      border-radius: var(--radius-lg);
+      background: var(--c-surface);
+      padding: 14px 14px 12px;
+      box-shadow: var(--shadow-xs);
+    }
+    .home-intro-point__title {
+      font-size: .82rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--c-accent);
+      font-weight: 700;
+    }
+    .home-intro-point__text {
+      margin-top: 5px;
+      color: var(--c-text-muted);
+      font-size: .9rem;
+      line-height: 1.55;
+    }
 
     .home-collections {
       display: grid;
@@ -284,7 +353,11 @@
       .home-hero { padding: 56px 0 40px; min-height: min(92svh, 760px); }
       .home-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .home-collections { grid-template-columns: 1fr; }
-      .home-section { padding: 40px 0; }
+      .home-section { padding: 22px 0; }
+      .home-section + .home-section::before,
+      .home-section + .home-section::after { display: none; }
+      .home-intro-grid { grid-template-columns: 1fr; }
+      .home-intro-points { margin-top: 2px; }
       .home-scroll { display: none; }
     }
     @media (prefers-reduced-motion: reduce) {
@@ -376,8 +449,8 @@
           </p>
 
           <div class="home-hero__cta">
-            <a class="btn btn--primary" href="catalog.html" id="cta-catalog" data-i18n="home.ctaCatalog">Открыть каталог</a>
-            <a class="btn btn--outline" href="map.html" id="cta-map" data-i18n="home.ctaMap">На карту</a>
+            <a class="btn btn--primary" href="pages/catalog.html" id="cta-catalog" data-i18n="home.ctaCatalog">Открыть каталог</a>
+            <a class="btn btn--outline" href="pages/map.html" id="cta-map" data-i18n="home.ctaMap">На карту</a>
           </div>
         </div>
 
@@ -411,14 +484,35 @@
             <h2 id="intro-title" data-i18n="home.aboutTitle">Что вы здесь найдёте</h2>
           </div>
         </div>
-        <p class="home-section__desc" id="intro-text" data-i18n="home.aboutText">
-          Памятники, мемориалы, скульптуры и места событий. У каждой карточки — история: автор, эпоха, фотографии, иногда — 3D-модель.
-          Соберите маршрут по городу или исследуйте эпохи.
-        </p>
+        <div class="home-intro-grid">
+          <div class="home-intro-copy">
+            <p class="home-section__desc" id="intro-text" data-i18n="home.aboutText">
+              Памятники, мемориалы, скульптуры и места событий. У каждой карточки — история: автор, эпоха, фотографии, иногда — 3D-модель.
+              Соберите маршрут по городу или исследуйте эпохи.
+            </p>
+            <p class="home-section__desc" data-i18n="home.aboutTextExtra">
+              В каталоге можно фильтровать по эпохам, тегам, наличию фото и 3D. На карте — быстро смотреть расположение объектов, а чат-гид помогает подобрать маршрут под интерес и время прогулки.
+            </p>
+          </div>
+          <div class="home-intro-points" aria-label="Преимущества">
+            <article class="home-intro-point">
+              <div class="home-intro-point__title" data-i18n="home.introPoint1Title">Контекст</div>
+              <p class="home-intro-point__text" data-i18n="home.introPoint1Text">Краткие исторические справки, даты, авторы и связи с эпохами.</p>
+            </article>
+            <article class="home-intro-point">
+              <div class="home-intro-point__title" data-i18n="home.introPoint2Title">Навигация</div>
+              <p class="home-intro-point__text" data-i18n="home.introPoint2Text">Быстрый переход из каталога на карту и в личный маршрут без лишних шагов.</p>
+            </article>
+            <article class="home-intro-point">
+              <div class="home-intro-point__title" data-i18n="home.introPoint3Title">Планирование</div>
+              <p class="home-intro-point__text" data-i18n="home.introPoint3Text">Собирайте точки в маршрут, делите по дням и уточняйте рядом инфраструктуру.</p>
+            </article>
+          </div>
+        </div>
         <div class="home-hero__cta" style="margin-top:18px">
-          <a class="btn btn--outline" href="catalog.html" data-i18n="home.quickCatalog">Каталог →</a>
-          <a class="btn btn--outline" href="map.html" data-i18n="home.quickMap">Карта →</a>
-          <a class="btn btn--outline" href="chat.html" data-i18n="home.quickGuide">Гид →</a>
+          <a class="btn btn--outline" href="pages/catalog.html" data-i18n="home.quickCatalog">Каталог →</a>
+          <a class="btn btn--outline" href="pages/map.html" data-i18n="home.quickMap">Карта →</a>
+          <a class="btn btn--outline" href="pages/chat.html" data-i18n="home.quickGuide">Гид →</a>
         </div>
       </div>
     </section>
@@ -439,7 +533,7 @@
             <p class="home-step__text" data-i18n="home.step1Text">
               Каталог с фильтрами по тегам, 3D, фото и годам. Подборки открывают тематические списки одним кликом.
             </p>
-            <a class="home-step__link" href="catalog.html" data-i18n="home.step1Cta">Каталог →</a>
+            <a class="home-step__link" href="pages/catalog.html" data-i18n="home.step1Cta">Каталог →</a>
           </article>
           <article class="home-step">
             <div class="home-step__num" aria-hidden="true">2</div>
@@ -447,7 +541,7 @@
             <p class="home-step__text" data-i18n="home.step2Text">
               Точки на интерактивной карте, поиск по адресу и быстрый переход к карточке объекта.
             </p>
-            <a class="home-step__link" href="map.html" data-i18n="home.step2Cta">Карта →</a>
+            <a class="home-step__link" href="pages/map.html" data-i18n="home.step2Cta">Карта →</a>
           </article>
           <article class="home-step">
             <div class="home-step__num" aria-hidden="true">3</div>
@@ -455,7 +549,7 @@
             <p class="home-step__text" data-i18n="home.step3Text">
               Нужна идея для прогулки? Опишите интерес в чате — получите подборку и ссылки на места.
             </p>
-            <a class="home-step__link" href="chat.html" data-i18n="home.step3Cta">Открыть гида →</a>
+            <a class="home-step__link" href="pages/chat.html" data-i18n="home.step3Cta">Открыть гида →</a>
           </article>
         </div>
       </div>
@@ -483,7 +577,7 @@
             <div class="home-section__eyebrow" data-i18n="home.highlightsEyebrow">Выбор редакции</div>
             <h2 data-i18n="home.highlightsTitle">Места, с которых стоит начать</h2>
           </div>
-          <a class="btn btn--outline btn--sm" href="catalog.html" data-i18n="home.allPlaces">Все места →</a>
+          <a class="btn btn--outline btn--sm" href="pages/catalog.html" data-i18n="home.allPlaces">Все места →</a>
         </div>
         <div class="card-grid" id="highlights-grid"></div>
         <div class="state-error hidden" id="error">
@@ -510,8 +604,8 @@
               <div class="home-teaser__title" data-i18n="home.mapTeaserTitle">Карта памятных мест</div>
               <div class="home-teaser__text" data-i18n="home.mapTeaserText">Откройте карту, чтобы быстро сориентироваться и построить маршрут.</div>
               <div class="home-teaser__actions">
-                <a class="btn btn--primary btn--sm" href="map.html" data-i18n="home.openMap">Открыть карту</a>
-                <a class="btn btn--outline btn--sm" href="catalog.html" data-i18n="home.toCatalog">В каталог</a>
+                <a class="btn btn--primary btn--sm" href="pages/map.html" data-i18n="home.openMap">Открыть карту</a>
+                <a class="btn btn--outline btn--sm" href="pages/catalog.html" data-i18n="home.toCatalog">В каталог</a>
               </div>
             </div>
           </div>
@@ -522,8 +616,8 @@
               <div class="home-teaser__title" data-i18n="home.guideTeaserTitle">Спросите гида</div>
               <div class="home-teaser__text" data-i18n="home.guideTeaserText">Не знаете, с чего начать? Опишите интерес — и получите подборку мест.</div>
               <div class="home-teaser__actions">
-                <a class="btn btn--primary btn--sm" href="chat.html" data-i18n="home.openGuide">Открыть гида</a>
-                <a class="btn btn--outline btn--sm" href="feedback.html" data-i18n="home.suggestPlace">Предложить место</a>
+                <a class="btn btn--primary btn--sm" href="pages/chat.html" data-i18n="home.openGuide">Открыть гида</a>
+                <a class="btn btn--outline btn--sm" href="pages/feedback.html" data-i18n="home.suggestPlace">Предложить место</a>
               </div>
             </div>
           </div>
@@ -535,14 +629,52 @@
   <footer class="footer">
     <div class="container">
       <div class="footer__inner">
-        <span data-i18n="common.copyright">© 2026 Следы прошлого</span>
-        <div class="footer__links">
-          <a href="map.html" data-i18n="nav.map">Карта</a>
-          <a href="chat.html" data-i18n="nav.chat">Чат с гидом</a>
-          <a href="feedback.html" data-i18n="nav.feedback">Обратная связь</a>
-          <a href="api.html" id="footer-api-link" class="hidden">API</a>
-          <a href="#" id="footer-github-link" class="hidden" target="_blank" rel="noopener">GitHub</a>
+        <div>
+          <div class="footer__brand">
+            <span class="footer__brand-mark" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+              </svg>
+            </span>
+            <span data-i18n="common.brand">Следы прошлого</span>
+          </div>
+          <p class="footer__desc" data-i18n="footer.desc">
+            Каталог памятных мест, карта, чат‑гид и маршрут — чтобы исследовать город осмысленно и удобно.
+          </p>
         </div>
+
+        <div>
+          <div class="footer__section-title" data-i18n="footer.sectionExplore">Разделы</div>
+          <div class="footer__links">
+            <a href="pages/catalog.html" data-i18n="nav.catalog">Каталог</a>
+            <a href="pages/map.html" data-i18n="nav.map">Карта</a>
+            <a href="pages/route.html" data-i18n="nav.route">Маршрут</a>
+            <a href="pages/chat.html" data-i18n="nav.chat">Гид</a>
+            <a href="pages/feedback.html" data-i18n="nav.feedback">Обратная связь</a>
+          </div>
+        </div>
+
+        <div>
+          <div class="footer__section-title" data-i18n="footer.sectionDocs">Страницы</div>
+          <div class="footer-pages-slot" data-footer-pages></div>
+          <div class="footer__links" style="margin-top:10px">
+            <a href="api.html" id="footer-api-link" class="hidden">API</a>
+            <a href="#" id="footer-github-link" class="hidden" target="_blank" rel="noopener">GitHub</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer__meta">
+        <span data-i18n="common.copyright">© 2026 Следы прошлого</span>
+        <span class="footer__mini-links">
+          <a href="#top">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="margin-right:6px">
+              <polyline points="18 15 12 9 6 15"></polyline>
+              <line x1="12" y1="20" x2="12" y2="10"></line>
+            </svg>
+            <span data-i18n="footer.toTop">Наверх</span>
+          </a>
+        </span>
       </div>
     </div>
   </footer>
@@ -550,7 +682,8 @@
   <div id="toast" class="toast"></div>
   <script type="module" src="js/scroll.js"></script>
   <script type="module" src="js/transitions.js"></script>
-  <script type="module" src="js/reveal.js"></script>
-  <script type="module" src="js/index.js"></script>
+  <script type="module" src="js/shared/reveal.js"></script>
+  <script type="module" src="js/pages/index.js"></script>
+  <script type="module" src="js/features/footer-pages.js"></script>
 </body>
 </html>

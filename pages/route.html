@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
+  <title>Маршрут — Следы прошлого</title>
+  <meta name="description" content="Соберите список мест, чтобы спланировать прогулку, поделиться маршрутом и продолжить на карте." />
+  <link rel="preconnect" href="https://www.gstatic.com" />
+  <link rel="preconnect" href="https://firestore.googleapis.com" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/user-pages.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" />
+  <style>
+    .route-wrap { padding-bottom: 72px; }
+    .route-planner {
+      margin-top: 18px;
+      border: 1px solid var(--c-border-light);
+      border-radius: var(--radius-lg);
+      background: var(--c-surface);
+      box-shadow: var(--shadow-xs);
+      padding: 14px;
+      display: grid;
+      gap: 10px;
+    }
+    .route-planner__row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .route-planner__fields {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
+      gap: 12px;
+      align-items: end;
+      width: 100%;
+    }
+    .route-field__inline {
+      display: flex;
+      gap: 10px;
+      align-items: stretch;
+      width: 100%;
+      min-width: 0;
+    }
+    .route-field__inline > .form-control {
+      flex: 1 1 auto;
+      min-width: 0;
+      width: 100%;
+      max-width: none;
+    }
+    .route-field__inline > .btn {
+      flex: 0 0 auto;
+      align-self: center;
+    }
+    .route-planner__row--actions {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      align-items: stretch;
+      width: 100%;
+    }
+    .route-planner__row--actions .btn {
+      min-width: 0;
+      justify-content: center;
+      text-align: center;
+      line-height: 1.25;
+      white-space: normal;
+      hyphens: auto;
+    }
+    /* Все выпадающие настройки маршрута — один ряд */
+    .route-planner__fields--controls {
+      grid-template-columns:
+        minmax(0, 1.15fr)
+        minmax(0, 1.15fr)
+        minmax(0, 0.52fr)
+        minmax(0, 1.35fr);
+      align-items: end;
+    }
+    /* Инфраструктура: один ряд — режим, цель, тип, радиус, кнопка */
+    .route-planner__fields--poi {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr) minmax(0, 0.95fr) minmax(0, 0.9fr) auto;
+      align-items: end;
+    }
+    /* Высота кнопки как у .form-control (у btn--sm меньше padding) */
+    .route-planner__fields--poi .route-field--poi-action .route-field__label-spacer {
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      line-height: 1.25;
+      min-height: calc(0.75rem * 1.25);
+    }
+    .route-planner__fields--poi .route-field--poi-action .btn {
+      align-self: stretch;
+      box-sizing: border-box;
+      width: 100%;
+      padding: 11px 14px;
+      font-size: 0.9375rem;
+      line-height: 1.35;
+      font-weight: 500;
+      justify-content: center;
+    }
+    .route-field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-width: 0;
+    }
+    .route-field .form-label { margin-bottom: 0; }
+    .route-field--btn .btn { align-self: flex-start; }
+    .route-field__label-spacer {
+      visibility: hidden;
+      font-size: .75rem;
+      line-height: 1;
+      margin: 0;
+      padding: 0;
+      min-height: 1em;
+      user-select: none;
+      pointer-events: none;
+    }
+    .route-planner select.form-control {
+      width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+    }
+    select.form-control option {
+      padding: 0.45rem 0.65rem;
+    }
+    .route-address-row {
+      display: grid;
+      gap: 8px;
+      width: 100%;
+    }
+    .route-address-row__inputs {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: stretch;
+    }
+    .route-address-row__inputs .form-control {
+      flex: 1 1 220px;
+      min-width: 0;
+    }
+    .route-summary { font-size: .84rem; color: var(--c-text-muted); }
+    .route-alt-section {
+      margin-top: 10px;
+      display: grid;
+      gap: 8px;
+    }
+    .route-alt-section__title {
+      margin: 0;
+    }
+    .route-alt-section__hint {
+      margin: 0;
+      font-size: 0.82rem;
+      color: var(--c-text-muted);
+      line-height: 1.45;
+    }
+    .route-alt-picker {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: stretch;
+    }
+    .route-alt-chip {
+      appearance: none;
+      font-family: var(--font-body);
+      cursor: pointer;
+      border: 1px solid var(--c-border);
+      border-radius: var(--radius-md);
+      background: var(--c-surface);
+      color: var(--c-text);
+      padding: 8px 12px;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      line-height: 1.3;
+      text-align: left;
+      transition: border-color var(--transition), background var(--transition), color var(--transition);
+      max-width: 100%;
+    }
+    .route-alt-chip:hover {
+      border-color: var(--c-accent);
+      color: var(--c-accent);
+      background: var(--c-accent-soft);
+    }
+    .route-alt-chip.is-active {
+      border-color: var(--c-accent);
+      background: var(--c-accent-soft);
+      color: var(--c-accent);
+      box-shadow: 0 0 0 1px rgba(139, 94, 60, 0.15);
+    }
+    .route-leg-badge {
+      background: transparent !important;
+      border: none !important;
+    }
+    .route-leg-badge__n {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--c-accent);
+      background: var(--c-surface);
+      border: 2px solid var(--c-accent);
+      box-shadow: var(--shadow-sm);
+      line-height: 1;
+    }
+    .route-map {
+      margin-top: 12px;
+      width: 100%;
+      height: 520px;
+      border: 1px solid var(--c-border-light);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      background: var(--c-accent-soft);
+    }
+    .route-map .maplibregl-map {
+      outline: none;
+    }
+    .route-days {
+      margin-top: 12px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .route-day {
+      border: 1px solid var(--c-border-light);
+      border-radius: var(--radius-md);
+      background: var(--c-bg);
+      padding: 12px;
+    }
+    .route-day__title { font-weight: 700; font-size: .88rem; margin-bottom: 6px; }
+    .route-day__meta { font-size: .8rem; color: var(--c-text-muted); margin-bottom: 6px; }
+    .route-day__list { margin: 0; padding-left: 18px; font-size: .86rem; line-height: 1.5; }
+    .route-day__hint { font-size: .8rem; color: var(--c-text-muted); margin-top: 6px; }
+    .route-day__night {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px dashed var(--c-border-light);
+    }
+    .route-night-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+    .route-night-row--pick {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 10px;
+      width: 100%;
+      min-width: 0;
+    }
+    /* Список отелей вместо «выпадашки»: пункты на всю ширину блока */
+    select.route-hotel-picker-select {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+      display: block;
+      overflow-y: auto;
+    }
+    select.route-hotel-picker-select option {
+      padding: 10px 12px;
+      white-space: normal;
+    }
+    .route-night-row__btns {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .route-night-picked { font-size: 0.86rem; color: var(--c-text); }
+    .route-night-loading { font-size: 0.85rem; color: var(--c-text-muted); }
+    .route-end-hotel-slot { margin-top: 10px; }
+    .route-end-hotel-slot.route-end-hotel-slot--border {
+      padding-top: 10px;
+      border-top: 1px dashed var(--c-border-light);
+    }
+    .route-actions { display:flex; gap:10px; flex-wrap:wrap; margin-top: 18px; }
+    .route-save-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 1300;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+    .route-save-modal.hidden { display: none; }
+    .route-save-modal__backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(28, 25, 23, 0.45);
+      backdrop-filter: blur(4px);
+    }
+    .route-save-modal__panel {
+      position: relative;
+      width: min(420px, 100%);
+      background: var(--c-surface);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--c-border-light);
+      box-shadow: var(--shadow-lg);
+      padding: 22px 24px 20px;
+    }
+    .route-save-modal__panel h2 {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin: 0 0 12px;
+    }
+    .route-save-modal__hint {
+      font-size: 0.875rem;
+      color: var(--c-text-muted);
+      margin: 0 0 14px;
+      line-height: 1.5;
+    }
+    .route-save-modal__actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: flex-end;
+      margin-top: 18px;
+    }
+    .route-save-modal__status {
+      margin-top: 12px;
+      font-size: 0.875rem;
+      color: var(--c-danger);
+      min-height: 1.25em;
+    }
+    .poi-panel {
+      margin-top: 18px;
+      border: 1px solid var(--c-border-light);
+      border-radius: var(--radius-lg);
+      background: var(--c-surface);
+      box-shadow: var(--shadow-xs);
+      padding: 14px;
+      display: grid;
+      gap: 10px;
+    }
+    .poi-list { display: grid; gap: 8px; }
+    .poi-item {
+      border: 1px solid var(--c-border-light);
+      border-radius: var(--radius-md);
+      background: var(--c-bg);
+      padding: 10px 12px;
+    }
+    .poi-item__name { font-weight: 600; }
+    .poi-item__meta { margin-top: 4px; color: var(--c-text-muted); font-size: .82rem; }
+    .poi-item__actions { margin-top: 8px; }
+    .route-list { margin-top: 22px; display:flex; flex-direction:column; gap:10px; }
+    .route-item {
+      border: 1px solid var(--c-border-light);
+      border-radius: var(--radius-lg);
+      background: var(--c-surface);
+      padding: 14px 16px;
+      box-shadow: var(--shadow-xs);
+      display:flex;
+      gap: 12px;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+    .route-item__title { font-weight: 700; }
+    .route-item__title:hover { color: var(--c-accent); }
+    .route-item__meta { margin-top: 6px; font-size: .8rem; color: var(--c-text-muted); }
+    .route-item__btns { display:flex; gap:8px; align-items:center; }
+    .route-item__drag {
+      border: 1px dashed var(--c-border);
+      border-radius: var(--radius-sm);
+      padding: 6px 8px;
+      color: var(--c-text-muted);
+      cursor: grab;
+      user-select: none;
+      font-size: .85rem;
+      line-height: 1;
+    }
+    .route-item.is-dragging { opacity: .55; }
+    .route-item.is-drop-target {
+      border-color: var(--c-accent);
+      box-shadow: 0 0 0 2px rgba(31, 94, 194, .12);
+    }
+    .route-empty {
+      margin-top: 22px;
+      padding: 32px 18px;
+      border: 1px dashed var(--c-border);
+      border-radius: var(--radius-lg);
+      background: var(--c-accent-soft);
+      color: var(--c-text-muted);
+      text-align: center;
+      line-height: 1.65;
+    }
+    @media (max-width: 960px) {
+      .route-planner__fields--controls {
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: flex-end;
+        gap: 10px;
+        overflow-x: auto;
+        overflow-y: visible;
+        padding-bottom: 6px;
+        -webkit-overflow-scrolling: touch;
+      }
+      .route-planner__fields--controls .route-field {
+        flex: 1 0 min(34vw, 220px);
+        min-width: 148px;
+      }
+      .route-planner__fields--controls .route-field:first-child {
+        min-width: min(280px, 85vw);
+      }
+    }
+    @media (max-width: 900px) {
+      .route-planner__fields--poi {
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: flex-end;
+        gap: 10px;
+        overflow-x: auto;
+        overflow-y: visible;
+        padding-bottom: 6px;
+        -webkit-overflow-scrolling: touch;
+      }
+      .route-planner__fields--poi .route-field {
+        flex: 1 0 min(42vw, 200px);
+        min-width: 132px;
+      }
+      .route-planner__fields--poi .route-field--poi-action {
+        flex: 0 0 auto;
+      }
+    }
+    @media (max-width: 720px) {
+      .route-planner__row--actions {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+    @media (max-width: 600px) {
+      .route-wrap { padding-bottom: 60px; }
+      .route-item { padding: 12px 14px; }
+      .route-days { grid-template-columns: 1fr; }
+      .route-field__inline {
+        flex-wrap: wrap;
+      }
+      .route-field__inline > .btn {
+        flex: 1 1 auto;
+      }
+      .route-map {
+        height: min(440px, 58vh);
+      }
+      .route-actions {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .route-actions .btn {
+        width: 100%;
+        justify-content: center;
+      }
+      .route-save-modal__panel {
+        margin: 12px;
+        max-height: calc(100dvh - 24px);
+        overflow-y: auto;
+      }
+    }
+    @media (max-width: 420px) {
+      .route-planner__row--actions {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body id="top">
+  <nav class="nav"></nav>
+
+  <header class="user-hero">
+    <div class="container">
+      <p class="user-hero__eyebrow" data-i18n="route.eyebrow">Маршрут</p>
+      <h1 class="user-hero__title" data-i18n="route.title">Мой маршрут</h1>
+      <p class="user-hero__sub" data-i18n="route.subtitle">
+        Добавляйте места из каталога и карточек объектов. Здесь можно менять порядок, делиться и продолжать планирование.
+      </p>
+    </div>
+  </header>
+
+  <main class="container route-wrap">
+    <section class="route-planner">
+      <div class="route-planner__fields route-planner__fields--controls">
+        <div class="route-field">
+          <label class="form-label" for="start-mode" data-i18n="route.startMode">Старт</label>
+          <div class="route-field__inline">
+            <select id="start-mode" class="form-control">
+              <option value="none" data-i18n="route.startNone">Без старта</option>
+              <option value="geo" data-i18n="route.startGeo">Моё местоположение</option>
+              <option value="address" data-i18n="route.startAddress">Адрес</option>
+            </select>
+            <button type="button" class="btn btn--outline btn--sm" id="btn-detect-start" data-i18n="route.detectStart">Определить старт</button>
+          </div>
+        </div>
+        <div class="route-field">
+          <label class="form-label" for="end-mode" data-i18n="route.endMode">Финиш</label>
+          <select id="end-mode" class="form-control">
+            <option value="last" data-i18n="route.endLast">На последней точке</option>
+            <option value="return" data-i18n="route.endReturn">Вернуться к старту</option>
+            <option value="hotel" data-i18n="route.endHotel">В отель (geo)</option>
+            <option value="address" data-i18n="route.endAddress">По адресу</option>
+          </select>
+        </div>
+        <div class="route-field">
+          <label class="form-label" for="day-count" data-i18n="route.dayCount">Дней</label>
+          <select id="day-count" class="form-control">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+          </select>
+        </div>
+        <div class="route-field">
+          <label class="form-label" for="optimize-mode" data-i18n="route.optimizeMode">Оптимизация</label>
+          <select id="optimize-mode" class="form-control">
+            <option value="fast" data-i18n="route.optimizeModeFast">Быстро (эвристика)</option>
+            <option value="api" data-i18n="route.optimizeModeApi">Через routing API</option>
+          </select>
+        </div>
+      </div>
+      <div id="start-address-row" class="route-address-row hidden">
+        <label class="form-label" for="start-address-input" data-i18n="route.addressLabelStart">Адрес старта</label>
+        <div class="route-address-row__inputs">
+          <input type="text" id="start-address-input" class="form-control" autocomplete="street-address" data-i18n-placeholder="route.addressPlaceholder" placeholder="Улица, дом, город…" />
+          <button type="button" class="btn btn--outline btn--sm" id="btn-geocode-start" data-i18n="route.geocodeFind">Найти на карте</button>
+        </div>
+      </div>
+      <div id="end-address-row" class="route-address-row hidden">
+        <label class="form-label" for="end-address-input" data-i18n="route.addressLabelEnd">Адрес финиша</label>
+        <div class="route-address-row__inputs">
+          <input type="text" id="end-address-input" class="form-control" autocomplete="street-address" data-i18n-placeholder="route.addressPlaceholder" placeholder="Улица, дом, город…" />
+          <button type="button" class="btn btn--outline btn--sm" id="btn-geocode-end" data-i18n="route.geocodeFind">Найти на карте</button>
+        </div>
+      </div>
+      <div id="route-end-hotel-slot" class="route-end-hotel-slot hidden" aria-live="polite"></div>
+      <div class="route-planner__row route-planner__row--actions">
+        <button type="button" class="btn btn--primary btn--sm" id="btn-optimize" data-i18n="route.optimize">Оптимизировать</button>
+        <button type="button" class="btn btn--outline btn--sm" id="btn-plan-days" data-i18n="route.planDays">Разбить по дням</button>
+        <button type="button" class="btn btn--outline btn--sm" id="btn-open-gmaps" data-i18n="route.openMaps">Открыть в Google Maps</button>
+        <button type="button" class="btn btn--outline btn--sm hidden" id="btn-detect-end-hotel" data-i18n="route.detectEndHotel">Найти отели для финиша</button>
+      </div>
+      <div class="route-summary" id="route-summary"></div>
+      <div id="route-alt-section" class="route-alt-section hidden" aria-live="polite">
+        <p class="form-label route-alt-section__title" data-i18n="route.altVariantsTitle">Варианты маршрута</p>
+        <p class="route-alt-section__hint" data-i18n="route.altVariantsHint">Разные пути по улицам и кварталам — выберите удобный.</p>
+        <div id="route-alt-picker" class="route-alt-picker" role="radiogroup"></div>
+      </div>
+      <div class="route-map" id="route-map" aria-label="Карта маршрута"></div>
+      <div class="route-days" id="route-days"></div>
+    </section>
+
+    <div class="route-actions">
+      <button class="btn btn--primary" id="btn-share" data-i18n="route.share">Поделиться</button>
+      <button type="button" class="btn btn--outline" id="btn-save-profile" data-i18n="route.saveToProfile">В профиль</button>
+      <button class="btn btn--outline" id="btn-clear" data-i18n="route.clear">Очистить</button>
+      <a class="btn btn--outline" href="catalog.html" data-i18n="route.addMore">Добавить места</a>
+    </div>
+
+    <div id="save-route-modal" class="route-save-modal hidden" role="dialog" aria-modal="true" aria-labelledby="save-route-modal-title">
+      <div class="route-save-modal__backdrop" aria-hidden="true"></div>
+      <div class="route-save-modal__panel">
+        <h2 id="save-route-modal-title" data-i18n="route.saveModalTitle">Сохранить маршрут</h2>
+        <p class="route-save-modal__hint" data-i18n="route.saveModalHint">Название для списка в личном кабинете. Открытие сохранённого маршрута повторит тот же порядок точек.</p>
+        <label class="form-label" for="save-route-title-input" data-i18n="route.saveModalLabel">Название</label>
+        <input type="text" id="save-route-title-input" class="form-control" maxlength="160" autocomplete="off" data-i18n-placeholder="route.saveModalPlaceholder" placeholder="Например: Прогулка по центру" />
+        <div class="route-save-modal__actions">
+          <button type="button" class="btn btn--outline" id="save-route-cancel" data-i18n="route.saveModalCancel">Отмена</button>
+          <button type="button" class="btn btn--primary" id="save-route-confirm" data-i18n="route.saveModalSubmit">Сохранить</button>
+        </div>
+        <p class="route-save-modal__status" id="save-route-modal-status" role="status" aria-live="polite"></p>
+      </div>
+    </div>
+
+    <section class="poi-panel">
+      <div class="route-planner__row">
+        <strong data-i18n="route.poiTitle">Инфраструктура рядом</strong>
+      </div>
+      <div class="route-planner__fields route-planner__fields--poi">
+        <div class="route-field">
+          <label class="form-label" for="poi-mode" data-i18n="route.poiMode">Показывать рядом с</label>
+          <select id="poi-mode" class="form-control">
+            <option value="point" data-i18n="route.poiModePoint">Точкой маршрута</option>
+            <option value="day" data-i18n="route.poiModeDay">Днём маршрута</option>
+          </select>
+        </div>
+        <div class="route-field">
+          <label class="form-label" for="poi-target" data-i18n="route.poiTarget">Цель</label>
+          <select id="poi-target" class="form-control"></select>
+        </div>
+        <div class="route-field">
+          <label class="form-label" for="poi-type" data-i18n="route.poiType">Тип</label>
+          <select id="poi-type" class="form-control">
+            <option value="hotel" data-i18n="route.poiTypeHotel">Отели</option>
+            <option value="food" data-i18n="route.poiTypeFood">Еда</option>
+          </select>
+        </div>
+        <div class="route-field">
+          <label class="form-label" for="poi-radius" data-i18n="route.poiRadius">Радиус</label>
+          <select id="poi-radius" class="form-control">
+            <option value="500">500 м</option>
+            <option value="1000">1 км</option>
+            <option value="2000" selected>2 км</option>
+            <option value="5000">5 км</option>
+          </select>
+        </div>
+        <div class="route-field route-field--btn route-field--poi-action">
+          <span class="form-label route-field__label-spacer" aria-hidden="true">&nbsp;</span>
+          <button type="button" class="btn btn--outline btn--sm" id="btn-poi-load" data-i18n="route.poiLoad">Показать рядом</button>
+        </div>
+      </div>
+      <div class="route-summary" id="poi-summary"></div>
+      <div class="poi-list" id="poi-list"></div>
+    </section>
+
+    <div class="route-empty hidden" id="empty">
+      <strong data-i18n="route.emptyTitle">Маршрут пуст.</strong><br>
+      <span data-i18n="route.emptyText">Откройте каталог и добавьте несколько мест — они появятся здесь.</span>
+    </div>
+
+    <div class="route-list" id="list"></div>
+
+    <p class="user-status" id="status" role="status" aria-live="polite"></p>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__inner">
+        <div>
+          <div class="footer__brand">
+            <span class="footer__brand-mark" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+              </svg>
+            </span>
+            <span data-i18n="common.brand">Следы прошлого</span>
+          </div>
+          <p class="footer__desc" data-i18n="footer.desc">
+            Каталог памятных мест, карта, чат‑гид и маршрут — чтобы исследовать город осмысленно и удобно.
+          </p>
+        </div>
+
+        <div>
+          <div class="footer__section-title" data-i18n="footer.sectionExplore">Разделы</div>
+          <div class="footer__links">
+            <a href="catalog.html" data-i18n="nav.catalog">Каталог</a>
+            <a href="map.html" data-i18n="nav.map">Карта</a>
+            <a href="route.html" data-i18n="nav.route">Маршрут</a>
+            <a href="chat.html" data-i18n="nav.chat">Гид</a>
+            <a href="feedback.html" data-i18n="nav.feedback">Обратная связь</a>
+          </div>
+        </div>
+
+        <div>
+          <div class="footer__section-title" data-i18n="footer.sectionDocs">Страницы</div>
+          <div class="footer-pages-slot" data-footer-pages></div>
+        </div>
+      </div>
+
+      <div class="footer__meta">
+        <span data-i18n="common.copyright">© 2026 Следы прошлого</span>
+        <span class="footer__mini-links">
+          <a href="#top">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="margin-right:6px">
+              <polyline points="18 15 12 9 6 15"></polyline>
+              <line x1="12" y1="20" x2="12" y2="10"></line>
+            </svg>
+            <span data-i18n="footer.toTop">Наверх</span>
+          </a>
+        </span>
+      </div>
+    </div>
+  </footer>
+
+  <div id="toast" class="toast"></div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+  <script src="https://unpkg.com/@maplibre/maplibre-gl-leaflet@0.1.2/leaflet-maplibre-gl.js"></script>
+  <script type="module" src="../js/scroll.js"></script>
+  <script type="module" src="../js/transitions.js"></script>
+  <script type="module" src="../js/pages/route.js"></script>
+  <script type="module" src="../js/features/footer-pages.js"></script>
+</body>
+</html>
+

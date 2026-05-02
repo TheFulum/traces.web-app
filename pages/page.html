@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
+  <title>Страница — Следы прошлого</title>
+  <meta name="description" content="Материалы и информационные страницы проекта «Следы прошлого»." />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/user-pages.css" />
+</head>
+<body>
+  <nav class="nav"></nav>
+
+  <header class="user-hero" id="page-hero">
+    <div class="container">
+      <p class="user-hero__eyebrow" data-i18n="staticPage.eyebrow">Материалы</p>
+      <h1 class="user-hero__title" id="page-title"></h1>
+      <p class="user-hero__sub hidden" id="page-subtitle"></p>
+    </div>
+  </header>
+
+  <main class="page-static">
+    <div class="container">
+      <div class="page-static__article page-static__article--wide">
+      <div id="page-state-ok">
+        <article class="page-static__body" id="page-body"></article>
+      </div>
+      <div class="state-error hidden" id="page-state-error">
+        <h3 id="page-error-title"></h3>
+        <p id="page-error-text"></p>
+        <p style="margin-top:16px;display:flex;flex-wrap:wrap;gap:10px">
+          <a href="../index.html" class="btn btn--outline btn--sm" data-i18n="staticPage.backHome">На главную</a>
+          <a href="catalog.html" class="btn btn--outline btn--sm" data-i18n="staticPage.toCatalog">Каталог</a>
+        </p>
+      </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__inner">
+        <div>
+          <div class="footer__brand">
+            <span class="footer__brand-mark" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+              </svg>
+            </span>
+            <span data-i18n="common.brand">Следы прошлого</span>
+          </div>
+          <p class="footer__desc" data-i18n="footer.desc">
+            Каталог памятных мест, карта, чат‑гид и маршрут — чтобы исследовать город осмысленно и удобно.
+          </p>
+        </div>
+
+        <div>
+          <div class="footer__section-title" data-i18n="footer.sectionExplore">Разделы</div>
+          <div class="footer__links">
+            <a href="catalog.html" data-i18n="nav.catalog">Каталог</a>
+            <a href="map.html" data-i18n="nav.map">Карта</a>
+            <a href="route.html" data-i18n="nav.route">Маршрут</a>
+            <a href="chat.html" data-i18n="nav.chat">Гид</a>
+            <a href="feedback.html" data-i18n="nav.feedback">Обратная связь</a>
+          </div>
+        </div>
+
+        <div>
+          <div class="footer__section-title" data-i18n="footer.sectionDocs">Страницы</div>
+          <div class="footer-pages-slot" data-footer-pages></div>
+        </div>
+      </div>
+
+      <div class="footer__meta">
+        <span data-i18n="common.copyright">© 2026 Следы прошлого</span>
+        <span class="footer__mini-links">
+          <a href="#top">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="margin-right:6px">
+              <polyline points="18 15 12 9 6 15"></polyline>
+              <line x1="12" y1="20" x2="12" y2="10"></line>
+            </svg>
+            <span data-i18n="footer.toTop">Наверх</span>
+          </a>
+        </span>
+      </div>
+    </div>
+  </footer>
+
+  <div id="toast" class="toast"></div>
+  <script type="module" src="../js/scroll.js"></script>
+  <script type="module" src="../js/transitions.js"></script>
+  <script type="module" src="../js/pages/page.js"></script>
+  <script type="module" src="../js/features/footer-pages.js"></script>
+</body>
+</html>

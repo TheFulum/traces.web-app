@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" role="img" aria-labelledby="title desc">
+  <title id="title">Следы прошлого — колонны</title>
+  <desc id="desc">Стилизованный исторический фасад</desc>
+  <rect width="128" height="128" rx="26" fill="#fff"/>
+  <path d="M22 44l42-20 42 20H22Z" fill="#8b5e3c"/>
+  <rect x="26" y="44" width="76" height="8" fill="#d9c7b4"/>
+  <rect x="30" y="52" width="10" height="42" rx="2" fill="#8b5e3c"/>
+  <rect x="46" y="52" width="10" height="42" rx="2" fill="#8b5e3c"/>
+  <rect x="62" y="52" width="10" height="42" rx="2" fill="#8b5e3c"/>
+  <rect x="78" y="52" width="10" height="42" rx="2" fill="#8b5e3c"/>
+  <rect x="22" y="94" width="84" height="10" rx="2" fill="#d9c7b4"/>
+</svg>

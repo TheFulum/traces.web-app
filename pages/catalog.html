@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
+  <title>Каталог — Следы прошлого</title>
+  <meta name="description" content="Каталог памятных мест с фильтрами по 3D, фото, тегам, городу и диапазону дат создания." />
+  <link rel="preconnect" href="https://res.cloudinary.com" />
+  <link rel="preconnect" href="https://www.gstatic.com" />
+  <link rel="preconnect" href="https://firestore.googleapis.com" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/user-pages.css" />
+  <style>
+    .catalog-header {
+      padding: 56px 0 28px;
+      border-bottom: 1px solid var(--c-border);
+      margin-bottom: 26px;
+      background: linear-gradient(180deg, var(--c-surface-warm) 0%, var(--c-bg) 100%);
+    }
+    .catalog-header__eyebrow {
+      font-size: .75rem;
+      font-weight: 600;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--c-text-muted);
+      margin-bottom: 10px;
+    }
+    .catalog-header__sub {
+      margin-top: 10px;
+      color: var(--c-text-muted);
+      max-width: 70ch;
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin: 18px 0 4px;
+    }
+    .toolbar__count {
+      font-size: .8125rem;
+      color: var(--c-text-muted);
+      font-weight: 600;
+      letter-spacing: .02em;
+    }
+    .toolbar__row2 {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    .control--search {
+      min-width: 280px;
+      flex: 1 1 300px;
+      max-width: 420px;
+    }
+    .control--search .toolbar__search { position: relative; width: 100%; }
+    .control--search .toolbar__search input {
+      width: 100%;
+      padding: 8px 10px 8px 34px;
+      border: 1px solid var(--c-border);
+      border-radius: 8px;
+      background: var(--c-surface);
+      font-size: .875rem;
+      color: var(--c-text);
+      outline: none;
+      transition: border-color var(--transition), box-shadow var(--transition);
+    }
+    .control--search .toolbar__search input:focus {
+      border-color: var(--c-accent);
+      box-shadow: 0 0 0 3px var(--c-accent-soft);
+    }
+    .control--search .toolbar__search svg {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      color: var(--c-text-light);
+    }
+
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 12px;
+      align-items: center;
+    }
+    .control {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border: 1px solid var(--c-border);
+      border-radius: var(--radius-md);
+      background: rgba(255,255,255,.55);
+      backdrop-filter: blur(10px);
+    }
+    .control label {
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--c-text-muted);
+      white-space: nowrap;
+    }
+    .control select,
+    .control input[type="number"] {
+      border: 1px solid var(--c-border);
+      border-radius: 8px;
+      padding: 6px 8px;
+      background: var(--c-surface);
+      color: var(--c-text);
+      font-size: .875rem;
+      outline: none;
+    }
+    .control input[type="number"] { width: 92px; }
+
+    .toggles {
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border: 1px solid var(--c-border);
+      border-radius: var(--radius-md);
+      background: var(--c-surface);
+      color: var(--c-text-muted);
+      font-size: .8rem;
+      font-weight: 600;
+      user-select: none;
+    }
+    .toggle input { accent-color: var(--c-accent); }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 12px 0 0;
+    }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--c-border-light);
+      background: var(--c-surface);
+      font-size: .85rem;
+      color: var(--c-text);
+      box-shadow: var(--shadow-xs);
+    }
+    .chip button {
+      width: 22px;
+      height: 22px;
+      display: grid;
+      place-items: center;
+      border-radius: 999px;
+      border: 1px solid var(--c-border-light);
+      background: var(--c-surface-warm);
+      color: var(--c-text-muted);
+      line-height: 1;
+    }
+    .chip button:hover { color: var(--c-accent); border-color: var(--c-accent); }
+
+    @media (max-width: 600px) {
+      .catalog-header { padding: 44px 0 22px; }
+      .control--search { min-width: 100%; max-width: 100%; }
+      .control { width: 100%; justify-content: space-between; }
+      .control input[type="number"] { width: 110px; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav"></nav>
+
+  <header class="catalog-header">
+    <div class="container">
+      <div class="catalog-header__eyebrow" data-i18n="catalog.eyebrow">Каталог</div>
+      <h1 data-i18n="catalog.title">Все памятные места</h1>
+      <p class="catalog-header__sub" data-i18n="catalog.subtitle">
+        Ищите по названию, адресу и тегам. Фильтры и сортировки синхронизируются с URL — ссылкой можно делиться.
+      </p>
+      <div class="toolbar">
+        <span class="toolbar__count" id="count"></span>
+      </div>
+
+      <div class="toolbar__row2">
+        <div class="controls" aria-label="Фильтры каталога">
+          <span class="control control--search">
+            <label for="search" data-i18n="catalog.chipSearch">Поиск</label>
+            <div class="toolbar__search">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+              <input type="text" id="search" placeholder="Поиск по названию…" autocomplete="off" data-i18n-placeholder="catalog.searchPlaceholder" />
+            </div>
+          </span>
+          <span class="toggle">
+            <input type="checkbox" id="f-has3d" />
+            <label for="f-has3d" data-i18n="catalog.filter3d">3D</label>
+          </span>
+          <span class="toggle">
+            <input type="checkbox" id="f-hasphotos" />
+            <label for="f-hasphotos" data-i18n="catalog.filterPhotos">Фото</label>
+          </span>
+
+          <span class="control">
+            <label for="f-city" data-i18n="catalog.city">Город</label>
+            <select id="f-city">
+              <option value="" data-i18n="catalog.any">Любой</option>
+            </select>
+          </span>
+
+          <span class="control">
+            <label for="f-tags" data-i18n="catalog.tags">Теги</label>
+            <select id="f-tags" multiple size="1" style="min-width: 220px">
+            </select>
+          </span>
+
+          <span class="control">
+            <label data-i18n="catalog.years">Годы</label>
+            <div class="toggles">
+              <input type="number" id="f-datefrom" placeholder="От" min="0" step="1" data-i18n-placeholder="catalog.from" />
+              <span class="text-muted">—</span>
+              <input type="number" id="f-dateto" placeholder="До" min="0" step="1" data-i18n-placeholder="catalog.to" />
+            </div>
+          </span>
+        </div>
+
+        <span class="control" aria-label="Сортировка">
+          <label for="sort" data-i18n="catalog.sort">Сортировка</label>
+          <select id="sort">
+            <option value="updated_desc" data-i18n="catalog.sortUpdatedDesc">Обновлённые (новые → старые)</option>
+            <option value="updated_asc" data-i18n="catalog.sortUpdatedAsc">Обновлённые (старые → новые)</option>
+            <option value="created_desc" data-i18n="catalog.sortCreatedDesc">Создание (новые → старые)</option>
+            <option value="created_asc" data-i18n="catalog.sortCreatedAsc">Создание (старые → новые)</option>
+            <option value="name_asc" data-i18n="catalog.sortNameAsc">Название (А→Я)</option>
+            <option value="name_desc" data-i18n="catalog.sortNameDesc">Название (Я→А)</option>
+          </select>
+        </span>
+      </div>
+
+      <div class="chips" id="chips" aria-label="Активные фильтры"></div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="card-grid" id="grid"></div>
+    <div id="catalog-sentinel" class="hidden" style="padding:14px 0;text-align:center;color:var(--c-text-muted);font-size:.85rem"></div>
+
+    <div class="state-error hidden" id="error">
+      <h3 data-i18n="common.loadingError">Не удалось загрузить места</h3>
+      <p data-i18n="common.internetRetry">Проверьте подключение к интернету и обновите страницу.</p>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__inner">
+        <div>
+          <div class="footer__brand">
+            <span class="footer__brand-mark" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+              </svg>
+            </span>
+            <span data-i18n="common.brand">Следы прошлого</span>
+          </div>
+          <p class="footer__desc" data-i18n="footer.desc">
+            Каталог памятных мест, карта, чат‑гид и маршрут — чтобы исследовать город осмысленно и удобно.
+          </p>
+        </div>
+
+        <div>
+          <div class="footer__section-title" data-i18n="footer.sectionExplore">Разделы</div>
+          <div class="footer__links">
+            <a href="catalog.html" data-i18n="nav.catalog">Каталог</a>
+            <a href="map.html" data-i18n="nav.map">Карта</a>
+            <a href="route.html" data-i18n="nav.route">Маршрут</a>
+            <a href="chat.html" data-i18n="nav.chat">Гид</a>
+            <a href="feedback.html" data-i18n="nav.feedback">Обратная связь</a>
+          </div>
+        </div>
+
+        <div>
+          <div class="footer__section-title" data-i18n="footer.sectionDocs">Страницы</div>
+          <div class="footer-pages-slot" data-footer-pages></div>
+        </div>
+      </div>
+
+      <div class="footer__meta">
+        <span data-i18n="common.copyright">© 2026 Следы прошлого</span>
+        <span class="footer__mini-links">
+          <a href="#top">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="margin-right:6px">
+              <polyline points="18 15 12 9 6 15"></polyline>
+              <line x1="12" y1="20" x2="12" y2="10"></line>
+            </svg>
+            <span data-i18n="footer.toTop">Наверх</span>
+          </a>
+        </span>
+      </div>
+    </div>
+  </footer>
+
+  <div id="toast" class="toast"></div>
+  <script type="module" src="../js/scroll.js"></script>
+  <script type="module" src="../js/transitions.js"></script>
+  <script type="module" src="../js/shared/reveal.js"></script>
+  <script type="module" src="../js/pages/catalog.js"></script>
+  <script type="module" src="../js/features/footer-pages.js"></script>
+</body>
+</html>
+

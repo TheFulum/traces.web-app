@@ -368,6 +368,18 @@
   align-items: start;
 }
 
+.admin-field-section-label {
+  margin: 14px 0 10px;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--c-text-muted);
+}
+.admin-field-section-label:first-of-type {
+  margin-top: 4px;
+}
+
 .admin-panel {
   background: var(--c-surface);
   border: 1px solid var(--c-border-light);

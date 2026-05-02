@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
+  <title>Обратная связь — Следы прошлого</title>
+  <meta name="description" content="Свяжитесь с командой проекта «Следы прошлого»: вопросы, предложения и сообщения по работе сервиса." />
+  <link rel="preconnect" href="https://res.cloudinary.com" />
+  <link rel="preconnect" href="https://www.gstatic.com" />
+  <link rel="preconnect" href="https://firestore.googleapis.com" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/user-pages.css" />
+  <style>
+    .feedback-wrap {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 0 24px 80px;
+    }
+
+    .feedback-card {
+      background: var(--c-surface);
+      border: 1px solid var(--c-border-light);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* ── stars ── */
+    .rating-label {
+      font-size: .75rem;
+      font-weight: 500;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--c-text-muted);
+      margin-bottom: 10px;
+      display: block;
+    }
+    .stars {
+      display: flex;
+      gap: 2px;
+      margin-bottom: 8px;
+      line-height: 1;
+      width: fit-content;
+    }
+    .star {
+      font-size: 2.4rem;
+      color: var(--c-border);
+      cursor: pointer;
+      padding: 0 3px;
+      background: none;
+      border: none;
+      transition: transform .12s, color .15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .star:hover { transform: scale(1.15); }
+    .star.on { color: var(--c-star); }
+
+    .rating-text {
+      font-size: .8125rem;
+      font-weight: 500;
+      color: var(--c-text-muted);
+      margin-bottom: 24px;
+      min-height: 18px;
+    }
+
+    .form-actions {
+      margin-top: 8px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .form-status { font-size: .8125rem; min-height: 18px; font-weight: 500; }
+    .form-status.error   { color: var(--c-danger); }
+    .form-status.success { color: var(--c-success); }
+
+    .feedback-success {
+      text-align: center;
+      padding: 48px 32px;
+    }
+    .feedback-success__icon {
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      background: var(--c-accent-soft);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 20px;
+      color: var(--c-accent);
+    }
+    .feedback-success__title {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .feedback-success__sub {
+      font-size: .95rem;
+      color: var(--c-text-muted);
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 600px) {
+      .feedback-wrap { padding: 16px 16px 60px; }
+      .feedback-card { padding: 24px 20px; }
+      .star { font-size: 2rem; }
+    }
+  </style>
+</head>
+<body class="user-feedback-page">
+
+  <nav class="nav"></nav>
+
+  <header class="user-hero">
+    <div class="container">
+      <p class="user-hero__eyebrow" data-i18n="feedback.eyebrow">Обратная связь</p>
+      <h1 class="user-hero__title" data-i18n="feedback.title">Обратная связь</h1>
+      <p class="user-hero__sub" data-i18n="feedback.subtitle">Напишите нам, если нашли проблему, хотите предложить идею или поделиться замечанием по работе сервиса.</p>
+    </div>
+  </header>
+
+  <div class="feedback-wrap">
+    <div class="feedback-card" id="form-card">
+
+      <span class="rating-label" data-i18n="feedback.ratingLabel">Оценка</span>
+      <div class="stars" id="stars">
+        <button type="button" class="star" data-v="1">★</button>
+        <button type="button" class="star" data-v="2">★</button>
+        <button type="button" class="star" data-v="3">★</button>
+        <button type="button" class="star" data-v="4">★</button>
+        <button type="button" class="star" data-v="5">★</button>
+      </div>
+      <p class="rating-text" id="rating-text"></p>
+
+      <div class="form-group">
+        <label class="form-label" for="email" data-i18n="feedback.emailLabel">Электронная почта</label>
+        <input type="email" id="email" class="form-control"
+          placeholder="you@example.com" maxlength="254" autocomplete="email" />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="message" data-i18n="feedback.messageLabel">Сообщение</label>
+        <textarea id="message" class="form-control"
+          placeholder="Поделитесь впечатлениями или предложениями…"
+          maxlength="2000" rows="5" data-i18n-placeholder="feedback.messagePlaceholder"></textarea>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn btn--primary" id="submit-btn" data-i18n="feedback.submit">Отправить</button>
+        <span class="form-status" id="form-status"></span>
+      </div>
+
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__inner">
+        <div>
+          <div class="footer__brand">
+            <span class="footer__brand-mark" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+              </svg>
+            </span>
+            <span data-i18n="common.brand">Следы прошлого</span>
+          </div>
+          <p class="footer__desc" data-i18n="footer.desc">
+            Каталог памятных мест, карта, чат‑гид и маршрут — чтобы исследовать город осмысленно и удобно.
+          </p>
+        </div>
+
+        <div>
+          <div class="footer__section-title" data-i18n="footer.sectionExplore">Разделы</div>
+          <div class="footer__links">
+            <a href="catalog.html" data-i18n="nav.catalog">Каталог</a>
+            <a href="map.html" data-i18n="nav.map">Карта</a>
+            <a href="route.html" data-i18n="nav.route">Маршрут</a>
+            <a href="chat.html" data-i18n="nav.chat">Гид</a>
+            <a href="feedback.html" data-i18n="nav.feedback">Обратная связь</a>
+          </div>
+        </div>
+
+        <div>
+          <div class="footer__section-title" data-i18n="footer.sectionDocs">Страницы</div>
+          <div class="footer-pages-slot" data-footer-pages></div>
+        </div>
+      </div>
+
+      <div class="footer__meta">
+        <span data-i18n="common.copyright">© 2026 Следы прошлого</span>
+        <span class="footer__mini-links">
+          <a href="#top">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="margin-right:6px">
+              <polyline points="18 15 12 9 6 15"></polyline>
+              <line x1="12" y1="20" x2="12" y2="10"></line>
+            </svg>
+            <span data-i18n="footer.toTop">Наверх</span>
+          </a>
+        </span>
+      </div>
+    </div>
+  </footer>
+
+  <div id="toast" class="toast"></div>
+  <script type="module" src="../js/scroll.js"></script>
+  <script type="module" src="../js/transitions.js"></script>
+  <script type="module" src="../js/pages/feedback.js"></script>
+  <script type="module" src="../js/features/footer-pages.js"></script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+// Фрагмент для добавления к вашим текущим правилам Firestore.
+// Публичный сайт читает коллекцию pagesContent для подвала и page.html.
+
+// match /pagesContent/{slug} {
+//   allow read: if true;
+//   allow write: if request.auth != null; // или условие «только админ»
+// }

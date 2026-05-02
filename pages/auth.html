@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
+  <title>Вход и регистрация — Следы прошлого</title>
+  <meta id="auth-meta-description" name="description" content="Войдите или зарегистрируйтесь, чтобы оставлять отзывы, сохранять избранное и видеть историю просмотров." />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/user-pages.css" />
+  <style>
+    .auth-tabs { display: flex; gap: 8px; margin-bottom: 20px; }
+    .auth-tab {
+      flex: 1;
+      border: 1px solid var(--c-border);
+      border-radius: 999px;
+      background: var(--c-surface);
+      padding: 10px 14px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--c-text-muted);
+      cursor: pointer;
+      font-family: var(--font-body);
+      transition: background var(--transition), color var(--transition), border-color var(--transition);
+    }
+    .auth-tab:hover {
+      border-color: var(--c-accent);
+      color: var(--c-accent);
+    }
+    .auth-tab.active {
+      background: var(--c-accent);
+      color: #fff;
+      border-color: var(--c-accent);
+    }
+    .auth-tab:active { transform: scale(0.98); }
+    .auth-card-inner {
+      background: var(--c-surface);
+      border: 1px solid var(--c-border-light);
+      border-radius: var(--radius-lg);
+      padding: 28px 28px 32px;
+      box-shadow: var(--shadow-md);
+    }
+    .auth-head {
+      display: grid;
+      grid-template-columns: 40px 1fr;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+    .auth-head__icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 14px;
+      background: var(--c-accent-soft);
+      border: 1px solid var(--c-border-light);
+      display: grid;
+      place-items: center;
+      color: var(--c-accent);
+      box-shadow: var(--shadow-xs);
+    }
+    .auth-head__title {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      font-weight: 600;
+      line-height: 1.25;
+      margin: 0;
+      letter-spacing: -0.01em;
+    }
+    .auth-head__sub {
+      margin: 2px 0 0;
+      font-size: .86rem;
+      line-height: 1.5;
+      color: var(--c-text-muted);
+      max-width: 48ch;
+    }
+    .auth-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 0 0 16px;
+    }
+    .auth-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--c-border-light);
+      background: linear-gradient(180deg, var(--c-surface) 0%, var(--c-bg) 100%);
+      box-shadow: var(--shadow-xs);
+      font-size: .75rem;
+      font-weight: 600;
+      letter-spacing: .02em;
+      color: var(--c-text-muted);
+      user-select: none;
+    }
+    .auth-badge svg { width: 14px; height: 14px; color: var(--c-accent); flex-shrink: 0; }
+    .auth-status {
+      min-height: 1.25em;
+      margin-bottom: 14px;
+      font-size: 0.8125rem;
+      font-weight: 500;
+    }
+    .auth-status:empty {
+      min-height: 0;
+      margin-bottom: 0;
+    }
+    .auth-status.error { color: var(--c-danger); }
+    .auth-status.success { color: var(--c-success); }
+    .auth-footer {
+      margin-top: 18px;
+      text-align: center;
+      font-size: 0.88rem;
+      line-height: 1.55;
+      color: var(--c-text-muted);
+      max-width: none;
+    }
+    .auth-footer a {
+      color: var(--c-accent);
+      font-weight: 500;
+      text-decoration: none;
+    }
+    .auth-footer a:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+    .auth-fields {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-top: 2px;
+    }
+    .auth-fields .form-group { margin-bottom: 0; }
+
+    .auth-actions {
+      margin-top: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .auth-help-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      font-size: .82rem;
+      line-height: 1.5;
+      color: var(--c-text-muted);
+      margin-top: 2px;
+    }
+    .auth-help-row span {
+      max-width: 46ch;
+      flex: 1 1 320px;
+    }
+    .auth-link {
+      color: var(--c-accent);
+      font-weight: 600;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    .auth-link:hover { text-decoration: underline; }
+    .auth-note {
+      font-size: .84rem;
+      color: var(--c-text-muted);
+      line-height: 1.55;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--c-border-light);
+      width: 100%;
+      text-align: left;
+      max-width: none;
+    }
+
+    @media (max-width: 700px) {
+      .auth-help-row {
+        justify-content: flex-start;
+      }
+      .auth-footer {
+        font-size: 0.82rem;
+      }
+    }
+  </style>
+</head>
+<body class="user-auth-page">
+  <nav class="nav"></nav>
+
+  <header class="user-hero">
+    <div class="container">
+      <p class="user-hero__eyebrow" data-i18n="auth.eyebrow">Аккаунт</p>
+      <h1 class="user-hero__title" data-i18n="auth.title">Вход и регистрация</h1>
+      <p class="user-hero__sub" data-i18n="auth.subtitle">
+        Один аккаунт для отзывов, избранного и истории просмотров. Пароль хранится у Firebase Authentication — мы не видим его в открытом виде.
+      </p>
+    </div>
+  </header>
+
+  <div class="user-auth-card">
+    <div class="auth-card-inner">
+      <div class="auth-head">
+        <div class="auth-head__icon" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3a5 5 0 0 0-5 5v3H6a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2h-1V8a5 5 0 0 0-5-5Z"/>
+            <path d="M8 11V8a4 4 0 0 1 8 0v3"/>
+          </svg>
+        </div>
+        <div>
+          <p class="auth-head__title" data-i18n="auth.cardTitle">Безопасный вход</p>
+          <p class="auth-head__sub" data-i18n="auth.cardSub">Аккаунт нужен, чтобы сохранять избранное и историю. Данные авторизации обрабатывает Firebase.</p>
+        </div>
+      </div>
+
+      <div class="auth-badges" aria-label="Качество сервиса" data-i18n-aria-label="auth.badgesAriaLabel">
+        <span class="auth-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M20 7 10 17l-5-5"/>
+          </svg>
+          <span data-i18n="auth.badgeSecurity">Шифрование и защита</span>
+        </span>
+        <span class="auth-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M20 6v6h-6"/>
+            <path d="M4 18v-6h6"/>
+            <path d="M20 12a8 8 0 0 0-14.5-4"/>
+            <path d="M4 12a8 8 0 0 0 14.5 4"/>
+          </svg>
+          <span data-i18n="auth.badgeSync">Синхронизация</span>
+        </span>
+        <span class="auth-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 22s8-4 8-10V6l-8-4-8 4v6c0 6 8 10 8 10Z"/>
+          </svg>
+          <span data-i18n="auth.badgePrivacy">Приватность</span>
+        </span>
+      </div>
+
+      <div class="auth-tabs" role="tablist" aria-label="Режим" data-i18n-aria-label="auth.modeAriaLabel">
+        <button class="auth-tab active" id="tab-login" type="button" role="tab" aria-selected="true" data-i18n="auth.tabLogin">Вход</button>
+        <button class="auth-tab" id="tab-register" type="button" role="tab" aria-selected="false" data-i18n="auth.tabRegister">Регистрация</button>
+      </div>
+      <p class="auth-status" id="auth-status" role="status" aria-live="polite"></p>
+
+      <div class="auth-fields">
+        <div class="form-group hidden" id="name-wrap">
+          <label class="form-label" for="auth-name" data-i18n="auth.nameLabel">Имя</label>
+          <input id="auth-name" class="form-control" maxlength="120" autocomplete="name" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="auth-email" data-i18n="auth.emailLabel">Электронная почта</label>
+          <input id="auth-email" type="email" class="form-control" maxlength="254" autocomplete="email" placeholder="you@example.com" data-i18n-placeholder="auth.emailPlaceholder" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="auth-password" data-i18n="auth.passwordLabel">Пароль</label>
+          <input id="auth-password" type="password" class="form-control" autocomplete="new-password" placeholder="Минимум 6 символов" data-i18n-placeholder="auth.passwordPlaceholder" />
+        </div>
+      </div>
+
+      <div class="auth-actions">
+        <button class="btn btn--primary btn--full" type="button" id="auth-submit" data-i18n="auth.submitLogin">Войти</button>
+        <div class="auth-help-row">
+          <span data-i18n="auth.helpText">Продолжая, вы соглашаетесь с правилами сервиса.</span>
+          <a class="auth-link" href="page.html?slug=privacy" data-i18n="auth.privacyLink">Приватность</a>
+        </div>
+      </div>
+
+      <p class="auth-note" data-i18n="auth.note">
+        Если вы используете общий компьютер, не сохраняйте пароль в браузере. После входа можно вернуться в каталог и собрать маршрут.
+      </p>
+
+      <p class="auth-footer">
+        <span data-i18n="auth.footerPrefix">Уже изучаете каталог?</span> <a href="catalog.html" data-i18n="auth.footerLink">Перейти к местам</a>
+      </p>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__inner">
+        <div>
+          <div class="footer__brand">
+            <span class="footer__brand-mark" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+              </svg>
+            </span>
+            <span data-i18n="common.brand">Следы прошлого</span>
+          </div>
+          <p class="footer__desc" data-i18n="footer.desc">
+            Каталог памятных мест, карта, чат‑гид и маршрут — чтобы исследовать город осмысленно и удобно.
+          </p>
+        </div>
+
+        <div>
+          <div class="footer__section-title" data-i18n="footer.sectionExplore">Разделы</div>
+          <div class="footer__links">
+            <a href="catalog.html" data-i18n="nav.catalog">Каталог</a>
+            <a href="map.html" data-i18n="nav.map">Карта</a>
+            <a href="route.html" data-i18n="nav.route">Маршрут</a>
+            <a href="chat.html" data-i18n="nav.chat">Гид</a>
+            <a href="feedback.html" data-i18n="nav.feedback">Обратная связь</a>
+          </div>
+        </div>
+
+        <div>
+          <div class="footer__section-title" data-i18n="footer.sectionDocs">Страницы</div>
+          <div class="footer-pages-slot" data-footer-pages></div>
+        </div>
+      </div>
+
+      <div class="footer__meta">
+        <span data-i18n="common.copyright">© 2026 Следы прошлого</span>
+        <span class="footer__mini-links">
+          <a href="#top">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="margin-right:6px">
+              <polyline points="18 15 12 9 6 15"></polyline>
+              <line x1="12" y1="20" x2="12" y2="10"></line>
+            </svg>
+            <span data-i18n="footer.toTop">Наверх</span>
+          </a>
+        </span>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module" src="../js/scroll.js"></script>
+  <script type="module" src="../js/transitions.js"></script>
+  <script type="module" src="../js/pages/auth.js"></script>
+  <script type="module" src="../js/features/footer-pages.js"></script>
+</body>
+</html>
