@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml" />
+  <title>История просмотров — Следы прошлого</title>
+  <meta name="description" content="Недавно открытые карточки мест в вашем профиле." />
+  <link rel="stylesheet" href="../../css/style.css" />
+  <link rel="stylesheet" href="../../css/user-pages.css" />
+</head>
+<body>
+  <nav class="nav"></nav>
+
+  <header class="user-hero">
+    <div class="container">
+      <p class="user-hero__eyebrow" data-i18n="profileDashboard.accountEyebrow">Аккаунт</p>
+      <h1 class="user-hero__title" data-i18n="profileDashboard.historyPageTitle">История просмотров</h1>
+      <p class="user-hero__sub" data-i18n="profileDashboard.historyPageSub">Недавно открытые страницы мест — чтобы быстро вернуться к просмотру.</p>
+      <nav class="user-quick-nav user-quick-nav--tight" data-i18n-aria-label="profileDashboard.quickNavAria" aria-label="Разделы профиля">
+        <a href="index.html" data-i18n="profileDashboard.navProfile">Профиль</a>
+        <a href="reviews.html" data-i18n="profileDashboard.navReviews">Отзывы</a>
+        <a href="favorites.html" data-i18n="profileDashboard.navFavorites">Избранное</a>
+        <a href="routes.html" data-i18n="profileDashboard.navRoutes">Мои маршруты</a>
+        <a href="history.html" aria-current="page" data-i18n="profileDashboard.navHistory">История</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="user-main">
+    <div class="container">
+      <section class="user-card">
+        <div class="user-card__head">
+          <h2 data-i18n="profileDashboard.historySectionH2">История</h2>
+          <div class="user-card__icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+        </div>
+        <div class="user-actions-row" style="margin: 0 0 12px">
+          <button class="btn btn--outline btn--sm" type="button" id="history-clear" data-i18n="profileDashboard.btnClearHistory">Очистить историю</button>
+        </div>
+        <div class="user-list" id="history-full-list"></div>
+      </section>
+    </div>
+  </main>
+
+  <script type="module" src="../../js/scroll.js"></script>
+  <script type="module" src="../../js/transitions.js"></script>
+  <script type="module" src="../../js/pages/profile-history.js"></script>
+</body>
+</html>

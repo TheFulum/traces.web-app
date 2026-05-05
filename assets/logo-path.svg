@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" role="img" aria-labelledby="title desc">
+  <title id="title">Следы прошлого — путь</title>
+  <desc id="desc">Стилизованный путь и маркер точки</desc>
+  <rect width="128" height="128" rx="26" fill="#f5f0e8"/>
+  <path d="M20 92C36 66 52 54 70 54C83 54 94 60 108 72" fill="none" stroke="#8b5e3c" stroke-width="10" stroke-linecap="round"/>
+  <circle cx="36" cy="78" r="10" fill="#8b5e3c"/>
+  <path d="M78 40c0 11-14 24-14 24s-14-13-14-24a14 14 0 1 1 28 0Z" fill="#8b5e3c"/>
+  <circle cx="64" cy="40" r="5" fill="#f5f0e8"/>
+</svg>

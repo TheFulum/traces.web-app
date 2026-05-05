@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Экспорт мест — Админ</title>
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="../../css/style.css" />
+  <link rel="stylesheet" href="../css/layout-v2.css" />
+  <style>
+    .export-panel {
+      background: var(--c-surface);
+      border: 1px solid var(--c-border-light);
+      border-radius: var(--radius-lg);
+      padding: 22px 24px;
+      margin-bottom: 18px;
+      box-shadow: var(--shadow-xs);
+    }
+    .export-panel__title {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--c-text-muted);
+      margin: 0 0 14px;
+    }
+    .export-hint {
+      font-size: 0.875rem;
+      color: var(--c-text-muted);
+      margin: 0 0 18px;
+      line-height: 1.45;
+    }
+    .export-radio-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 18px;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+    .export-radio-grid label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.875rem;
+      cursor: pointer;
+    }
+    .export-custom-range {
+      display: none;
+      flex-wrap: wrap;
+      gap: 14px 20px;
+      align-items: flex-end;
+      margin-top: 8px;
+      padding-top: 14px;
+      border-top: 1px solid var(--c-border-light);
+    }
+    .export-custom-range.is-visible { display: flex; }
+    .export-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin-top: 8px;
+    }
+    .export-count {
+      font-size: 0.875rem;
+      color: var(--c-text-muted);
+      margin-left: auto;
+    }
+    .export-count strong { color: var(--c-text); font-weight: 600; }
+    @media (max-width: 640px) {
+      .export-count { margin-left: 0; width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav"></nav>
+  <div class="admin-layout">
+    <aside class="admin-sidebar">
+      <p class="admin-sidebar__label">Навигация</p>
+      <nav class="admin-nav">
+        <a href="dashboard.html">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="14" width="7" height="7"/></svg>
+          Dashboard
+        </a>
+        <a href="places.html">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          Места
+        </a>
+        <a href="places-export.html" class="active">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <span data-i18n="admin.nav.exportPlaces">Экспорт мест</span>
+        </a>
+        <a href="places-import.html">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          <span data-i18n="admin.nav.importPlaces">Импорт мест</span>
+        </a>
+        <a href="home.html">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          Главная
+        </a>
+        <a href="pages.html">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          Страницы
+        </a>
+        <a href="media.html">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+          Медиа
+        </a>
+        <a href="feedback.html">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Обратная связь
+        </a>
+        <a href="reviews.html">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          Отзывы о местах
+        </a>
+        <a href="users.html">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          Пользователи
+        </a>
+      </nav>
+      <div class="sidebar-bottom"><button class="btn btn--outline btn--sm btn--full" id="logout-btn">Выйти</button></div>
+    </aside>
+
+    <main class="admin-main">
+      <div class="admin-topbar">
+        <p class="admin-breadcrumb">Админка / Экспорт мест</p>
+      </div>
+      <div class="admin-main__header">
+        <h1 class="admin-main__title" data-i18n="admin.placesExport.title">Экспорт мест</h1>
+      </div>
+
+      <p class="export-hint" data-i18n="admin.placesExport.hint">
+        Выгрузка списка мест в JSON или CSV. Период считается по дате последнего изменения в базе (updatedAt),
+        если её нет — по дате создания (createdAt). Места без этих полей не попадают в выборку по периоду.
+      </p>
+      <p class="export-hint" data-i18n="admin.placesExport.hintI18n">
+        Переводы: в JSON объект i18n совпадает с вкладками RU/EN в форме места (русский также продублирован в корневых полях name, description и т.д.).
+        В CSV есть отдельные колонки name_en, description_en, … и полный i18n_json для восстановления структуры.
+      </p>
+
+      <div class="export-panel">
+        <p class="export-panel__title" data-i18n="admin.placesExport.periodLabel">Период</p>
+        <div class="export-radio-grid" role="radiogroup" aria-label="Период">
+          <label><input type="radio" name="period-preset" value="all" checked /> <span data-i18n="admin.placesExport.periodAll">Все места</span></label>
+          <label><input type="radio" name="period-preset" value="day" /> <span data-i18n="admin.placesExport.periodDay">Последние сутки</span></label>
+          <label><input type="radio" name="period-preset" value="week" /> <span data-i18n="admin.placesExport.periodWeek">Последняя неделя</span></label>
+          <label><input type="radio" name="period-preset" value="month" /> <span data-i18n="admin.placesExport.periodMonth">Последний месяц</span></label>
+          <label><input type="radio" name="period-preset" value="year" /> <span data-i18n="admin.placesExport.periodYear">Последний год</span></label>
+          <label><input type="radio" name="period-preset" value="custom" /> <span data-i18n="admin.placesExport.periodCustom">Свой диапазон</span></label>
+        </div>
+        <div class="export-custom-range" id="custom-range">
+          <div class="form-group" style="margin:0">
+            <label class="form-label" for="custom-from" data-i18n="admin.placesExport.customFrom">С даты</label>
+            <input type="date" id="custom-from" class="form-control" />
+          </div>
+          <div class="form-group" style="margin:0">
+            <label class="form-label" for="custom-to" data-i18n="admin.placesExport.customTo">По дату</label>
+            <input type="date" id="custom-to" class="form-control" />
+          </div>
+        </div>
+      </div>
+
+      <div class="export-panel">
+        <p class="export-panel__title" data-i18n="admin.placesExport.filtersLabel">Фильтры содержимого</p>
+        <div class="export-radio-grid">
+          <label><input type="checkbox" id="filter-photos" /> <span data-i18n="admin.placesExport.filterPhotos">Только с фотографиями</span></label>
+          <label><input type="checkbox" id="filter-3d" /> <span data-i18n="admin.placesExport.filter3d">Только с 3D</span></label>
+        </div>
+      </div>
+
+      <div class="export-actions">
+        <button type="button" class="btn btn--outline" id="reload-btn" data-i18n="admin.placesExport.reload">Обновить данные</button>
+        <button type="button" class="btn btn--primary" id="download-json" data-i18n="admin.placesExport.downloadJson">Скачать JSON</button>
+        <button type="button" class="btn btn--primary" id="download-csv" data-i18n="admin.placesExport.downloadCsv">Скачать CSV</button>
+        <p class="export-count" id="export-count"></p>
+      </div>
+
+      <div id="toast" class="toast"></div>
+    </main>
+  </div>
+
+  <script type="module" src="../js/shared/admin-shell.js"></script>
+  <script type="module" src="../js/pages/places-export.js"></script>
+</body>
+</html>

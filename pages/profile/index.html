@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml" />
+  <title>Личный кабинет — Следы прошлого</title>
+  <meta name="description" content="Профиль, избранное, история просмотров и ваши отзывы о памятных местах." />
+  <link rel="stylesheet" href="../../css/style.css" />
+  <link rel="stylesheet" href="../../css/user-pages.css" />
+</head>
+<body>
+  <nav class="nav"></nav>
+
+  <header class="user-hero">
+    <div class="container">
+      <p class="user-hero__eyebrow" data-i18n="profileDashboard.accountEyebrow">Аккаунт</p>
+      <h1 class="user-hero__title" data-i18n="profileDashboard.homeTitle">Личный кабинет</h1>
+      <p class="user-hero__sub" data-i18n="profileDashboard.homeSub">
+        Управляйте данными профиля, смотрите отзывы и места, которые вы сохраняли. Всё, что нужно для работы с каталогом, — в одном месте.
+      </p>
+      <nav class="user-quick-nav user-quick-nav--tight" data-i18n-aria-label="profileDashboard.quickNavAria" aria-label="Разделы профиля">
+        <a href="index.html" aria-current="page" data-i18n="profileDashboard.navProfile">Профиль</a>
+        <a href="reviews.html" data-i18n="profileDashboard.navReviews">Отзывы</a>
+        <a href="favorites.html" data-i18n="profileDashboard.navFavorites">Избранное</a>
+        <a href="routes.html" data-i18n="profileDashboard.navRoutes">Мои маршруты</a>
+        <a href="history.html" data-i18n="profileDashboard.navHistory">История</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="user-main">
+    <div class="container user-main__grid">
+      <div class="user-stack">
+        <section class="user-card" aria-labelledby="profile-account-h">
+          <div class="user-card__head">
+            <div>
+              <h2 id="profile-account-h" data-i18n="profileDashboard.accountTitle">Профиль</h2>
+            </div>
+            <div class="user-card__icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+          </div>
+          <p class="user-card__hint" data-i18n="profileDashboard.accountHint">Имя и email отображаются в отзывах. Смена email выполняется в блоке «Безопасность» с подтверждением паролем.</p>
+          <div class="form-group">
+            <label class="form-label" for="profile-name" data-i18n="profileDashboard.labelName">Имя</label>
+            <input id="profile-name" class="form-control" maxlength="120" autocomplete="name" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="profile-email" data-i18n="profileDashboard.labelEmail">Email</label>
+            <input id="profile-email" type="email" class="form-control" maxlength="254" autocomplete="email" />
+          </div>
+          <div class="user-actions-row">
+            <button class="btn btn--primary" type="button" id="profile-save" data-i18n="profileDashboard.btnSaveProfile">Сохранить профиль</button>
+          </div>
+          <p class="user-status" id="profile-status" role="status" aria-live="polite"></p>
+        </section>
+
+        <section class="user-card user-card--muted" aria-labelledby="profile-security-h">
+          <div class="user-card__head">
+            <div>
+              <h2 id="profile-security-h" data-i18n="profileDashboard.securityTitle">Безопасность</h2>
+            </div>
+            <div class="user-card__icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </div>
+          </div>
+          <p class="user-card__hint" data-i18n="profileDashboard.securityHint">Для смены пароля или email сначала введите текущий пароль — так мы убеждаемся, что это вы.</p>
+          <div class="form-group">
+            <label class="form-label" for="current-password" data-i18n="profileDashboard.labelCurrentPassword">Текущий пароль</label>
+            <input id="current-password" type="password" class="form-control" autocomplete="current-password" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="new-password" data-i18n="profileDashboard.labelNewPassword">Новый пароль</label>
+            <input id="new-password" type="password" class="form-control" autocomplete="new-password" />
+          </div>
+          <div class="user-actions-row">
+            <button class="btn btn--outline" type="button" id="password-save" data-i18n="profileDashboard.btnUpdateSecurity">Обновить пароль / email</button>
+          </div>
+          <p class="user-status" id="security-status" role="status" aria-live="polite"></p>
+        </section>
+
+        <section class="user-card" aria-label="Выход из аккаунта">
+          <div class="user-actions-row">
+            <button class="btn btn--outline" type="button" id="logout-btn" data-i18n="profileDashboard.logout">Выйти из аккаунта</button>
+          </div>
+        </section>
+      </div>
+
+      <div class="user-stack">
+        <section class="user-card" aria-labelledby="profile-reviews-h">
+          <div class="user-card__head">
+            <h2 id="profile-reviews-h" data-i18n="profileDashboard.reviewsCardTitle">Мои отзывы</h2>
+            <div class="user-card__icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </div>
+          </div>
+          <p class="user-card__hint" data-i18n="profileDashboard.reviewsCardHint">Отзывы о местах проходят модерацию перед публикацией.</p>
+          <div class="user-list" id="my-reviews-list"></div>
+          <div class="user-actions-row user-actions-row--end" style="margin-top:12px">
+            <a class="user-link-btn" href="reviews.html" data-i18n="profileDashboard.linkAllReviews">Показать все →</a>
+          </div>
+        </section>
+
+        <section class="user-card" aria-labelledby="profile-routes-h">
+          <div class="user-card__head">
+            <h2 id="profile-routes-h" data-i18n="profileDashboard.routesCardTitle">Мои маршруты</h2>
+            <div class="user-card__icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+            </div>
+          </div>
+          <p class="user-card__hint" data-i18n="profileDashboard.routesCardHint">Сохраняйте подборки на странице «Маршрут» и открывайте их здесь — тот же порядок точек.</p>
+          <div class="user-actions-row user-actions-row--end" style="margin-top:12px">
+            <a class="user-link-btn" href="routes.html" data-i18n="profileDashboard.linkAllRoutes">Все сохранённые маршруты →</a>
+          </div>
+        </section>
+
+        <section class="user-card" aria-labelledby="profile-fav-h">
+          <div class="user-card__head">
+            <h2 id="profile-fav-h" data-i18n="profileDashboard.favoritesCardTitle">Избранное</h2>
+            <div class="user-card__icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            </div>
+          </div>
+          <div class="user-list" id="favorites-list"></div>
+          <div class="user-actions-row user-actions-row--end" style="margin-top:12px">
+            <a class="user-link-btn" href="favorites.html" data-i18n="profileDashboard.linkAllFavorites">Показать все →</a>
+          </div>
+        </section>
+
+        <section class="user-card" aria-labelledby="profile-history-h">
+          <div class="user-card__head">
+            <h2 id="profile-history-h" data-i18n="profileDashboard.historyCardTitle">История просмотров</h2>
+            <div class="user-card__icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+          </div>
+          <div class="user-list" id="history-list"></div>
+          <div class="user-actions-row user-actions-row--end" style="margin-top:12px">
+            <a class="user-link-btn" href="history.html" data-i18n="profileDashboard.linkAllHistory">Показать все →</a>
+          </div>
+        </section>
+
+      </div>
+    </div>
+  </main>
+
+  <script type="module" src="../../js/scroll.js"></script>
+  <script type="module" src="../../js/transitions.js"></script>
+  <script type="module" src="../../js/pages/profile.js"></script>
+</body>
+</html>

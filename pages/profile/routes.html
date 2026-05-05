@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml" />
+  <title>Сохранённые маршруты — Следы прошлого</title>
+  <meta name="description" content="Маршруты из каталога, сохранённые в вашем аккаунте." />
+  <link rel="preconnect" href="https://www.gstatic.com" />
+  <link rel="preconnect" href="https://firestore.googleapis.com" />
+  <link rel="stylesheet" href="../../css/style.css" />
+  <link rel="stylesheet" href="../../css/user-pages.css" />
+</head>
+<body>
+  <nav class="nav"></nav>
+
+  <header class="user-hero">
+    <div class="container">
+      <p class="user-hero__eyebrow" data-i18n="profileDashboard.accountEyebrow">Аккаунт</p>
+      <h1 class="user-hero__title" data-i18n="profileRoutes.heroTitle">Сохранённые маршруты</h1>
+      <p class="user-hero__sub" data-i18n="profileRoutes.heroSub">
+        Открывайте сохранённые подборки — порядок точек будет как при сохранении.
+      </p>
+      <nav class="user-quick-nav user-quick-nav--tight" data-i18n-aria-label="profileDashboard.quickNavAria" aria-label="Разделы профиля">
+        <a href="index.html" data-i18n="profileDashboard.navProfile">Профиль</a>
+        <a href="reviews.html" data-i18n="profileDashboard.navReviews">Отзывы</a>
+        <a href="favorites.html" data-i18n="profileDashboard.navFavorites">Избранное</a>
+        <a href="routes.html" aria-current="page" data-i18n="profileDashboard.navRoutes">Мои маршруты</a>
+        <a href="history.html" data-i18n="profileDashboard.navHistory">История</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="user-main">
+    <div class="container">
+      <section class="user-card">
+        <div class="user-card__head">
+          <h2 data-i18n="profileRoutes.pageTitle">Мои маршруты</h2>
+          <div class="user-card__icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="3 11 22 2 13 21 11 13 3 11"/>
+            </svg>
+          </div>
+        </div>
+        <p id="saved-routes-empty" class="user-empty hidden" role="status"></p>
+        <div id="saved-routes-grid" class="saved-routes-grid" aria-live="polite"></div>
+      </section>
+    </div>
+  </main>
+
+  <script type="module" src="../../js/scroll.js"></script>
+  <script type="module" src="../../js/transitions.js"></script>
+  <script type="module" src="../../js/pages/profile-routes.js"></script>
+</body>
+</html>

@@ -1,0 +1,2 @@
+// Актуальные правила — в корне репозитория: `firestore.rules`.
+// Деплой: firebase deploy --only firestore:rules

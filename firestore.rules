@@ -1,0 +1,170 @@
+// Deploy: firebase deploy --only firestore:rules
+//
+// Первый администратор: Firebase Console → Firestore → users → ваш UID → role = "admin" (string).
+// Синхронизируйте этот файл с репозиторием сайта и мобильного приложения; блок notifications нужен Android (in-app, без push).
+
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function userDoc(uid) {
+      return get(/databases/$(database)/documents/users/$(uid)).data;
+    }
+
+    function userExists(uid) {
+      return exists(/databases/$(database)/documents/users/$(uid));
+    }
+
+    function isAdmin() {
+      return signedIn()
+        && userExists(request.auth.uid)
+        && userDoc(request.auth.uid).role == 'admin';
+    }
+
+    function userCommentsBanned(uid) {
+      return userExists(uid) && userDoc(uid).commentsBanned == true;
+    }
+
+    function reviewPublic(r) {
+      return !r.keys().hasAny(['status']) || r.status == 'approved';
+    }
+
+    function notificationSelfProfileCreateShape(data) {
+      return data.keys().hasOnly(['type', 'title', 'body', 'read', 'createdAt'])
+        && data.type in ['profile_email_changed', 'profile_password_changed']
+        && data.title is string
+        && data.title.size() > 0
+        && data.title.size() < 400
+        && data.body is string
+        && data.body.size() < 2000
+        && data.read == false;
+    }
+
+    /** Документ из админки / Console (опционально body и поля модерации отзыва). */
+    function notificationAdminCreateOk(data) {
+      return data.keys().hasAll(['type', 'title', 'read', 'createdAt'])
+        && data.type is string
+        && data.title is string
+        && data.title.size() > 0
+        && data.title.size() < 400
+        && data.read == false
+        && (!data.keys().hasAny(['body'])
+            || (data.body is string && data.body.size() < 2000));
+    }
+
+    // ── Пользователи ───────────────────────────────────────────────────────
+    match /users/{userId} {
+      allow read: if signedIn() && (request.auth.uid == userId || isAdmin());
+
+      allow create: if signedIn()
+        && request.auth.uid == userId
+        && request.resource.data.uid == userId
+        && request.resource.data.role == 'user'
+        && (!request.resource.data.keys().hasAny(['commentsBanned'])
+            || request.resource.data.commentsBanned == false);
+
+      // Обычное обновление — без смены role/commentsBanned.
+      // Разовая миграция: в документе ещё нет поля role → можно выставить user + commentsBanned: false.
+      allow update: if isAdmin() || (
+        signedIn()
+        && request.auth.uid == userId
+        && request.resource.data.uid == resource.data.uid
+        && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role', 'commentsBanned'])
+      ) || (
+        signedIn()
+        && request.auth.uid == userId
+        && request.resource.data.uid == request.auth.uid
+        && !resource.data.keys().hasAny(['role'])
+        && request.resource.data.role == 'user'
+        && request.resource.data.commentsBanned == false
+      );
+
+      allow delete: if false;
+
+      match /routes/{routeId} {
+        allow read, write: if signedIn() && request.auth.uid == userId;
+      }
+
+      // In-app: читает владелец; создаёт админ или сам пользователь (только типы смены почты/пароля в профиле).
+      match /notifications/{notificationId} {
+        allow read: if signedIn() && request.auth.uid == userId;
+        allow update: if signedIn()
+          && request.auth.uid == userId
+          && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['type', 'title', 'body', 'reviewId', 'placeId', 'placeName', 'moderationStatus', 'createdAt']);
+        allow create: if (isAdmin() && notificationAdminCreateOk(request.resource.data))
+          || (
+            signedIn()
+            && request.auth.uid == userId
+            && notificationSelfProfileCreateShape(request.resource.data)
+          );
+        allow delete: if signedIn() && request.auth.uid == userId;
+      }
+    }
+
+    // ── Контент (только админ) ─────────────────────────────────────────────
+    match /places/{placeId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /pagesContent/{slug} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /config/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /mediaLibrary/{docId} {
+      allow read, write: if isAdmin();
+    }
+
+    // ── Обратная связь (гость может создать; читает только админ) ──────────
+    match /feedback/{docId} {
+      allow create: if request.resource.data.keys().hasAll(['email', 'message', 'rating'])
+        && request.resource.data.email is string
+        && request.resource.data.message is string
+        && request.resource.data.rating is int
+        && request.resource.data.rating >= 1
+        && request.resource.data.rating <= 5
+        && request.resource.data.email.size() < 400
+        && (!request.resource.data.keys().hasAny(['name'])
+            || (request.resource.data.name is string && request.resource.data.name.size() < 200))
+        && request.resource.data.message.size() > 0
+        && request.resource.data.message.size() < 12000;
+      allow read, update, delete: if isAdmin();
+    }
+
+    // ── Отзывы о местах ────────────────────────────────────────────────────
+    match /placeReviews/{reviewId} {
+      allow read: if reviewPublic(resource.data)
+        || (signedIn() && resource.data.uid == request.auth.uid)
+        || isAdmin();
+
+      allow create: if signedIn()
+        && !userCommentsBanned(request.auth.uid)
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.placeId is string
+        && request.resource.data.status == 'pending'
+        && request.resource.data.name is string
+        && request.resource.data.email is string
+        && request.resource.data.name.size() < 400
+        && request.resource.data.email.size() < 400
+        && request.resource.data.rating is int
+        && request.resource.data.rating >= 1
+        && request.resource.data.rating <= 5
+        && request.resource.data.comment is string
+        && request.resource.data.comment.size() > 0
+        && request.resource.data.comment.size() < 8000;
+
+      allow update, delete: if isAdmin();
+    }
+  }
+}

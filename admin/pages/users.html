@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Пользователи — Админ</title>
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="../../css/style.css" />
+  <link rel="stylesheet" href="../css/layout-v2.css" />
+  <script>
+    // R2 upload worker for 3D models (photos stay in Cloudinary)
+    window.__TRACES_MEDIA_WORKER_URL__ = "https://traces-media-upload.lipouski-daniil.workers.dev";
+  </script>
+  <style>
+    .admin-users-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .admin-users-toolbar input[type="search"] {
+      flex: 1;
+      min-width: 220px;
+      max-width: 420px;
+      padding: 10px 14px;
+      border: 1px solid var(--c-border-light);
+      border-radius: var(--radius-md);
+      font-size: 0.9rem;
+    }
+    .admin-users-meta {
+      font-size: 0.82rem;
+      color: var(--c-text-muted);
+    }
+    .admin-users-table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--c-border-light);
+      border-radius: var(--radius-lg);
+      background: var(--c-surface);
+    }
+    table.admin-users-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+    }
+    table.admin-users-table th,
+    table.admin-users-table td {
+      padding: 12px 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--c-border-light);
+      vertical-align: middle;
+    }
+    table.admin-users-table th {
+      font-weight: 600;
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--c-text-muted);
+      background: color-mix(in srgb, var(--c-bg-subtle, #f9fafb) 88%, transparent);
+    }
+    table.admin-users-table tr:last-child td { border-bottom: none; }
+    table.admin-users-table select {
+      padding: 6px 10px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--c-border-light);
+      font-size: 0.85rem;
+    }
+    table.admin-users-table .btn--sm { padding: 6px 12px; font-size: 0.78rem; }
+  </style>
+</head>
+<body>
+
+  <nav class="nav"></nav>
+
+  <div class="admin-layout">
+    <aside class="admin-sidebar">
+      <p class="admin-sidebar__label">Навигация</p>
+      <nav class="admin-nav">
+        <a href="dashboard.html">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="14" width="7" height="7"/></svg>
+          Dashboard
+        </a>
+        <a href="places.html">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          Места
+        </a>
+        <a href="places-export.html">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <span data-i18n="admin.nav.exportPlaces">Экспорт мест</span>
+        </a>
+        <a href="places-import.html">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          <span data-i18n="admin.nav.importPlaces">Импорт мест</span>
+        </a>
+        <a href="home.html">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          Главная
+        </a>
+        <a href="pages.html">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          Страницы
+        </a>
+        <a href="media.html">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+          Медиа
+        </a>
+        <a href="feedback.html">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Обратная связь
+        </a>
+        <a href="reviews.html">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          Отзывы о местах
+        </a>
+        <a href="users.html" class="active">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          Пользователи
+        </a>
+      </nav>
+      <div class="sidebar-bottom">
+        <button class="btn btn--outline btn--sm btn--full" id="logout-btn">Выйти</button>
+      </div>
+    </aside>
+
+    <main class="admin-main">
+      <div class="admin-topbar">
+        <p class="admin-breadcrumb">Админка / Пользователи</p>
+      </div>
+      <div class="admin-main__header">
+        <h1 class="admin-main__title" data-i18n="admin.users.title">Пользователи</h1>
+      </div>
+
+      <p class="admin-users-meta" data-i18n="admin.users.hint">Роль «Админ» открывает доступ к этой панели. Блокировка отзывов запрещает публиковать комментарии к местам.</p>
+
+      <div class="admin-users-toolbar">
+        <label class="sr-only" for="users-search" data-i18n="admin.users.searchLabel">Поиск</label>
+        <input type="search" id="users-search" data-i18n-placeholder="admin.users.searchPlaceholder" placeholder="Поиск по почте или имени…" autocomplete="off" />
+        <span class="admin-users-meta" id="users-count"></span>
+      </div>
+
+      <div class="admin-users-table-wrap">
+        <table class="admin-users-table">
+          <thead>
+            <tr>
+              <th data-i18n="admin.users.colEmail">Почта</th>
+              <th data-i18n="admin.users.colName">Имя</th>
+              <th data-i18n="admin.users.colUid">UID</th>
+              <th data-i18n="admin.users.colRole">Роль</th>
+              <th data-i18n="admin.users.colComments">Отзывы</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="users-tbody"></tbody>
+        </table>
+      </div>
+      <p id="users-empty" class="admin-list-empty hidden" data-i18n="admin.users.empty">Никого не нашли.</p>
+    </main>
+  </div>
+
+  <div id="toast" class="toast"></div>
+  <script type="module" src="../js/shared/admin-shell.js"></script>
+  <script type="module" src="../js/pages/users.js"></script>
+</body>
+</html>
