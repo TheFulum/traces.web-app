@@ -1036,7 +1036,7 @@ textarea.form-control { resize: vertical; min-height: 120px; }
 .footer__inner {
   display: grid;
   grid-template-columns: 1.2fr 1fr 1fr .9fr;
-  gap: 22px 18px;
+  gap: 22px 28px;
   align-items: start;
 }
 
@@ -1110,7 +1110,7 @@ textarea.form-control { resize: vertical; min-height: 120px; }
   font-size: .9rem;
   line-height: 1.7;
   color: var(--c-text-muted);
-  max-width: 52ch;
+  max-width: 46ch;
 }
 
 .footer__section-title {
