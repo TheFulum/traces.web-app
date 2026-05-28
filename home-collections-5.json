@@ -1,0 +1,77 @@
+[
+  {
+    "id": "castles",
+    "cover": "https://images.unsplash.com/photo-1758881961001-8581f7eddbad?auto=format&fit=crop&w=1200&q=80",
+    "title": {
+      "ru": "Замки и крепости",
+      "en": "Castles and fortresses",
+      "be": "Замкі і крэпасці"
+    },
+    "description": {
+      "ru": "Мир, Несвиж, Быхов и другие укрепления — от княжеских городищ до магнатских резиденций",
+      "en": "Mir, Nesvizh, Bykhov and more — from medieval strongholds to magnate residences",
+      "be": "Мір, Нясвіж, Быхаў і іншыя — ад гарадзішчаў да магнатскіх рэзідэнцый"
+    },
+    "filter": "tags=Замок,Городище,Крепость"
+  },
+  {
+    "id": "churches",
+    "cover": "https://images.unsplash.com/photo-1759683413783-c94bac566f42?auto=format&fit=crop&w=1200&q=80",
+    "title": {
+      "ru": "Храмы и костёлы",
+      "en": "Churches and cathedrals",
+      "be": "Храмы і касцёлы"
+    },
+    "description": {
+      "ru": "Католические и православные памятники архитектуры по всей Беларуси",
+      "en": "Catholic and Orthodox architectural landmarks across Belarus",
+      "be": "Каталіцкія і праваслаўныя помнікі архітэктуры па ўсёй Беларусі"
+    },
+    "filter": "tags=Костёл,Церковь,Собор"
+  },
+  {
+    "id": "polesie",
+    "cover": "https://images.unsplash.com/photo-1742946280639-0560acd1adaa?auto=format&fit=crop&w=1200&q=80",
+    "title": {
+      "ru": "Полесье",
+      "en": "Polesia",
+      "be": "Полессе"
+    },
+    "description": {
+      "ru": "Озёра, болота, реки и города юга — от Мозыря до Припяти",
+      "en": "Lakes, bogs, rivers and southern towns — from Mozyr to the Pripyat",
+      "be": "Азёры, балоты, ракі і гарады поўдня — ад Мазыра да Прыпяці"
+    },
+    "filter": "tags=Полесье"
+  },
+  {
+    "id": "estates",
+    "cover": "https://images.unsplash.com/photo-1559387188-d5cebb21de5e?auto=format&fit=crop&w=1200&q=80",
+    "title": {
+      "ru": "Усадьбы и дворцы",
+      "en": "Estates and palaces",
+      "be": "Сядзібы і палацы"
+    },
+    "description": {
+      "ru": "Парки, дворцы и усадебные ансамбли шляхты и магнатов",
+      "en": "Parks, palaces and manor ensembles of the nobility",
+      "be": "Паркі, палацы і сядзібныя ансамблі шляхты і магнатаў"
+    },
+    "filter": "tags=Усадьба,Дворец,Парк"
+  },
+  {
+    "id": "with-photos",
+    "cover": "https://images.unsplash.com/photo-1741112705046-6e2b5ecbae9d?auto=format&fit=crop&w=1200&q=80",
+    "title": {
+      "ru": "С фотографиями",
+      "en": "With photos",
+      "be": "З фатаграфіямі"
+    },
+    "description": {
+      "ru": "Места с загруженными снимками — удобно выбрать, куда поехать в первую очередь",
+      "en": "Places with uploaded photos — easier to pick your first trip",
+      "be": "Месцы з фота — прасцей выбраць, куды паехаць у першую чаргу"
+    },
+    "filter": "hasphotos=true"
+  }
+]

@@ -99,6 +99,7 @@ function tsToIso(ts) {
 function serializePlace(place) {
   const { id, ...rest } = place;
   const ruDoc = place.i18n?.ru && typeof place.i18n.ru === 'object' ? place.i18n.ru : {};
+  const beDoc = place.i18n?.be && typeof place.i18n.be === 'object' ? place.i18n.be : null;
   const ruNormalized = {
     name: String(ruDoc.name ?? place.name ?? '').trim(),
     description: String(ruDoc.description ?? place.description ?? '').trim(),
@@ -110,6 +111,9 @@ function serializePlace(place) {
     ru: { ...ruDoc, ...ruNormalized },
     ...(place.i18n?.en && typeof place.i18n.en === 'object' && Object.keys(place.i18n.en).length
       ? { en: place.i18n.en }
+      : {}),
+    ...(beDoc && Object.keys(beDoc).length
+      ? { be: beDoc }
       : {})
   };
 
@@ -137,6 +141,7 @@ function placesToCsv(rows) {
     'author',
     'address',
     'opening_address',
+    'city',
     'openingDate',
     'tags',
     'name_en',
@@ -144,7 +149,15 @@ function placesToCsv(rows) {
     'author_en',
     'address_en',
     'opening_address_en',
+    'city_en',
     'tags_en',
+    'name_be',
+    'description_be',
+    'author_be',
+    'address_be',
+    'opening_address_be',
+    'city_be',
+    'tags_be',
     'lat',
     'lng',
     'photos_json',
@@ -164,8 +177,10 @@ function placesToCsv(rows) {
   const lines = [headers.join(',')];
   for (const p of rows) {
     const en = p.i18n?.en && typeof p.i18n.en === 'object' ? p.i18n.en : {};
+    const be = p.i18n?.be && typeof p.i18n.be === 'object' ? p.i18n.be : {};
     const tags = Array.isArray(p.tags) ? p.tags.join('; ') : '';
     const tagsEn = Array.isArray(en.tags) ? en.tags.map(t => String(t).trim()).filter(Boolean).join('; ') : '';
+    const tagsBe = Array.isArray(be.tags) ? be.tags.map(t => String(t).trim()).filter(Boolean).join('; ') : '';
     const photoCount = Array.isArray(p.photos) ? p.photos.length : 0;
     const photosJson = JSON.stringify(Array.isArray(p.photos) ? p.photos : []);
     const createdOnJson = JSON.stringify(p.createdOn ?? null);
@@ -177,6 +192,7 @@ function placesToCsv(rows) {
       p.author || '',
       p.location?.address ?? '',
       p.openingAddress ?? '',
+      p.i18n?.ru?.city ?? p.city ?? '',
       p.openingDate || '',
       tags,
       en.name ?? '',
@@ -184,7 +200,15 @@ function placesToCsv(rows) {
       en.author ?? '',
       en.address ?? '',
       en.openingAddress ?? '',
+      en.city ?? '',
       tagsEn,
+      be.name ?? '',
+      be.description ?? '',
+      be.author ?? '',
+      be.address ?? '',
+      be.openingAddress ?? '',
+      be.city ?? '',
+      tagsBe,
       p.location?.lat ?? '',
       p.location?.lng ?? '',
       photosJson,

@@ -1,0 +1,239 @@
+[
+  {
+    "has3D": false,
+    "modelUrl": null,
+    "location": {
+      "lng": 28.6344,
+      "lat": 52.4944,
+      "address": "Костёл Успения, Глуск, Минская область, Беларусь"
+    },
+    "createdAt": "2026-05-21T18:00:00.000Z",
+    "featured": false,
+    "featuredOrder": null,
+    "updatedAt": "2026-05-21T18:00:00.000Z",
+    "description": "Костёл Успения в Глуське — главный католический храм районного центра почти на прямой между Речицей и Старобином. Неоготическая башня видна издалека на фоне низкой полесской застройки. Глуск известен торфом и аграрным краем; костёл закрывает одну из самых пустых зон карты между Гомельщиной и Слуцким направлением.",
+    "createdOn": {
+      "day": null,
+      "sortKey": 18900000,
+      "precision": "year",
+      "display": "кон. XIX в.",
+      "year": 1890,
+      "month": null
+    },
+    "author": null,
+    "openingDate": "кон. XIX в.",
+    "name": "Костёл Успения Пресвятой Девы Марии (Глуск)",
+    "openingAddress": "",
+    "i18n": {
+      "ru": {
+        "address": "Глуск, Минская область, Беларусь",
+        "city": "Глуск",
+        "author": null,
+        "description": "Костёл Успения в Глуське — главный католический храм районного центра почти на прямой между Речицей и Старобином. Неоготическая башня видна издалека на фоне низкой полесской застройки. Глуск известен торфом и аграрным краем; костёл закрывает одну из самых пустых зон карты между Гомельщиной и Слуцким направлением.",
+        "openingAddress": "",
+        "name": "Костёл Успения Пресвятой Девы Марии (Глуск)"
+      },
+      "en": {
+        "address": "Глуск, Minsk Region, Belarus",
+        "city": "Глуск",
+        "author": null,
+        "name": "Church of the Assumption (Hlusk)",
+        "description": "The Assumption Church in Hlusk is the main Catholic church of a district centre almost on the line between Rechitsa and Starobin. A neo-Gothic tower stands above low Polesie fabric. Hlusk fills one of the emptiest map zones between Gomel Region and the Slutsk area.",
+        "tags": [
+          "Belarus",
+          "Minsk Region",
+          "Hlusk",
+          "Church",
+          "Neo-Gothic",
+          "19th century"
+        ]
+      },
+      "be": {
+        "address": "Глуск, Мінская вобласць, Беларусь",
+        "city": "Глуск",
+        "author": null,
+        "name": "Касцёл Унебаўзяцця (Глуск)",
+        "description": "Касцёл Унебаўзяцця ў Глуську — галоўны каталіцкі храм раённага цэнтра на лініі Рэчыца — Старобін, кропка на самай «пустой» зоне карты.",
+        "tags": [
+          "Беларусь",
+          "Мінская вобласць",
+          "Глуск",
+          "Касцёл",
+          "Неаготыка",
+          "XIX стагоддзе"
+        ]
+      }
+    },
+    "sketchfabUrl": null,
+    "photos": [],
+    "city": "Глуск",
+    "modelType": null,
+    "hasPhotos": false,
+    "tags": [
+      "Беларусь",
+      "Минская область",
+      "Глуск",
+      "Костёл",
+      "Неоготика",
+      "XIX век"
+    ],
+    "id": "belarus_place_136"
+  },
+  {
+    "has3D": false,
+    "modelUrl": null,
+    "location": {
+      "lng": 28.742,
+      "lat": 52.553,
+      "address": "Свято-Успенская церковь, Погар, Гомельская область, Беларусь"
+    },
+    "createdAt": "2026-05-21T18:00:00.000Z",
+    "featured": false,
+    "featuredOrder": null,
+    "updatedAt": "2026-05-21T18:00:00.000Z",
+    "description": "Свято-Успенская церковь в Погаре — православный храм в посёлке, лежащем почти на трассе между Речицей и Старобином. Купол и колокольня — редкий архитектурный акцент в лесистом коридоре южной Беларуси. Погар связан с окрестными болотами и речками; церковь помогает заполнить центральный «провал» на карте между Светлогорском и Глуськом.",
+    "createdOn": {
+      "day": null,
+      "sortKey": 18900000,
+      "precision": "year",
+      "display": "кон. XIX в.",
+      "year": 1890,
+      "month": null
+    },
+    "author": null,
+    "openingDate": "кон. XIX в.",
+    "name": "Свято-Успенская церковь (Погар)",
+    "openingAddress": "",
+    "i18n": {
+      "ru": {
+        "address": "Погар, Гомельская область, Беларусь",
+        "city": "Погар",
+        "author": null,
+        "description": "Свято-Успенская церковь в Погаре — православный храм в посёлке, лежащем почти на трассе между Речицей и Старобином. Купол и колокольня — редкий архитектурный акцент в лесистом коридоре южной Беларуси. Погар связан с окрестными болотами и речками; церковь помогает заполнить центральный «провал» на карте между Светлогорском и Глуськом.",
+        "openingAddress": "",
+        "name": "Свято-Успенская церковь (Погар)"
+      },
+      "en": {
+        "address": "Погар, Gomel Region, Belarus",
+        "city": "Погар",
+        "author": null,
+        "name": "Dormition Church (Pogar)",
+        "description": "The Dormition Church in Pogar is an Orthodox church in a settlement almost on the Rechitsa–Starobin corridor. Dome and bell tower are rare architectural markers in this wooded belt. The church fills the central gap on the map between Svetlogorsk and Hlusk.",
+        "tags": [
+          "Belarus",
+          "Gomel Region",
+          "Pogar",
+          "Church",
+          "Orthodox",
+          "19th century"
+        ]
+      },
+      "be": {
+        "address": "Погар, Гомельская вобласць, Беларусь",
+        "city": "Погар",
+        "author": null,
+        "name": "Свята-Успенская царква (Погар)",
+        "description": "Свята-Успенская царква ў Погары — праваслаўны храм амаль на лініі Рэчыца — Старобін, кропка ў цэнтры «пустога» калідора карты.",
+        "tags": [
+          "Беларусь",
+          "Гомельская вобласць",
+          "Погар",
+          "Царква",
+          "Праваслаўе",
+          "XIX стагоддзе"
+        ]
+      }
+    },
+    "sketchfabUrl": null,
+    "photos": [],
+    "city": "Погар",
+    "modelType": null,
+    "hasPhotos": false,
+    "tags": [
+      "Беларусь",
+      "Гомельская область",
+      "Погар",
+      "Церковь",
+      "Православие",
+      "XIX век"
+    ],
+    "id": "belarus_place_137"
+  },
+  {
+    "has3D": false,
+    "modelUrl": null,
+    "location": {
+      "lng": 28.8394,
+      "lat": 52.7139,
+      "address": "Костёл Святого Антония, Копаткевичи, Минская область, Беларусь"
+    },
+    "createdAt": "2026-05-21T18:00:00.000Z",
+    "featured": false,
+    "featuredOrder": null,
+    "updatedAt": "2026-05-21T18:00:00.000Z",
+    "description": "Костёл Святого Антония в Копаткевичах — кирпичный храм в районном центре на восточном фланге коридора Речица — Старобин, недалеко от Октябрьского и Любани. Башня доминирует над площадью. Копаткевичи выросли как аграрный и железнодорожный узел; костёл — главная историческая вертикаль для туристической карты в полосе 10–20 км от условной линии.",
+    "createdOn": {
+      "day": null,
+      "sortKey": 18900000,
+      "precision": "year",
+      "display": "кон. XIX в.",
+      "year": 1890,
+      "month": null
+    },
+    "author": null,
+    "openingDate": "кон. XIX в.",
+    "name": "Костёл Святого Антония (Копаткевичи)",
+    "openingAddress": "",
+    "i18n": {
+      "ru": {
+        "address": "Копаткевичи, Минская область, Беларусь",
+        "city": "Копаткевичи",
+        "author": null,
+        "description": "Костёл Святого Антония в Копаткевичах — кирпичный храм в районном центре на восточном фланге коридора Речица — Старобин, недалеко от Октябрьского и Любани. Башня доминирует над площадью. Копаткевичи выросли как аграрный и железнодорожный узел; костёл — главная историческая вертикаль для туристической карты в полосе 10–20 км от условной линии.",
+        "openingAddress": "",
+        "name": "Костёл Святого Антония (Копаткевичи)"
+      },
+      "en": {
+        "address": "Копаткевичи, Minsk Region, Belarus",
+        "city": "Копаткевичи",
+        "author": null,
+        "name": "Church of Saint Anthony (Kopatkevichi)",
+        "description": "The Church of Saint Anthony in Kopatkevichi is a brick church on the eastern side of the Rechitsa–Starobin corridor near Lyuban. A tower dominates the square. It is the main historic landmark filling the 10–20 km belt on the map.",
+        "tags": [
+          "Belarus",
+          "Minsk Region",
+          "Kopatkevichi",
+          "Church",
+          "19th century"
+        ]
+      },
+      "be": {
+        "address": "Копаткевичи, Мінская вобласць, Беларусь",
+        "city": "Копаткевичи",
+        "author": null,
+        "name": "Касцёл Святога Антона (Капаткевічы)",
+        "description": "Касцёл Святога Антона ў Капаткевічах — храм на ўсходнім фланзе калідора Рэчыца — Старобін, галоўная вертыкаль раённага цэнтра.",
+        "tags": [
+          "Беларусь",
+          "Мінская вобласць",
+          "Капаткевічы",
+          "Касцёл",
+          "XIX стагоддзе"
+        ]
+      }
+    },
+    "sketchfabUrl": null,
+    "photos": [],
+    "city": "Копаткевичи",
+    "modelType": null,
+    "hasPhotos": false,
+    "tags": [
+      "Беларусь",
+      "Минская область",
+      "Копаткевичи",
+      "Костёл",
+      "XIX век"
+    ],
+    "id": "belarus_place_138"
+  }
+]

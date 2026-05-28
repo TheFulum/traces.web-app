@@ -1,0 +1,1226 @@
+[
+  {
+    "has3D": false,
+    "modelUrl": null,
+    "location": {
+      "lng": 29.7158,
+      "lat": 53.7836,
+      "address": "Костёл Святого Антония, Белыничи, Могилёвская область, Беларусь"
+    },
+    "createdAt": "2026-05-21T10:00:00.000Z",
+    "featured": false,
+    "featuredOrder": null,
+    "updatedAt": "2026-05-21T10:00:00.000Z",
+    "description": "Костёл Святого Антония Падуанского в Белыничах — главный архитектурный памятник районного центра на полпути между Могилёвом и Бобруйском. Неоготический кирпичный храм с высокой башней доминирует над исторической застройкой, сохранившей черты местечка Речи Посполитой. Белыничи известны также усадебным наследием и связями с польско-литовской шляхтой; костёл стал духовным центром католической общины региона. После реставрации храм вновь открыт для богослужений и входит в маршруты по восточной Могилёвщине.",
+    "createdOn": {
+      "day": null,
+      "sortKey": 18900000,
+      "precision": "year",
+      "display": "кон. XIX в.",
+      "year": 1890,
+      "month": null
+    },
+    "author": null,
+    "openingDate": "кон. XIX в.",
+    "name": "Костёл Святого Антония Падуанского (Белыничи)",
+    "openingAddress": "",
+    "i18n": {
+      "ru": {
+        "address": "Белыничи, Могилёвская область, Беларусь",
+        "city": "Белыничи",
+        "author": null,
+        "description": "Костёл Святого Антония Падуанского в Белыничах — главный архитектурный памятник районного центра на полпути между Могилёвом и Бобруйском. Неоготический кирпичный храм с высокой башней доминирует над исторической застройкой, сохранившей черты местечка Речи Посполитой. Белыничи известны также усадебным наследием и связями с польско-литовской шляхтой; костёл стал духовным центром католической общины региона. После реставрации храм вновь открыт для богослужений и входит в маршруты по восточной Могилёвщине.",
+        "openingAddress": "",
+        "name": "Костёл Святого Антония Падуанского (Белыничи)"
+      },
+      "en": {
+        "address": "Belynichi, Mogilev Region, Belarus",
+        "city": "Belynichi",
+        "author": null,
+        "name": "Church of Saint Anthony of Padua (Belynichi)",
+        "description": "The Church of Saint Anthony of Padua in Belynichi is the main architectural landmark of the district centre halfway between Mogilev and Bobruisk. The neo-Gothic brick church with a tall tower dominates the historic fabric of a town that retains the character of a Polish-Lithuanian Commonwealth settlement. Belynichi are also known for estate heritage and ties to the nobility; the church became the spiritual centre of the local Catholic community. After restoration it is open again for worship and features on routes through eastern Mogilev Region.",
+        "tags": [
+          "Belarus",
+          "Mogilev Region",
+          "Belynichi",
+          "Church",
+          "Neo-Gothic",
+          "19th century"
+        ]
+      },
+      "be": {
+        "address": "Белынічы, Магілёўская вобласць, Беларусь",
+        "city": "Белынічы",
+        "author": null,
+        "name": "Касцёл Святога Антона Падуанскага (Белынічы)",
+        "description": "Касцёл Святога Антона Падуанскага ў Белынічах — галоўны архітэктурны помнік раённага цэнтра на паловіні шляху паміж Магілёвам і Бабруйскам. Неагатычны цагляны храм з высокай вежай дамінуе над гістарычнай забудовай мястэчка. Белынічы вядомыя сядзібнай спадчынай; касцёл стаў духоўным цэнтрам каталіцкай супольнасці рэгіёна. Пасля рэстаўрацыі храм зноў адкрыты для богаслужэнняў.",
+        "tags": [
+          "Беларусь",
+          "Магілёўская вобласць",
+          "Белынічы",
+          "Касцёл",
+          "Неаготыка",
+          "XIX стагоддзе"
+        ]
+      }
+    },
+    "sketchfabUrl": null,
+    "photos": [],
+    "city": "Белыничи",
+    "modelType": null,
+    "hasPhotos": false,
+    "tags": [
+      "Беларусь",
+      "Могилёвская область",
+      "Белыничи",
+      "Костёл",
+      "Неоготика",
+      "XIX век"
+    ],
+    "id": "belarus_place_056"
+  },
+  {
+    "has3D": false,
+    "modelUrl": null,
+    "location": {
+      "lng": 30.9164,
+      "lat": 53.4581,
+      "address": "Костёл Успения, Чериков, Могилёвская область, Беларусь"
+    },
+    "createdAt": "2026-05-21T10:00:00.000Z",
+    "featured": false,
+    "featuredOrder": null,
+    "updatedAt": "2026-05-21T10:00:00.000Z",
+    "description": "Костёл Успения Пресвятой Девы Марии в Черикове — визитная карточка небольшого города на востоке Могилёвской области, известного с XV века. Монументальный кирпичный храм в неороманском стиле возвышается над площадью, рядом сохранились здания исторического центра. Чериков расположен на холмистом берегу Сожи; в окрестностях — памятники природы и следы старинных торговых путей. Костёл подчёркивает многоконфессиональную историю края и дополняет маршруты между Могилёвом и восточными районами.",
+    "createdOn": {
+      "day": null,
+      "sortKey": 18900000,
+      "precision": "year",
+      "display": "кон. XIX в.",
+      "year": 1890,
+      "month": null
+    },
+    "author": null,
+    "openingDate": "кон. XIX в.",
+    "name": "Костёл Успения Пресвятой Девы Марии (Чериков)",
+    "openingAddress": "",
+    "i18n": {
+      "ru": {
+        "address": "Чериков, Могилёвская область, Беларусь",
+        "city": "Чериков",
+        "author": null,
+        "description": "Костёл Успения Пресвятой Девы Марии в Черикове — визитная карточка небольшого города на востоке Могилёвской области, известного с XV века. Монументальный кирпичный храм в неороманском стиле возвышается над площадью, рядом сохранились здания исторического центра. Чериков расположен на холмистом берегу Сожи; в окрестностях — памятники природы и следы старинных торговых путей. Костёл подчёркивает многоконфессиональную историю края и дополняет маршруты между Могилёвом и восточными районами.",
+        "openingAddress": "",
+        "name": "Костёл Успения Пресвятой Девы Марии (Чериков)"
+      },
+      "en": {
+        "address": "Cherikov, Mogilev Region, Belarus",
+        "city": "Cherikov",
+        "author": null,
+        "name": "Church of the Assumption of the Blessed Virgin Mary (Cherikov)",
+        "description": "The Church of the Assumption in Cherikov is the landmark of a small town in eastern Mogilev Region, known since the 15th century. The monumental brick church in neo-Romanesque style rises above the square, near surviving buildings of the historic centre. Cherikov lies on hilly banks of the Sozh; the area has nature monuments and traces of old trade routes. The church highlights the region's multi-confessional history on routes between Mogilev and eastern districts.",
+        "tags": [
+          "Belarus",
+          "Mogilev Region",
+          "Cherikov",
+          "Church",
+          "19th century",
+          "Sozh"
+        ]
+      },
+      "be": {
+        "address": "Чэрыкаў, Магілёўская вобласць, Беларусь",
+        "city": "Чэрыкаў",
+        "author": null,
+        "name": "Касцёл Унебаўзяцця Найсвяцейшай Дзевы Марыі (Чэрыкаў)",
+        "description": "Касцёл Унебаўзяцця ў Чэрыкаўе — візітная картка горада на ўсходзе Магілёўскай вобласці, вядомага з XV стагоддзя. Манументальны цагляны храм у неарамантычным стылі ўзвышаецца над плошчай. Чэрыкаў на ўзгорку Сожу; касцёл падкрэслівае шматканфесійную гісторыю краю.",
+        "tags": [
+          "Беларусь",
+          "Магілёўская вобласць",
+          "Чэрыкаў",
+          "Касцёл",
+          "XIX стагоддзе",
+          "Сож"
+        ]
+      }
+    },
+    "sketchfabUrl": null,
+    "photos": [],
+    "city": "Чериков",
+    "modelType": null,
+    "hasPhotos": false,
+    "tags": [
+      "Беларусь",
+      "Могилёвская область",
+      "Чериков",
+      "Костёл",
+      "XIX век",
+      "Сож"
+    ],
+    "id": "belarus_place_057"
+  },
+  {
+    "has3D": false,
+    "modelUrl": null,
+    "location": {
+      "lng": 28.6389,
+      "lat": 53.2994,
+      "address": "Музей истории и культуры, Осиповичи, Могилёвская область, Беларусь"
+    },
+    "createdAt": "2026-05-21T10:00:00.000Z",
+    "featured": false,
+    "featuredOrder": null,
+    "updatedAt": "2026-05-21T10:00:00.000Z",
+    "description": "Музей истории и культуры Осиповичского района — главный культурный центр железнодорожного города на линии Могилёв — Бобруйск. Экспозиция рассказывает о становлении Осиповичей как узла Юго-Восточной железной дороги, быте станционного посёлка и событиях XX века. Город вырос вокруг мастерских и депо; сегодня это важная транспортная точка Полесья. Музей помогает понять историю заселения и промышленного развития полосы западнее Могилёва, где на карте памятников до сих пор мало точек.",
+    "createdOn": {
+      "day": null,
+      "sortKey": 19800000,
+      "precision": "year",
+      "display": "XX в.",
+      "year": 1980,
+      "month": null
+    },
+    "author": null,
+    "openingDate": "XX в.",
+    "name": "Музей истории и культуры Осиповичского района",
+    "openingAddress": "",
+    "i18n": {
+      "ru": {
+        "address": "Осиповичи, Могилёвская область, Беларусь",
+        "city": "Осиповичи",
+        "author": null,
+        "description": "Музей истории и культуры Осиповичского района — главный культурный центр железнодорожного города на линии Могилёв — Бобруйск. Экспозиция рассказывает о становлении Осиповичей как узла Юго-Восточной железной дороги, быте станционного посёлка и событиях XX века. Город вырос вокруг мастерских и депо; сегодня это важная транспортная точка Полесья. Музей помогает понять историю заселения и промышленного развития полосы западнее Могилёва, где на карте памятников до сих пор мало точек.",
+        "openingAddress": "",
+        "name": "Музей истории и культуры Осиповичского района"
+      },
+      "en": {
+        "address": "Osipovichi, Mogilev Region, Belarus",
+        "city": "Osipovichi",
+        "author": null,
+        "name": "Osipovichi District Museum of History and Culture",
+        "description": "The Osipovichi District Museum is the main cultural centre of a railway town on the Mogilev–Bobruisk line. Exhibitions cover the rise of Osipovichi as a hub of the South-Eastern Railway, life in the station settlement and 20th-century events. The town grew around workshops and depots; today it is an important transport point in Polesia. The museum explains settlement and industrial history west of Mogilev, where few heritage sites appear on the map.",
+        "tags": [
+          "Belarus",
+          "Mogilev Region",
+          "Osipovichi",
+          "Museum",
+          "Railway",
+          "20th century"
+        ]
+      },
+      "be": {
+        "address": "Асіповічы, Магілёўская вобласць, Беларусь",
+        "city": "Асіповічы",
+        "author": null,
+        "name": "Музей гісторыі і культуры Асіповіцкага раёна",
+        "description": "Музей гісторыі і культуры Асіповіцкага раёна — галоўны культурны цэнтр чыгуначнага горада на лініі Магілёў — Бабруйск. Экспазіцыя расказвае пра станаўленне Асіповічаў як вузла Паўднёва-Усходняй чыгункі і падзеі XX стагоддзя.",
+        "tags": [
+          "Беларусь",
+          "Магілёўская вобласць",
+          "Асіповічы",
+          "Музей",
+          "Чыгунка",
+          "XX стагоддзе"
+        ]
+      }
+    },
+    "sketchfabUrl": null,
+    "photos": [],
+    "city": "Осиповичи",
+    "modelType": null,
+    "hasPhotos": false,
+    "tags": [
+      "Беларусь",
+      "Могилёвская область",
+      "Осиповичи",
+      "Музей",
+      "Железная дорога",
+      "XX век"
+    ],
+    "id": "belarus_place_058"
+  },
+  {
+    "has3D": false,
+    "modelUrl": null,
+    "location": {
+      "lng": 28.9836,
+      "lat": 54.0169,
+      "address": "Мемориальный комплекс, Березино, Минская область, Беларусь"
+    },
+    "createdAt": "2026-05-21T10:00:00.000Z",
+    "featured": false,
+    "featuredOrder": null,
+    "updatedAt": "2026-05-21T10:00:00.000Z",
+    "description": "Мемориальный комплекс у Березино посвящён форсированию Березины войсками 1812 года и военной истории края. Город на реке Березине связывают с трагическим отступлением Наполеона; в окрестностях сохранились памятные места и музейные экспозиции. Березино — старинный центр ремёсел и торговли между Минском и Могилёвом; сегодня это тихий районный город с деревянной застройкой и набережной. Комплекс — ключевая точка для тех, кто заполняет «пустую» полосу между Могилёвом и Борисовом на карте памятных мест.",
+    "createdOn": {
+      "day": null,
+      "sortKey": 19700000,
+      "precision": "year",
+      "display": "XX в.",
+      "year": 1970,
+      "month": null
+    },
+    "author": null,
+    "openingDate": "XX в.",
+    "name": "Памятный знак «Березина» (Березино)",
+    "openingAddress": "",
+    "i18n": {
+      "ru": {
+        "address": "Березино, Минская область, Беларусь",
+        "city": "Березино",
+        "author": null,
+        "description": "Мемориальный комплекс у Березино посвящён форсированию Березины войсками 1812 года и военной истории края. Город на реке Березине связывают с трагическим отступлением Наполеона; в окрестностях сохранились памятные места и музейные экспозиции. Березино — старинный центр ремёсел и торговли между Минском и Могилёвом; сегодня это тихий районный город с деревянной застройкой и набережной. Комплекс — ключевая точка для тех, кто заполняет «пустую» полосу между Могилёвом и Борисовом на карте памятных мест.",
+        "openingAddress": "",
+        "name": "Памятный знак «Березина» (Березино)"
+      },
+      "en": {
+        "address": "Berezino, Minsk Region, Belarus",
+        "city": "Berezino",
+        "author": null,
+        "name": "Berezina Memorial (Berezino)",
+        "description": "The memorial complex in Berezino commemorates the crossing of the Berezina in 1812 and military history of the area. The town on the Berezina river is linked with Napoleon's retreat; nearby are commemorative sites and museum displays. Berezino is an old centre of crafts and trade between Minsk and Mogilev; today a quiet district town with wooden buildings and an embankment. The complex is a key point for filling the gap between Mogilev and Borisov on the heritage map.",
+        "tags": [
+          "Belarus",
+          "Minsk Region",
+          "Berezino",
+          "Memorial",
+          "1812",
+          "Berezina"
+        ]
+      },
+      "be": {
+        "address": "Беразіно, Мінская вобласць, Беларусь",
+        "city": "Беразіно",
+        "author": null,
+        "name": "Памятны знак «Бярозіна» (Беразіно)",
+        "description": "Мемарыяльны комплекс у Беразіно прысвечаны форсіраванню Бярозіны войскамі 1812 года і ваеннай гісторыі краю. Горад на рацэ Бярозіне — цэнтр рамёстваў і гандлю паміж Мінскам і Магілёвам.",
+        "tags": [
+          "Беларусь",
+          "Мінская вобласць",
+          "Беразіно",
+          "Мемарыял",
+          "1812 год",
+          "Бярозіна"
+        ]
+      }
+    },
+    "sketchfabUrl": null,
+    "photos": [],
+    "city": "Березино",
+    "modelType": null,
+    "hasPhotos": false,
+    "tags": [
+      "Беларусь",
+      "Минская область",
+      "Березино",
+      "Мемориал",
+      "1812 год",
+      "Березина"
+    ],
+    "id": "belarus_place_059"
+  },
+  {
+    "has3D": false,
+    "modelUrl": null,
+    "location": {
+      "lng": 28.2669,
+      "lat": 53.0336,
+      "address": "Костёл Успения, Старые Дороги, Минская область, Беларусь"
+    },
+    "createdAt": "2026-05-21T10:00:00.000Z",
+    "featured": false,
+    "featuredOrder": null,
+    "updatedAt": "2026-05-21T10:00:00.000Z",
+    "description": "Костёл Успения в Старых Дорогах — главный архитектурный памятник города на юге Минской области, в зоне, где на карте памятников долго оставалось пусто. Кирпичный храм в неоготических формах возвышается над центром; рядом — здания межвоенной и послевоенной застройки. Старые Дороги связаны с историей Полесья и железнодорожной линией на Солигорск; город — удобная остановка между Слуцком и Любанью. Костёл отражает католическую традицию региона и дополняет маршруты вокруг калийного Солигорска.",
+    "createdOn": {
+      "day": null,
+      "sortKey": 18900000,
+      "precision": "year",
+      "display": "кон. XIX в.",
+      "year": 1890,
+      "month": null
+    },
+    "author": null,
+    "openingDate": "кон. XIX в.",
+    "name": "Костёл Успения Пресвятой Девы Марии (Старые Дороги)",
+    "openingAddress": "",
+    "i18n": {
+      "ru": {
+        "address": "Старые Дороги, Минская область, Беларусь",
+        "city": "Старые Дороги",
+        "author": null,
+        "description": "Костёл Успения в Старых Дорогах — главный архитектурный памятник города на юге Минской области, в зоне, где на карте памятников долго оставалось пусто. Кирпичный храм в неоготических формах возвышается над центром; рядом — здания межвоенной и послевоенной застройки. Старые Дороги связаны с историей Полесья и железнодорожной линией на Солигорск; город — удобная остановка между Слуцком и Любанью. Костёл отражает католическую традицию региона и дополняет маршруты вокруг калийного Солигорска.",
+        "openingAddress": "",
+        "name": "Костёл Успения Пресвятой Девы Марии (Старые Дороги)"
+      },
+      "en": {
+        "address": "Staryya Darohi, Minsk Region, Belarus",
+        "city": "Staryya Darohi",
+        "author": null,
+        "name": "Church of the Assumption (Staryya Darohi)",
+        "description": "The Church of the Assumption in Staryya Darohi is the main architectural landmark of a town in southern Minsk Region, in an area long empty on heritage maps. The brick neo-Gothic church rises above the centre near interwar and post-war buildings. The town is linked with Polesia history and the railway to Soligorsk; a convenient stop between Slutsk and Lyuban. The church reflects the region's Catholic tradition around mining Soligorsk.",
+        "tags": [
+          "Belarus",
+          "Minsk Region",
+          "Staryya Darohi",
+          "Church",
+          "Neo-Gothic",
+          "19th century",
+          "Polesia"
+        ]
+      },
+      "be": {
+        "address": "Старыя Дарогі, Мінская вобласць, Беларусь",
+        "city": "Старыя Дарогі",
+        "author": null,
+        "name": "Касцёл Унебаўзяцця (Старыя Дарогі)",
+        "description": "Касцёл Унебаўзяцця ў Старых Дарогах — галоўны архітэктурны помнік горада на поўдні Мінскай вобласці ў зоне, дзе на карце доўга была пуста. Неагатычны цагляны храм узвышаецца над цэнтрам.",
+        "tags": [
+          "Беларусь",
+          "Мінская вобласць",
+          "Старыя Дарогі",
+          "Касцёл",
+          "Неаготыка",
+          "XIX стагоддзе",
+          "Полессе"
+        ]
+      }
+    },
+    "sketchfabUrl": null,
+    "photos": [],
+    "city": "Старые Дороги",
+    "modelType": null,
+    "hasPhotos": false,
+    "tags": [
+      "Беларусь",
+      "Минская область",
+      "Старые Дороги",
+      "Костёл",
+      "Неоготика",
+      "XIX век",
+      "Полесье"
+    ],
+    "id": "belarus_place_060"
+  },
+  {
+    "has3D": false,
+    "modelUrl": null,
+    "location": {
+      "lng": 28.0003,
+      "lat": 52.8164,
+      "address": "Дом-музей Максима Горького, Любань, Минская область, Беларусь"
+    },
+    "createdAt": "2026-05-21T10:00:00.000Z",
+    "featured": false,
+    "featuredOrder": null,
+    "updatedAt": "2026-05-21T10:00:00.000Z",
+    "description": "Дом-музей Максима Горького в Любани — мемориальный комплекс, посвящённый годам, которые писатель провёл на станции Любань-Ободовская. Деревянный дом с мемориальной обстановкой и прилегающий парк сохраняют атмосферу провинциальной Беларуси конца XIX века. Любань — небольшой город на реке Оресса, в пределах 60–70 км от Солигорска; здесь мало других туристических точек, поэтому музей становится якорем маршрута. Экспозиция рассказывает о раннем Горьком и железнодорожной истории края.",
+    "createdOn": {
+      "day": null,
+      "sortKey": 18900000,
+      "precision": "year",
+      "display": "кон. XIX в.",
+      "year": 1890,
+      "month": null
+    },
+    "author": "Максим Горький",
+    "openingDate": "кон. XIX в.",
+    "name": "Дом-музей Максима Горького (Любань)",
+    "openingAddress": "",
+    "i18n": {
+      "ru": {
+        "address": "Любань, Минская область, Беларусь",
+        "city": "Любань",
+        "author": "Максим Горький",
+        "description": "Дом-музей Максима Горького в Любани — мемориальный комплекс, посвящённый годам, которые писатель провёл на станции Любань-Ободовская. Деревянный дом с мемориальной обстановкой и прилегающий парк сохраняют атмосферу провинциальной Беларуси конца XIX века. Любань — небольшой город на реке Оресса, в пределах 60–70 км от Солигорска; здесь мало других туристических точек, поэтому музей становится якорем маршрута. Экспозиция рассказывает о раннем Горьком и железнодорожной истории края.",
+        "openingAddress": "",
+        "name": "Дом-музей Максима Горького (Любань)"
+      },
+      "en": {
+        "address": "Lyuban, Minsk Region, Belarus",
+        "city": "Lyuban",
+        "author": "Maxim Gorky",
+        "name": "Maxim Gorky House Museum (Lyuban)",
+        "description": "The Maxim Gorky House Museum in Lyuban commemorates the years the writer spent at Lyuban-Obodovskaya station. The wooden house with memorial interiors and a park preserve the atmosphere of late 19th-century provincial Belarus. Lyuban is a small town within 60–70 km of Soligorsk with few other tourist sites; the museum anchors local routes. Exhibitions cover early Gorky and railway history of the area.",
+        "tags": [
+          "Belarus",
+          "Minsk Region",
+          "Lyuban",
+          "Museum",
+          "Gorky",
+          "19th century",
+          "Literature"
+        ]
+      },
+      "be": {
+        "address": "Любань, Мінская вобласць, Беларусь",
+        "city": "Любань",
+        "author": "Максім Горкі",
+        "name": "Дом-музей Максіма Горкага (Любань)",
+        "description": "Дом-музей Максіма Горкага ў Любані прысвечаны гадам, якія пісьменнік правёў на станцыі. Драўляны дом і парк захоўваюць атмасферу правінцыйнай Беларусі канца XIX стагоддзя. Любань у 60–70 км ад Салігорска.",
+        "tags": [
+          "Беларусь",
+          "Мінская вобласць",
+          "Любань",
+          "Музей",
+          "Горкі",
+          "XIX стагоддзе",
+          "Літаратура"
+        ]
+      }
+    },
+    "sketchfabUrl": null,
+    "photos": [],
+    "city": "Любань",
+    "modelType": null,
+    "hasPhotos": false,
+    "tags": [
+      "Беларусь",
+      "Минская область",
+      "Любань",
+      "Музей",
+      "Горький",
+      "XIX век",
+      "Литература"
+    ],
+    "id": "belarus_place_061"
+  },
+  {
+    "has3D": false,
+    "modelUrl": null,
+    "location": {
+      "lng": 27.8328,
+      "lat": 53.1506,
+      "address": "Костёл Святого Иоанна Крестителя, Копыль, Минская область, Беларусь"
+    },
+    "createdAt": "2026-05-21T10:00:00.000Z",
+    "featured": false,
+    "featuredOrder": null,
+    "updatedAt": "2026-05-21T10:00:00.000Z",
+    "description": "Костёл Святого Иоанна Крестителя в Копыли — доминанта исторического центра древнего города на реке Гаплевич, известного с княжеской эпохи. Монументальный кирпичный храм второй половины XIX века в неороманском стиле стоит рядом с зданиями старой застройки и памятниками краеведческого музея. Копыль связан с именем Симона Будного и традициями протестантизма в Великом Княжестве Литовском. Город лежит в «пустом» кольце вокруг Солигорска и хорошо связывает маршруты на Слуцк, Несвиж и Любань.",
+    "createdOn": {
+      "day": null,
+      "sortKey": 18700000,
+      "precision": "year",
+      "display": "2-я пол. XIX в.",
+      "year": 1870,
+      "month": null
+    },
+    "author": null,
+    "openingDate": "2-я пол. XIX в.",
+    "name": "Костёл Святого Иоанна Крестителя (Копыль)",
+    "openingAddress": "",
+    "i18n": {
+      "ru": {
+        "address": "Копыль, Минская область, Беларусь",
+        "city": "Копыль",
+        "author": null,
+        "description": "Костёл Святого Иоанна Крестителя в Копыли — доминанта исторического центра древнего города на реке Гаплевич, известного с княжеской эпохи. Монументальный кирпичный храм второй половины XIX века в неороманском стиле стоит рядом с зданиями старой застройки и памятниками краеведческого музея. Копыль связан с именем Симона Будного и традициями протестантизма в Великом Княжестве Литовском. Город лежит в «пустом» кольце вокруг Солигорска и хорошо связывает маршруты на Слуцк, Несвиж и Любань.",
+        "openingAddress": "",
+        "name": "Костёл Святого Иоанна Крестителя (Копыль)"
+      },
+      "en": {
+        "address": "Kopyl, Minsk Region, Belarus",
+        "city": "Kopyl",
+        "author": null,
+        "name": "Church of Saint John the Baptist (Kopyl)",
+        "description": "The Church of Saint John the Baptist in Kopyl dominates the historic centre of an ancient town on the Haplievich river, known since princely times. The monumental brick church of the second half of the 19th century in neo-Romanesque style stands near old buildings and the local history museum. Kopyl is linked with Symon Budny and Reformation traditions in the Grand Duchy of Lithuania. The town lies in the empty ring around Soligorsk and connects routes to Slutsk, Nesvizh and Lyuban.",
+        "tags": [
+          "Belarus",
+          "Minsk Region",
+          "Kopyl",
+          "Church",
+          "19th century",
+          "Symon Budny"
+        ]
+      },
+      "be": {
+        "address": "Копыль, Мінская вобласць, Беларусь",
+        "city": "Копыль",
+        "author": null,
+        "name": "Касцёл Святога Іаана Хрысціціця (Копыль)",
+        "description": "Касцёл Святога Іаана Хрысціціця ў Копылі — дамінанта гістарычнага цэнтра старажытнага горада на рацэ Гаплевіч. Копыль звязаны з імем Сымона Буднага і рэфармацыйнымі традыцыямі ВКЛ.",
+        "tags": [
+          "Беларусь",
+          "Мінская вобласць",
+          "Копыль",
+          "Касцёл",
+          "XIX стагоддзе",
+          "Сымон Будны"
+        ]
+      }
+    },
+    "sketchfabUrl": null,
+    "photos": [],
+    "city": "Копыль",
+    "modelType": null,
+    "hasPhotos": false,
+    "tags": [
+      "Беларусь",
+      "Минская область",
+      "Копыль",
+      "Костёл",
+      "XIX век",
+      "Симон Будный"
+    ],
+    "id": "belarus_place_062"
+  },
+  {
+    "has3D": false,
+    "modelUrl": null,
+    "location": {
+      "lng": 27.1664,
+      "lat": 53.4669,
+      "address": "Музей народной архитектуры и быта, Узда, Минская область, Беларусь"
+    },
+    "createdAt": "2026-05-21T10:00:00.000Z",
+    "featured": false,
+    "featuredOrder": null,
+    "updatedAt": "2026-05-21T10:00:00.000Z",
+    "description": "Музей народной архитектуры и быта в Узде — этнографический комплекс под открытым небом с деревянными церквами, мельницей, хатами и амбарами, перенесёнными из разных районов Беларуси. Узда — старинное местечко на реке Узда, вдали от крупных туристических трассе; музей стал главной достопримечательностью района. Экспозиция показывает традиционное жилище, ремёсла и праздники белорусской деревни. Для карты памятных мест вокруг Солигорска это одна из самых содержательных точек в радиусе 70 км.",
+    "createdOn": {
+      "day": null,
+      "sortKey": 19800000,
+      "precision": "year",
+      "display": "XX в.",
+      "year": 1980,
+      "month": null
+    },
+    "author": null,
+    "openingDate": "XX в.",
+    "name": "Музей народной архитектуры и быта (Узда)",
+    "openingAddress": "",
+    "i18n": {
+      "ru": {
+        "address": "Узда, Минская область, Беларусь",
+        "city": "Узда",
+        "author": null,
+        "description": "Музей народной архитектуры и быта в Узде — этнографический комплекс под открытым небом с деревянными церквами, мельницей, хатами и амбарами, перенесёнными из разных районов Беларуси. Узда — старинное местечко на реке Узда, вдали от крупных туристических трассе; музей стал главной достопримечательностью района. Экспозиция показывает традиционное жилище, ремёсла и праздники белорусской деревни. Для карты памятных мест вокруг Солигорска это одна из самых содержательных точек в радиусе 70 км.",
+        "openingAddress": "",
+        "name": "Музей народной архитектуры и быта (Узда)"
+      },
+      "en": {
+        "address": "Uzda, Minsk Region, Belarus",
+        "city": "Uzda",
+        "author": null,
+        "name": "Museum of Folk Architecture and Life (Uzda)",
+        "description": "The Museum of Folk Architecture and Life in Uzda is an open-air ethnographic complex with wooden churches, a mill, houses and barns brought from across Belarus. Uzda is an old town on the Uzda river; the museum is the district's main attraction. Exhibitions show traditional housing, crafts and village festivals. For heritage maps around Soligorsk it is one of the richest sites within 70 km.",
+        "tags": [
+          "Belarus",
+          "Minsk Region",
+          "Uzda",
+          "Museum",
+          "Ethnography",
+          "Wooden architecture",
+          "20th century"
+        ]
+      },
+      "be": {
+        "address": "Узда, Мінская вобласць, Беларусь",
+        "city": "Узда",
+        "author": null,
+        "name": "Музей народнай архітэктуры і быту (Узда)",
+        "description": "Музей народнай архітэктуры і быту ў Узде — этнаграфічны комплекс пад адкрытым небам з драўлянымі царквамі, мельніцай і хатамі. Узда — старажытнае мястэчка; музей — галоўная славутнасць раёна. Для карты вакол Салігорска гэта адна з найбольш змеслівых кропак у радыусе 70 км.",
+        "tags": [
+          "Беларусь",
+          "Мінская вобласць",
+          "Узда",
+          "Музей",
+          "Этнаграфія",
+          "Драўляная архітэктура",
+          "XX стагоддзе"
+        ]
+      }
+    },
+    "sketchfabUrl": null,
+    "photos": [],
+    "city": "Узда",
+    "modelType": null,
+    "hasPhotos": false,
+    "tags": [
+      "Беларусь",
+      "Минская область",
+      "Узда",
+      "Музей",
+      "Этнография",
+      "Деревянная архитектура",
+      "XX век"
+    ],
+    "id": "belarus_place_063"
+  },
+  {
+    "has3D": false,
+    "modelUrl": null,
+    "location": {
+      "lng": 27.8506,
+      "lat": 53.6831,
+      "address": "Усадебно-парковый ансамбль, Дукора, Пуховичский район, Минская область, Беларусь"
+    },
+    "createdAt": "2026-05-21T10:00:00.000Z",
+    "featured": false,
+    "featuredOrder": null,
+    "updatedAt": "2026-05-21T10:00:00.000Z",
+    "description": "Усадебно-парковый ансамбль в Дукоре — живописный дворцово-парковый комплекс в Пуховичском районе, один из немногих сохранившихся усадеб в «солигорском» пустом поясе. Парк с прудами, аллеями и редкими деревьями окружает усадебный дом в стиле классицизма и эклектики. Дукора известна также Ильинским днем народного единства и культурными фестивалями. Ансамбль привлекает любителей архитектуры и семейный отдых недалеко от Минска и Солигорска, заполняя пробел на карте между Пуховичами и Марьиной Горкой.",
+    "createdOn": {
+      "day": null,
+      "sortKey": 18500000,
+      "precision": "year",
+      "display": "XIX в.",
+      "year": 1850,
+      "month": null
+    },
+    "author": null,
+    "openingDate": "XIX в.",
+    "name": "Усадебно-парковый ансамбль в Дукоре",
+    "openingAddress": "",
+    "i18n": {
+      "ru": {
+        "address": "Дукора, Пуховичский район, Минская область, Беларусь",
+        "city": "Дукора",
+        "author": null,
+        "description": "Усадебно-парковый ансамбль в Дукоре — живописный дворцово-парковый комплекс в Пуховичском районе, один из немногих сохранившихся усадеб в «солигорском» пустом поясе. Парк с прудами, аллеями и редкими деревьями окружает усадебный дом в стиле классицизма и эклектики. Дукора известна также Ильинским днем народного единства и культурными фестивалями. Ансамбль привлекает любителей архитектуры и семейный отдых недалеко от Минска и Солигорска, заполняя пробел на карте между Пуховичами и Марьиной Горкой.",
+        "openingAddress": "",
+        "name": "Усадебно-парковый ансамбль в Дукоре"
+      },
+      "en": {
+        "address": "Dukora, Pukhovichi District, Minsk Region, Belarus",
+        "city": "Dukora",
+        "author": null,
+        "name": "Estate and Park Ensemble in Dukora",
+        "description": "The estate and park ensemble in Dukora is a picturesque palace-and-park complex in Pukhovichi District, one of few surviving estates in the empty belt around Soligorsk. A park with ponds, alleys and rare trees surrounds a manor in Classicism and eclectic style. Dukora is known for folk festivals. The ensemble attracts architecture enthusiasts and families near Minsk and Soligorsk, filling the gap between Pukhovichi and Maryina Horka.",
+        "tags": [
+          "Belarus",
+          "Minsk Region",
+          "Dukora",
+          "Estate",
+          "Park",
+          "19th century",
+          "Pukhovichi"
+        ]
+      },
+      "be": {
+        "address": "Дукора, Пухавіцкі раён, Мінская вобласць, Беларусь",
+        "city": "Дукора",
+        "author": null,
+        "name": "Сядзібна-паркавы ансамбль у Дукоре",
+        "description": "Сядзібна-паркавы ансамбль у Дукоре — маляўнічы палацава-паркавы комплекс у Пухавіцкім раёне, адзін з немногіх сядзіб у «салігорскім» пустым поясе. Парк з сажалкамі і аллей атачае сядзібны дом.",
+        "tags": [
+          "Беларусь",
+          "Мінская вобласць",
+          "Дукора",
+          "Сядзіба",
+          "Парк",
+          "XIX стагоддзе",
+          "Пухавічы"
+        ]
+      }
+    },
+    "sketchfabUrl": null,
+    "photos": [],
+    "city": "Дукора",
+    "modelType": null,
+    "hasPhotos": false,
+    "tags": [
+      "Беларусь",
+      "Минская область",
+      "Дукора",
+      "Усадьба",
+      "Парк",
+      "XIX век",
+      "Пуховичи"
+    ],
+    "id": "belarus_place_064"
+  },
+  {
+    "has3D": false,
+    "modelUrl": null,
+    "location": {
+      "lng": 29.1503,
+      "lat": 54.8669,
+      "address": "Костёл Успения, Чашники, Витебская область, Беларусь"
+    },
+    "createdAt": "2026-05-21T10:00:00.000Z",
+    "featured": false,
+    "featuredOrder": null,
+    "updatedAt": "2026-05-21T10:00:00.000Z",
+    "description": "Костёл Успения в Чашниках — архитектурная доминанта районного центра на юге Витебской области, в центре «пустого» сектора между Полоцком, Витебском и Борисовом. Высокий кирпичный храм в неоготическом стиле виден издалека; рядом — историческая застройка и краеведческий музей. Чашники стоят на холмах среди озёр; регион богат лесами и рыболовными традициями. Костёл — естественный центр маршрута для заполнения карты в радиусе 100–150 км от города.",
+    "createdOn": {
+      "day": null,
+      "sortKey": 18900000,
+      "precision": "year",
+      "display": "кон. XIX в.",
+      "year": 1890,
+      "month": null
+    },
+    "author": null,
+    "openingDate": "кон. XIX в.",
+    "name": "Костёл Успения Пресвятой Девы Марии (Чашники)",
+    "openingAddress": "",
+    "i18n": {
+      "ru": {
+        "address": "Чашники, Витебская область, Беларусь",
+        "city": "Чашники",
+        "author": null,
+        "description": "Костёл Успения в Чашниках — архитектурная доминанта районного центра на юге Витебской области, в центре «пустого» сектора между Полоцком, Витебском и Борисовом. Высокий кирпичный храм в неоготическом стиле виден издалека; рядом — историческая застройка и краеведческий музей. Чашники стоят на холмах среди озёр; регион богат лесами и рыболовными традициями. Костёл — естественный центр маршрута для заполнения карты в радиусе 100–150 км от города.",
+        "openingAddress": "",
+        "name": "Костёл Успения Пресвятой Девы Марии (Чашники)"
+      },
+      "en": {
+        "address": "Chashniki, Vitebsk Region, Belarus",
+        "city": "Chashniki",
+        "author": null,
+        "name": "Church of the Assumption (Chashniki)",
+        "description": "The Church of the Assumption in Chashniki is the architectural landmark of a district centre in southern Vitebsk Region, in the empty sector between Polotsk, Vitebsk and Borisov. The tall neo-Gothic brick church is visible from afar; nearby are historic buildings and a local museum. Chashniki stand among hills and lakes; the region is rich in forests and fishing traditions. The church is a natural hub for routes within 100–150 km.",
+        "tags": [
+          "Belarus",
+          "Vitebsk Region",
+          "Chashniki",
+          "Church",
+          "Neo-Gothic",
+          "19th century",
+          "Lakes"
+        ]
+      },
+      "be": {
+        "address": "Чашнікі, Віцебская вобласць, Беларусь",
+        "city": "Чашнікі",
+        "author": null,
+        "name": "Касцёл Унебаўзяцця (Чашнікі)",
+        "description": "Касцёл Унебаўзяцця ў Чашніках — архітэктурная дамінанта раённага цэнтра на поўдні Віцебшчыны, у цэнтры «пустога» сектара паміж Полацкам, Віцебскам і Барысаўам. Высокі неагатычны храм бачны здалёку.",
+        "tags": [
+          "Беларусь",
+          "Віцебская вобласць",
+          "Чашнікі",
+          "Касцёл",
+          "Неаготыка",
+          "XIX стагоддзе",
+          "Азёры"
+        ]
+      }
+    },
+    "sketchfabUrl": null,
+    "photos": [],
+    "city": "Чашники",
+    "modelType": null,
+    "hasPhotos": false,
+    "tags": [
+      "Беларусь",
+      "Витебская область",
+      "Чашники",
+      "Костёл",
+      "Неоготика",
+      "XIX век",
+      "Озёра"
+    ],
+    "id": "belarus_place_065"
+  },
+  {
+    "has3D": false,
+    "modelUrl": null,
+    "location": {
+      "lng": 28.7008,
+      "lat": 54.8836,
+      "address": "Замковая гора, Лепель, Витебская область, Беларусь"
+    },
+    "createdAt": "2026-05-21T10:00:00.000Z",
+    "featured": false,
+    "featuredOrder": null,
+    "updatedAt": "2026-05-21T10:00:00.000Z",
+    "description": "Замковая гора в Лепеле — древнее городище и остатки замка на берегу озера Лепель, одна из главных достопримечательностей «озёрного края» Витебщины. С площадки открывается панорама на водную гладь и город, известный рыболовством и отдыхом. Лепель — старинный торговый пункт на пути из Полоцка на восток; археологи находили здесь слои XI–XVII веков. Сегодня холм благоустроен для прогулок и входит в туристические маршруты, закрывающие пустоту вокруг Чашников и Браславских озёр.",
+    "createdOn": {
+      "day": null,
+      "sortKey": 11000000,
+      "precision": "year",
+      "display": "XI–XVII вв.",
+      "year": 1100,
+      "month": null
+    },
+    "author": null,
+    "openingDate": "XI–XVII вв.",
+    "name": "Замковая гора (Лепель)",
+    "openingAddress": "",
+    "i18n": {
+      "ru": {
+        "address": "Лепель, Витебская область, Беларусь",
+        "city": "Лепель",
+        "author": null,
+        "description": "Замковая гора в Лепеле — древнее городище и остатки замка на берегу озера Лепель, одна из главных достопримечательностей «озёрного края» Витебщины. С площадки открывается панорама на водную гладь и город, известный рыболовством и отдыхом. Лепель — старинный торговый пункт на пути из Полоцка на восток; археологи находили здесь слои XI–XVII веков. Сегодня холм благоустроен для прогулок и входит в туристические маршруты, закрывающие пустоту вокруг Чашников и Браславских озёр.",
+        "openingAddress": "",
+        "name": "Замковая гора (Лепель)"
+      },
+      "en": {
+        "address": "Lepel, Vitebsk Region, Belarus",
+        "city": "Lepel",
+        "author": null,
+        "name": "Castle Hill (Lepel)",
+        "description": "Castle Hill in Lepel is an ancient stronghold and castle remains on Lake Lepel, a main sight of the lake country of Vitebsk Region. The site offers panoramas of the water and the town known for fishing and recreation. Lepel was an old trading point from Polotsk eastward; archaeologists found layers from the 11th to 17th centuries. Today the hill is landscaped for walks and routes filling the gap around Chashniki and Braslav lakes.",
+        "tags": [
+          "Belarus",
+          "Vitebsk Region",
+          "Lepel",
+          "Castle",
+          "Stronghold",
+          "Lakes",
+          "Middle Ages"
+        ]
+      },
+      "be": {
+        "address": "Лепель, Віцебская вобласць, Беларусь",
+        "city": "Лепель",
+        "author": null,
+        "name": "Замкавая гара (Лепель)",
+        "description": "Замкавая гара ў Лепелі — старажытнае гарадзішча і рэшткі замка на беразе возера Лепель. Лепель — старажытны гандлёвы пункт; археолагі знаходзілі тут пласты XI–XVII стагоддзяў.",
+        "tags": [
+          "Беларусь",
+          "Віцебская вобласць",
+          "Лепель",
+          "Замак",
+          "Гарадзішча",
+          "Азёры",
+          "Сярэдневечча"
+        ]
+      }
+    },
+    "sketchfabUrl": null,
+    "photos": [],
+    "city": "Лепель",
+    "modelType": null,
+    "hasPhotos": false,
+    "tags": [
+      "Беларусь",
+      "Витебская область",
+      "Лепель",
+      "Замок",
+      "Городище",
+      "Озёра",
+      "Средневековье"
+    ],
+    "id": "belarus_place_066"
+  },
+  {
+    "has3D": false,
+    "modelUrl": null,
+    "location": {
+      "lng": 29.7167,
+      "lat": 54.8167,
+      "address": "Спасо-Преображенская церковь, Сенно, Витебская область, Беларусь"
+    },
+    "createdAt": "2026-05-21T10:00:00.000Z",
+    "featured": false,
+    "featuredOrder": null,
+    "updatedAt": "2026-05-21T10:00:00.000Z",
+    "description": "Спасо-Преображенская церковь в Сенно — православный храм XIX века в центре города на берегу реки Ушача, известного своими озёрами и лесами. Сенно — старинное местечко, связанное с торговлей льном и лесом; сохранились здания исторической застройки. Церковь с характерным куполом и колокольней формирует силуэт панорамы города. Сенно удобно включать в кольцевые маршруты между Витебском, Полоцком и Чашниками, заполняя редкие точки на карте северо-восточной Беларуси.",
+    "createdOn": {
+      "day": null,
+      "sortKey": 18600000,
+      "precision": "year",
+      "display": "XIX в.",
+      "year": 1860,
+      "month": null
+    },
+    "author": null,
+    "openingDate": "XIX в.",
+    "name": "Спасо-Преображенская церковь (Сенно)",
+    "openingAddress": "",
+    "i18n": {
+      "ru": {
+        "address": "Сенно, Витебская область, Беларусь",
+        "city": "Сенно",
+        "author": null,
+        "description": "Спасо-Преображенская церковь в Сенно — православный храм XIX века в центре города на берегу реки Ушача, известного своими озёрами и лесами. Сенно — старинное местечко, связанное с торговлей льном и лесом; сохранились здания исторической застройки. Церковь с характерным куполом и колокольней формирует силуэт панорамы города. Сенно удобно включать в кольцевые маршруты между Витебском, Полоцком и Чашниками, заполняя редкие точки на карте северо-восточной Беларуси.",
+        "openingAddress": "",
+        "name": "Спасо-Преображенская церковь (Сенно)"
+      },
+      "en": {
+        "address": "Senno, Vitebsk Region, Belarus",
+        "city": "Senno",
+        "author": null,
+        "name": "Transfiguration Church (Senno)",
+        "description": "The Transfiguration Church in Senno is a 19th-century Orthodox church in the town centre on the Ushacha river, in an area known for lakes and forests. Senno is an old settlement linked with flax and timber trade; historic buildings survive. The church with its dome and bell tower shapes the town skyline. Senno fits ring routes between Vitebsk, Polotsk and Chashniki, filling rare points on the map of north-eastern Belarus.",
+        "tags": [
+          "Belarus",
+          "Vitebsk Region",
+          "Senno",
+          "Church",
+          "19th century",
+          "Ushacha"
+        ]
+      },
+      "be": {
+        "address": "Сянно, Віцебская вобласць, Беларусь",
+        "city": "Сянно",
+        "author": null,
+        "name": "Спаса-Праабражэнская царква (Сянно)",
+        "description": "Спаса-Праабражэнская царква ў Сянно — праваслаўны храм XIX стагоддзя ў цэнтры горада на беразе Ушачы. Сянно — старажытнае мястэчка, звязанае з гандлём льном і лесам.",
+        "tags": [
+          "Беларусь",
+          "Віцебская вобласць",
+          "Сянно",
+          "Царква",
+          "XIX стагоддзе",
+          "Ушача"
+        ]
+      }
+    },
+    "sketchfabUrl": null,
+    "photos": [],
+    "city": "Сенно",
+    "modelType": null,
+    "hasPhotos": false,
+    "tags": [
+      "Беларусь",
+      "Витебская область",
+      "Сенно",
+      "Церковь",
+      "XIX век",
+      "Ушача"
+    ],
+    "id": "belarus_place_067"
+  },
+  {
+    "has3D": false,
+    "modelUrl": null,
+    "location": {
+      "lng": 29.7003,
+      "lat": 54.4169,
+      "address": "Костёл Святого Антония, Толочин, Витебская область, Беларусь"
+    },
+    "createdAt": "2026-05-21T10:00:00.000Z",
+    "featured": false,
+    "featuredOrder": null,
+    "updatedAt": "2026-05-21T10:00:00.000Z",
+    "description": "Костёл Святого Антония в Толочине — крупный неоготический храм в городе на пересечении дорог Витебск — Орша — Минск. Толочин известен авиационным музеем и историей текстильной промышленности; костёл остаётся главным памятником архитектуры XIX века. Кирпичное здание с высокими окнами-ключами и башней украшает центральную площадь. Город лежит восточнее Чашников и помогает связать цепочку памятников через Сенно и Лепель на туристической карте.",
+    "createdOn": {
+      "day": null,
+      "sortKey": 18900000,
+      "precision": "year",
+      "display": "кон. XIX в.",
+      "year": 1890,
+      "month": null
+    },
+    "author": null,
+    "openingDate": "кон. XIX в.",
+    "name": "Костёл Святого Антония (Толочин)",
+    "openingAddress": "",
+    "i18n": {
+      "ru": {
+        "address": "Толочин, Витебская область, Беларусь",
+        "city": "Толочин",
+        "author": null,
+        "description": "Костёл Святого Антония в Толочине — крупный неоготический храм в городе на пересечении дорог Витебск — Орша — Минск. Толочин известен авиационным музеем и историей текстильной промышленности; костёл остаётся главным памятником архитектуры XIX века. Кирпичное здание с высокими окнами-ключами и башней украшает центральную площадь. Город лежит восточнее Чашников и помогает связать цепочку памятников через Сенно и Лепель на туристической карте.",
+        "openingAddress": "",
+        "name": "Костёл Святого Антония (Толочин)"
+      },
+      "en": {
+        "address": "Tolochin, Vitebsk Region, Belarus",
+        "city": "Tolochin",
+        "author": null,
+        "name": "Church of Saint Anthony (Tolochin)",
+        "description": "The Church of Saint Anthony in Tolochin is a large neo-Gothic church in a town at the crossroads of Vitebsk, Orsha and Minsk routes. Tolochin is known for its aviation museum and textile history; the church remains the main 19th-century architectural monument. Brick with lancet windows and a tower adorns the central square. The town lies east of Chashniki and links a chain of sites through Senno and Lepel on the heritage map.",
+        "tags": [
+          "Belarus",
+          "Vitebsk Region",
+          "Tolochin",
+          "Church",
+          "Neo-Gothic",
+          "19th century"
+        ]
+      },
+      "be": {
+        "address": "Талачын, Віцебская вобласць, Беларусь",
+        "city": "Талачын",
+        "author": null,
+        "name": "Касцёл Святога Антона (Талачын)",
+        "description": "Касцёл Святога Антона ў Талачыне — вялікі неагатычны храм у горадзе на скрыжаванні дарог Віцебск — Орша — Мінск. Талачын вядомы авіямузеем; касцёл — галоўны помнік архітэктуры XIX стагоддзя.",
+        "tags": [
+          "Беларусь",
+          "Віцебская вобласць",
+          "Талачын",
+          "Касцёл",
+          "Неаготыка",
+          "XIX стагоддзе"
+        ]
+      }
+    },
+    "sketchfabUrl": null,
+    "photos": [],
+    "city": "Толочин",
+    "modelType": null,
+    "hasPhotos": false,
+    "tags": [
+      "Беларусь",
+      "Витебская область",
+      "Толочин",
+      "Костёл",
+      "Неоготика",
+      "XIX век"
+    ],
+    "id": "belarus_place_068"
+  },
+  {
+    "has3D": false,
+    "modelUrl": null,
+    "location": {
+      "lng": 28.6164,
+      "lat": 55.1836,
+      "address": "Озеро Черное, Ушачи, Витебская область, Беларусь"
+    },
+    "createdAt": "2026-05-21T10:00:00.000Z",
+    "featured": false,
+    "featuredOrder": null,
+    "updatedAt": "2026-05-21T10:00:00.000Z",
+    "description": "Озеро Черное и прилегающее Череомское болото в Ушачах — один из самых живописных природных комплексов северо-востока Беларуси, часто называемый «белорусской Швейцарией». Глубокое ледниковое озеро с прозрачной водой окружено холмами, сосновыми лесами и переходными болотами с редкими видами растений. Ушачи — центр района озёр и этнографических традиций; рядом музей и церковная архитектура. Природный памятник заполняет северный сектор вокруг Чашников, где на карте почти не было культурных и природных точек.",
+    "createdOn": {
+      "day": null,
+      "sortKey": 19000000,
+      "precision": "year",
+      "display": "природный памятник",
+      "year": 1900,
+      "month": null
+    },
+    "author": null,
+    "openingDate": "природный памятник",
+    "name": "Озеро Черное и Череомское болото (Ушачи)",
+    "openingAddress": "",
+    "i18n": {
+      "ru": {
+        "address": "Ушачи, Витебская область, Беларусь",
+        "city": "Ушачи",
+        "author": null,
+        "description": "Озеро Черное и прилегающее Череомское болото в Ушачах — один из самых живописных природных комплексов северо-востока Беларуси, часто называемый «белорусской Швейцарией». Глубокое ледниковое озеро с прозрачной водой окружено холмами, сосновыми лесами и переходными болотами с редкими видами растений. Ушачи — центр района озёр и этнографических традиций; рядом музей и церковная архитектура. Природный памятник заполняет северный сектор вокруг Чашников, где на карте почти не было культурных и природных точек.",
+        "openingAddress": "",
+        "name": "Озеро Черное и Череомское болото (Ушачи)"
+      },
+      "en": {
+        "address": "Ushachi, Vitebsk Region, Belarus",
+        "city": "Ushachi",
+        "author": null,
+        "name": "Black Lake and Chereomskoye Bog (Ushachi)",
+        "description": "Black Lake and the adjacent Chereomskoye bog in Ushachi are among the most scenic natural complexes of north-eastern Belarus, often called \"Belarusian Switzerland\". The deep glacial lake with clear water is surrounded by hills, pine forests and transitional bogs with rare plants. Ushachi is a centre of lake districts and ethnography; museums and churches are nearby. The nature monument fills the northern sector around Chashniki where few points appeared on the map.",
+        "tags": [
+          "Belarus",
+          "Vitebsk Region",
+          "Ushachi",
+          "Lake",
+          "Nature",
+          "Nature monument",
+          "Bog"
+        ]
+      },
+      "be": {
+        "address": "Ушачы, Віцебская вобласць, Беларусь",
+        "city": "Ушачы",
+        "author": null,
+        "name": "Возера Чорнае і Чаромскае балота (Ушачы)",
+        "description": "Возера Чорнае і Чаромскае балота ў Ушачах — адзін з наймаляўнічых прыродных комплексаў паўночна-усходу Беларусі, «беларуская Швейцарыя». Глыбокае ледніковае возера атачанае лесамі і балотамі з рэдкімі відамі раслін.",
+        "tags": [
+          "Беларусь",
+          "Віцебская вобласць",
+          "Ушачы",
+          "Возера",
+          "Прырода",
+          "Помнік прыроды",
+          "Балота"
+        ]
+      }
+    },
+    "sketchfabUrl": null,
+    "photos": [],
+    "city": "Ушачи",
+    "modelType": null,
+    "hasPhotos": false,
+    "tags": [
+      "Беларусь",
+      "Витебская область",
+      "Ушачи",
+      "Озеро",
+      "Природа",
+      "Памятник природы",
+      "Болото"
+    ],
+    "id": "belarus_place_069"
+  },
+  {
+    "has3D": false,
+    "modelUrl": null,
+    "location": {
+      "lng": 27.6836,
+      "lat": 55.1336,
+      "address": "Свято-Успенский собор, Глубокое, Витебская область, Беларусь"
+    },
+    "createdAt": "2026-05-21T10:00:00.000Z",
+    "featured": false,
+    "featuredOrder": null,
+    "updatedAt": "2026-05-21T10:00:00.000Z",
+    "description": "Свято-Успенский собор в Глубоком — барочно-классический храм на главной площади города, одного из старинных центров северо-западной Беларуси. Глубокое известно Бенедиктинскому монастырю (памятник в другой части города), еврейской истории и торговлей на пути из Полоцка. Собор с двумя башнями и богатым фасадом доминирует над окрестностью и виден из разных точек города. Включение Глубокого в маршрут замыкает кольцо 100–150 км вокруг Чашников, связывая Полоцкую землю с Браславским и Лепельским регионами.",
+    "createdOn": {
+      "day": null,
+      "sortKey": 17900000,
+      "precision": "year",
+      "display": "XVIII–XIX вв.",
+      "year": 1790,
+      "month": null
+    },
+    "author": null,
+    "openingDate": "XVIII–XIX вв.",
+    "name": "Свято-Успенский собор (Глубокое)",
+    "openingAddress": "",
+    "i18n": {
+      "ru": {
+        "address": "Глубокое, Витебская область, Беларусь",
+        "city": "Глубокое",
+        "author": null,
+        "description": "Свято-Успенский собор в Глубоком — барочно-классический храм на главной площади города, одного из старинных центров северо-западной Беларуси. Глубокое известно Бенедиктинскому монастырю (памятник в другой части города), еврейской истории и торговлей на пути из Полоцка. Собор с двумя башнями и богатым фасадом доминирует над окрестностью и виден из разных точек города. Включение Глубокого в маршрут замыкает кольцо 100–150 км вокруг Чашников, связывая Полоцкую землю с Браславским и Лепельским регионами.",
+        "openingAddress": "",
+        "name": "Свято-Успенский собор (Глубокое)"
+      },
+      "en": {
+        "address": "Glubokoe, Vitebsk Region, Belarus",
+        "city": "Glubokoe",
+        "author": null,
+        "name": "Dormition Cathedral (Glubokoe)",
+        "description": "The Dormition Cathedral in Glubokoe is a Baroque-Classical church on the main square of a historic centre of north-western Belarus. Glubokoe is known for its Benedictine monastery, Jewish heritage and trade on routes from Polotsk. The cathedral with two towers and a rich façade dominates the town. Including Glubokoe closes a 100–150 km ring around Chashniki, linking Polotsk land with Braslav and Lepel regions.",
+        "tags": [
+          "Belarus",
+          "Vitebsk Region",
+          "Glubokoe",
+          "Cathedral",
+          "Baroque",
+          "18th century",
+          "Polotsk land"
+        ]
+      },
+      "be": {
+        "address": "Глыбокае, Віцебская вобласць, Беларусь",
+        "city": "Глыбокае",
+        "author": null,
+        "name": "Свята-Успенскі сабор (Глыбокае)",
+        "description": "Свята-Успенскі сабор у Глыбокім — барокава-класіцыстычны храм на галоўнай плошчы старажытнага цэнтра паўночна-заходняй Беларусі. Глыбокае вядомае бенедыкцінскім манастырам і гісторыяй гандлю з Полацка. Сабор з двумя вежамі дамінуе над горадам.",
+        "tags": [
+          "Беларусь",
+          "Віцебская вобласць",
+          "Глыбокае",
+          "Сабор",
+          "Барока",
+          "XVIII стагоддзе",
+          "Полацччына"
+        ]
+      }
+    },
+    "sketchfabUrl": null,
+    "photos": [],
+    "city": "Глубокое",
+    "modelType": null,
+    "hasPhotos": false,
+    "tags": [
+      "Беларусь",
+      "Витебская область",
+      "Глубокое",
+      "Собор",
+      "Барокко",
+      "XVIII век",
+      "Полоцчина"
+    ],
+    "id": "belarus_place_070"
+  }
+]

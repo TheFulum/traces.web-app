@@ -32,10 +32,11 @@ function tp(key, fallback, vars) {
 }
 
 function namesFromPlace(p) {
-  if (!p) return { ru: '', en: '' };
+  if (!p) return { ru: '', en: '', be: '' };
   const ru = String(p.name || p.i18n?.ru?.name || '').trim();
   const en = String(p.i18n?.en?.name || '').trim();
-  return { ru, en };
+  const be = String(p.i18n?.be?.name || '').trim();
+  return { ru, en, be };
 }
 
 function stripIdsTimestamps(raw) {
@@ -147,6 +148,7 @@ function csvRowToPlace(headerRow, cells) {
   if (map.author_en) enPatch.author = map.author_en;
   if (map.address_en) enPatch.address = map.address_en;
   if (map.opening_address_en) enPatch.openingAddress = map.opening_address_en;
+  if (map.city_en) enPatch.city = map.city_en;
   if (map.tags_en) {
     enPatch.tags = String(map.tags_en)
       .split(';')
@@ -155,6 +157,23 @@ function csvRowToPlace(headerRow, cells) {
   }
   if (Object.keys(enPatch).length) {
     i18n.en = { ...(i18n.en || {}), ...enPatch };
+  }
+
+  const bePatch = {};
+  if (map.name_be) bePatch.name = map.name_be;
+  if (map.description_be) bePatch.description = map.description_be;
+  if (map.author_be) bePatch.author = map.author_be;
+  if (map.address_be) bePatch.address = map.address_be;
+  if (map.opening_address_be) bePatch.openingAddress = map.opening_address_be;
+  if (map.city_be) bePatch.city = map.city_be;
+  if (map.tags_be) {
+    bePatch.tags = String(map.tags_be)
+      .split(';')
+      .map(x => x.trim())
+      .filter(Boolean);
+  }
+  if (Object.keys(bePatch).length) {
+    i18n.be = { ...(i18n.be || {}), ...bePatch };
   }
 
   const openingDate = map.openingdate || map.opening_date || '';
@@ -166,6 +185,7 @@ function csvRowToPlace(headerRow, cells) {
     author: map.author || '',
     openingAddress: map.opening_address || '',
     openingDate: String(openingDate || '').trim(),
+    city: map.city || '',
     tags,
     photos,
     location: {
@@ -308,11 +328,11 @@ gateAdmin(async () => {
 
       if (!it.conflict) {
         html += `<td colspan="2"><span class="import-muted">${tp('admin.placesImport.rowNew', 'Новая запись — будет создана автоматически')}</span><br>`;
-        html += `<small>RU: ${escapeHtml(fn.ru || '—')} / EN: ${escapeHtml(fn.en || '—')}</small></td>`;
+        html += `<small>RU: ${escapeHtml(fn.ru || '—')} / EN: ${escapeHtml(fn.en || '—')} / BE: ${escapeHtml(fn.be || '—')}</small></td>`;
         html += `<td>—</td>`;
       } else {
-        html += `<td class="import-names"><strong>RU:</strong> ${escapeHtml(dn.ru || '—')}<br><strong>EN:</strong> ${escapeHtml(dn.en || '—')}</td>`;
-        html += `<td class="import-names"><strong>RU:</strong> ${escapeHtml(fn.ru || '—')}<br><strong>EN:</strong> ${escapeHtml(fn.en || '—')}</td>`;
+        html += `<td class="import-names"><strong>RU:</strong> ${escapeHtml(dn.ru || '—')}<br><strong>EN:</strong> ${escapeHtml(dn.en || '—')}<br><strong>BE:</strong> ${escapeHtml(dn.be || '—')}</td>`;
+        html += `<td class="import-names"><strong>RU:</strong> ${escapeHtml(fn.ru || '—')}<br><strong>EN:</strong> ${escapeHtml(fn.en || '—')}<br><strong>BE:</strong> ${escapeHtml(fn.be || '—')}</td>`;
         html += '<td class="import-actions">';
         const res = it.resolution;
         html += `<button type="button" class="btn btn--outline btn--sm" data-act="skip" data-idx="${it.index}">${tp('admin.placesImport.btnSkip', 'Не импортировать')}</button> `;
@@ -405,7 +425,30 @@ gateAdmin(async () => {
   });
 
   btnRun.addEventListener('click', async () => {
-    if (!session) return;
+    if (!session) {
+      showToast(
+        tp(
+          'admin.placesImport.parseFirst',
+          'Сначала разберите файл: нажмите «Разобрать файл».'
+        ),
+        'error'
+      );
+      return;
+    }
+
+    const pendingConflicts = session.items.some(
+      it => it.conflict && it.resolution === 'pending'
+    );
+    if (pendingConflicts) {
+      showToast(
+        tp(
+          'admin.placesImport.resolveConflictsFirst',
+          'Устраните конфликты: для каждой строки выберите действие или нажмите «Перезаписать все конфликты».'
+        ),
+        'error'
+      );
+      return;
+    }
 
     const startedAt = new Date().toISOString();
     const report = {
@@ -438,8 +481,10 @@ gateAdmin(async () => {
                 reason: tp('admin.placesImport.rCreatedId', 'Создан документ с id из файла'),
                 nameRuFile: fn.ru,
                 nameEnFile: fn.en,
+                nameBeFile: fn.be,
                 nameRuDb: '',
-                nameEnDb: ''
+                nameEnDb: '',
+                nameBeDb: ''
               });
             } else {
               const newId = await addPlace(payload);
@@ -452,8 +497,10 @@ gateAdmin(async () => {
                 reason: tp('admin.placesImport.rCreatedAuto', 'Создан документ с новым id'),
                 nameRuFile: fn.ru,
                 nameEnFile: fn.en,
+                nameBeFile: fn.be,
                 nameRuDb: '',
-                nameEnDb: ''
+                nameEnDb: '',
+                nameBeDb: ''
               });
             }
             continue;
@@ -471,8 +518,10 @@ gateAdmin(async () => {
               reason: tp('admin.placesImport.rSkipped', 'Пропуск по решению пользователя'),
               nameRuFile: fn.ru,
               nameEnFile: fn.en,
+              nameBeFile: fn.be,
               nameRuDb: dn.ru,
-              nameEnDb: dn.en
+              nameEnDb: dn.en,
+              nameBeDb: dn.be
             });
             continue;
           }
@@ -488,8 +537,10 @@ gateAdmin(async () => {
               reason: tp('admin.placesImport.rOverwrite', 'Документ перезаписан из файла'),
               nameRuFile: fn.ru,
               nameEnFile: fn.en,
+              nameBeFile: fn.be,
               nameRuDb: dn.ru,
-              nameEnDb: dn.en
+              nameEnDb: dn.en,
+              nameBeDb: dn.be
             });
             continue;
           }
@@ -505,8 +556,10 @@ gateAdmin(async () => {
               reason: tp('admin.placesImport.rNewId', 'Импорт как новое место (конфликт id)'),
               nameRuFile: fn.ru,
               nameEnFile: fn.en,
+              nameBeFile: fn.be,
               nameRuDb: dn.ru,
-              nameEnDb: dn.en
+              nameEnDb: dn.en,
+              nameBeDb: dn.be
             });
             continue;
           }
@@ -525,8 +578,10 @@ gateAdmin(async () => {
             reason: rowErr.message || String(rowErr),
             nameRuFile: fn.ru,
             nameEnFile: fn.en,
+            nameBeFile: fn.be,
             nameRuDb: dn.ru,
-            nameEnDb: dn.en
+            nameEnDb: dn.en,
+            nameBeDb: dn.be
           });
           report.errorMessage = rowErr.message || String(rowErr);
           report.endedAt = new Date().toISOString();

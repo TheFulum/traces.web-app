@@ -95,3 +95,31 @@ export function showSkeletons(container, count = 6) {
     </div>
   `).join('');
 }
+
+// ── Plural forms (RU / BE slavic, EN) ─────────────────────────────────────
+
+/** Russian/Belarusian: 1 / 2–4 / 5+ (11–19 → many). */
+export function pluralRu(n, one, few, many) {
+  const abs = Math.abs(Number(n) || 0);
+  const mod10 = abs % 10;
+  const mod100 = abs % 100;
+  if (mod10 === 1 && mod100 !== 11) return one;
+  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 10 || mod100 >= 20)) return few;
+  return many;
+}
+
+export function pluralEn(n, one, many) {
+  return Math.abs(Number(n) || 0) === 1 ? one : many;
+}
+
+export function homeStatPlacesLabel(n, lang) {
+  if (lang === 'en') return pluralEn(n, 'Place', 'Places');
+  if (lang === 'be') return pluralRu(n, 'месца', 'месцы', 'месцаў');
+  return pluralRu(n, 'место', 'места', 'мест');
+}
+
+export function homeStatCitiesLabel(n, lang) {
+  if (lang === 'en') return pluralEn(n, 'City', 'Cities');
+  if (lang === 'be') return pluralRu(n, 'горад', 'гарады', 'гарадоў');
+  return pluralRu(n, 'город', 'города', 'городов');
+}

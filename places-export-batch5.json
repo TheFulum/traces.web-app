@@ -1,0 +1,1602 @@
+[
+  {
+    "has3D": false,
+    "modelUrl": null,
+    "location": {
+      "lng": 27.5498,
+      "lat": 53.0278,
+      "address": "Музей «Слуцкий пояс», Слуцк, Минская область, Беларусь"
+    },
+    "createdAt": "2026-05-21T14:00:00.000Z",
+    "featured": false,
+    "featuredOrder": null,
+    "updatedAt": "2026-05-21T14:00:00.000Z",
+    "description": "Музей «Слуцкий пояс» в Слуцке посвящён знаменитому народному промыслу — ткачеству шёлковых поясов с характерным геометрическим орнаментом. Экспозиция рассказывает о мануфактурах, мастерах и судьбе слуцких ткачей, а также о городе как центре Полесья. Слуцк — древний город с богатой историей Речи Посполитой; музей дополняет маршруты южнее Минска, где на карте мало памятных точек между Несвижем и Бобруйском.",
+    "createdOn": {
+      "day": null,
+      "sortKey": 19800000,
+      "precision": "year",
+      "display": "XX в.",
+      "year": 1980,
+      "month": null
+    },
+    "author": null,
+    "openingDate": "XX в.",
+    "name": "Музей «Слуцкий пояс» (Слуцк)",
+    "openingAddress": "",
+    "i18n": {
+      "ru": {
+        "address": "Слуцк, Минская область, Беларусь",
+        "city": "Слуцк",
+        "author": null,
+        "description": "Музей «Слуцкий пояс» в Слуцке посвящён знаменитому народному промыслу — ткачеству шёлковых поясов с характерным геометрическим орнаментом. Экспозиция рассказывает о мануфактурах, мастерах и судьбе слуцких ткачей, а также о городе как центре Полесья. Слуцк — древний город с богатой историей Речи Посполитой; музей дополняет маршруты южнее Минска, где на карте мало памятных точек между Несвижем и Бобруйском.",
+        "openingAddress": "",
+        "name": "Музей «Слуцкий пояс» (Слуцк)"
+      },
+      "en": {
+        "address": "Слуцк, Minsk Region, Belarus",
+        "city": "Слуцк",
+        "author": null,
+        "name": "Slutsk Sash Museum (Slutsk)",
+        "description": "The Slutsk Sash Museum celebrates Belarus's famous craft of woven silk belts with geometric patterns. Exhibits cover manufactories, artisans and the town's role in Polesie. Slutsk is an ancient centre of the Commonwealth era; the museum fills a gap on routes south of Minsk between Nesvizh and Bobruisk.",
+        "tags": [
+          "Belarus",
+          "Minsk Region",
+          "Slutsk",
+          "Museum",
+          "Crafts",
+          "20th century"
+        ]
+      },
+      "be": {
+        "address": "Слуцк, Мінская вобласць, Беларусь",
+        "city": "Слуцк",
+        "author": null,
+        "name": "Музей «Слуцкі пояс» (Слуцк)",
+        "description": "Музей «Слуцкі пояс» у Слуцку прысвечаны знакамітаму народнаму прамыслу — ткацтву шаўковых паясаў. Экспазіцыя пра мануфактуры і гісторыю горада на Палессі.",
+        "tags": [
+          "Беларусь",
+          "Мінская вобласць",
+          "Слуцк",
+          "Музей",
+          "Рмяство",
+          "XX стагоддзе"
+        ]
+      }
+    },
+    "sketchfabUrl": null,
+    "photos": [],
+    "city": "Слуцк",
+    "modelType": null,
+    "hasPhotos": false,
+    "tags": [
+      "Беларусь",
+      "Минская область",
+      "Слуцк",
+      "Музей",
+      "Ремёсла",
+      "XX век"
+    ],
+    "id": "belarus_place_081"
+  },
+  {
+    "has3D": false,
+    "modelUrl": null,
+    "location": {
+      "lng": 27.4606,
+      "lat": 52.7239,
+      "address": "Соляные копи, Старобин, Минская область, Беларусь"
+    },
+    "createdAt": "2026-05-21T14:00:00.000Z",
+    "featured": false,
+    "featuredOrder": null,
+    "updatedAt": "2026-05-21T14:00:00.000Z",
+    "description": "Старобинские соляные копи — уникальный промышленно-туристический объект на юге Минской области, где веками добывали «белую соль» для всей региона. Подземные галереи и озёра-отстойники образуют необычный ландшафт, популярный у экскурсантов. Старобин связывают с соляным промыслом ещё со времён Великого княжества Литовского. Сегодня это одна из немногих «точек» на карте между Слуцком и Солигорском.",
+    "createdOn": {
+      "day": null,
+      "sortKey": 19500000,
+      "precision": "year",
+      "display": "XX в.",
+      "year": 1950,
+      "month": null
+    },
+    "author": null,
+    "openingDate": "XX в.",
+    "name": "Старобинские соляные копи (Старобин)",
+    "openingAddress": "",
+    "i18n": {
+      "ru": {
+        "address": "Старобин, Минская область, Беларусь",
+        "city": "Старобин",
+        "author": null,
+        "description": "Старобинские соляные копи — уникальный промышленно-туристический объект на юге Минской области, где веками добывали «белую соль» для всей региона. Подземные галереи и озёра-отстойники образуют необычный ландшафт, популярный у экскурсантов. Старобин связывают с соляным промыслом ещё со времён Великого княжества Литовского. Сегодня это одна из немногих «точек» на карте между Слуцком и Солигорском.",
+        "openingAddress": "",
+        "name": "Старобинские соляные копи (Старобин)"
+      },
+      "en": {
+        "address": "Старобин, Minsk Region, Belarus",
+        "city": "Старобин",
+        "author": null,
+        "name": "Starobin Salt Mines (Starobin)",
+        "description": "The Starobin salt mines are a unique industrial and tourist site in southern Minsk Region where «white salt» was extracted for centuries. Underground galleries and brine lakes form a striking landscape. Starobin's salt trade dates to the Grand Duchy; today it is a rare landmark between Slutsk and Soligorsk.",
+        "tags": [
+          "Belarus",
+          "Minsk Region",
+          "Starobin",
+          "Industry",
+          "Salt",
+          "20th century"
+        ]
+      },
+      "be": {
+        "address": "Старобин, Мінская вобласць, Беларусь",
+        "city": "Старобин",
+        "author": null,
+        "name": "Старобінскія соляныя капальні (Старобін)",
+        "description": "Старобінскія соляныя капальні — унікальны прамысловы і турыстычны аб'ект на поўдні Міншчыны з падземнымі галерэямі і солянымі азёрамі.",
+        "tags": [
+          "Беларусь",
+          "Мінская вобласць",
+          "Старобін",
+          "Прамысел",
+          "Соль",
+          "XX стагоддзе"
+        ]
+      }
+    },
+    "sketchfabUrl": null,
+    "photos": [],
+    "city": "Старобин",
+    "modelType": null,
+    "hasPhotos": false,
+    "tags": [
+      "Беларусь",
+      "Минская область",
+      "Старобин",
+      "Промысел",
+      "Соль",
+      "XX век"
+    ],
+    "id": "belarus_place_082"
+  },
+  {
+    "has3D": false,
+    "modelUrl": null,
+    "location": {
+      "lng": 27.5333,
+      "lat": 52.7878,
+      "address": "Собор Рождества Пресвятой Богородицы, Солигорск, Минская область, Беларусь"
+    },
+    "createdAt": "2026-05-21T14:00:00.000Z",
+    "featured": false,
+    "featuredOrder": null,
+    "updatedAt": "2026-05-21T14:00:00.000Z",
+    "description": "Собор Рождества Пресвятой Богородицы в Солигорске — главный православный храм молодого города калийной промышленности. Купола и колокольня видны издалека на фоне терриконов и соляных отвалов. Солигорск вырос в послевоенные годы вокруг месторождений соли и калия; собор стал духовным центром для горняков и строителей. Архитектура сочетает неовизантийские мотивы с монументальностью советского градостроительства.",
+    "createdOn": {
+      "day": null,
+      "sortKey": 19580000,
+      "precision": "year",
+      "display": "XX в.",
+      "year": 1958,
+      "month": null
+    },
+    "author": null,
+    "openingDate": "XX в.",
+    "name": "Собор Рождества Пресвятой Богородицы (Солигорск)",
+    "openingAddress": "",
+    "i18n": {
+      "ru": {
+        "address": "Солигорск, Минская область, Беларусь",
+        "city": "Солигорск",
+        "author": null,
+        "description": "Собор Рождества Пресвятой Богородицы в Солигорске — главный православный храм молодого города калийной промышленности. Купола и колокольня видны издалека на фоне терриконов и соляных отвалов. Солигорск вырос в послевоенные годы вокруг месторождений соли и калия; собор стал духовным центром для горняков и строителей. Архитектура сочетает неовизантийские мотивы с монументальностью советского градостроительства.",
+        "openingAddress": "",
+        "name": "Собор Рождества Пресвятой Богородицы (Солигорск)"
+      },
+      "en": {
+        "address": "Солигорск, Minsk Region, Belarus",
+        "city": "Солигорск",
+        "author": null,
+        "name": "Nativity of the Virgin Cathedral (Soligorsk)",
+        "description": "The Nativity Cathedral in Soligorsk is the main Orthodox church of a town built on potassium and salt mining. Domes are visible above slag heaps and salt waste. Soligorsk grew after World War II; the cathedral became the spiritual centre for miners. Architecture mixes neo-Byzantine motifs with Soviet monumentality.",
+        "tags": [
+          "Belarus",
+          "Minsk Region",
+          "Soligorsk",
+          "Cathedral",
+          "Orthodox",
+          "20th century"
+        ]
+      },
+      "be": {
+        "address": "Солигорск, Мінская вобласць, Беларусь",
+        "city": "Солигорск",
+        "author": null,
+        "name": "Сабор Нараджэння Найсвяцейшай Багародзіцы (Салігорск)",
+        "description": "Сабор Нараджэння ў Салігорску — галоўны праваслаўны храм горада калійнай прамысловасці, бачны на фоне тэрыконаў і соляных адвалаў.",
+        "tags": [
+          "Беларусь",
+          "Мінская вобласць",
+          "Салігорск",
+          "Сабор",
+          "Праваслаўе",
+          "XX стагоддзе"
+        ]
+      }
+    },
+    "sketchfabUrl": null,
+    "photos": [],
+    "city": "Солигорск",
+    "modelType": null,
+    "hasPhotos": false,
+    "tags": [
+      "Беларусь",
+      "Минская область",
+      "Солигорск",
+      "Собор",
+      "Православие",
+      "XX век"
+    ],
+    "id": "belarus_place_083"
+  },
+  {
+    "has3D": false,
+    "modelUrl": null,
+    "location": {
+      "lng": 26.8047,
+      "lat": 52.2472,
+      "address": "Костёл Успения, Лунинец, Брестская область, Беларусь"
+    },
+    "createdAt": "2026-05-21T14:00:00.000Z",
+    "featured": false,
+    "featuredOrder": null,
+    "updatedAt": "2026-05-21T14:00:00.000Z",
+    "description": "Костёл Успения Пресвятой Девы Марии в Лунинце — крупный неоготический храм железнодорожного города на Полесье, в узле линий к Пинску и Бресту. Высокие контрфорсы и стрельчатые окна задают силуэт центра. Лунинец развивался как станция и мастерские; костёл стал символом католической общины южного региона. Он заполняет «пустоту» на карте между Любанью и Брестской областью.",
+    "createdOn": {
+      "day": null,
+      "sortKey": 18900000,
+      "precision": "year",
+      "display": "кон. XIX в.",
+      "year": 1890,
+      "month": null
+    },
+    "author": null,
+    "openingDate": "кон. XIX в.",
+    "name": "Костёл Успения Пресвятой Девы Марии (Лунинец)",
+    "openingAddress": "",
+    "i18n": {
+      "ru": {
+        "address": "Лунинец, Брестская область, Беларусь",
+        "city": "Лунинец",
+        "author": null,
+        "description": "Костёл Успения Пресвятой Девы Марии в Лунинце — крупный неоготический храм железнодорожного города на Полесье, в узле линий к Пинску и Бресту. Высокие контрфорсы и стрельчатые окна задают силуэт центра. Лунинец развивался как станция и мастерские; костёл стал символом католической общины южного региона. Он заполняет «пустоту» на карте между Любанью и Брестской областью.",
+        "openingAddress": "",
+        "name": "Костёл Успения Пресвятой Девы Марии (Лунинец)"
+      },
+      "en": {
+        "address": "Лунинец, Brest Region, Belarus",
+        "city": "Лунинец",
+        "author": null,
+        "name": "Church of the Assumption (Luninets)",
+        "description": "The Assumption Church in Luninets is a large neo-Gothic church in a railway town of Polesie at junctions to Pinsk and Brest. Buttresses and pointed arches define the centre. Luninets grew as a depot; the church symbolises the Catholic community of the south. It fills the map gap between Lyuban and southern Brest Region.",
+        "tags": [
+          "Belarus",
+          "Brest Region",
+          "Luninets",
+          "Church",
+          "Neo-Gothic",
+          "19th century"
+        ]
+      },
+      "be": {
+        "address": "Лунинец, Брэсцкая вобласць, Беларусь",
+        "city": "Лунинец",
+        "author": null,
+        "name": "Касцёл Унебаўзяцця (Лунінец)",
+        "description": "Касцёл Унебаўзяцця ў Лунінцы — неагатычны храм чыгуначнага горада на Палессі, сімвал каталіцкай супольнасці поўдня.",
+        "tags": [
+          "Беларусь",
+          "Брэсцкая вобласць",
+          "Лунінец",
+          "Касцёл",
+          "Неаготыка",
+          "XIX стагоддзе"
+        ]
+      }
+    },
+    "sketchfabUrl": null,
+    "photos": [],
+    "city": "Лунинец",
+    "modelType": null,
+    "hasPhotos": false,
+    "tags": [
+      "Беларусь",
+      "Брестская область",
+      "Лунинец",
+      "Костёл",
+      "Неоготика",
+      "XIX век"
+    ],
+    "id": "belarus_place_084"
+  },
+  {
+    "has3D": false,
+    "modelUrl": null,
+    "location": {
+      "lng": 27.8558,
+      "lat": 52.4456,
+      "address": "Костёл Святого Станислава, Житковичи, Гомельская область, Беларусь"
+    },
+    "createdAt": "2026-05-21T14:00:00.000Z",
+    "featured": false,
+    "featuredOrder": null,
+    "updatedAt": "2026-05-21T14:00:00.000Z",
+    "description": "Костёл Святого Станислава в Житковичах — фарный храм на окраине Полесья, недалеко от зоны Припятского радиационно-экологического заповедника. Кирпичная базилика с башней напоминает о польско-литовском наследии района. Житковичи — ворота к Полесскому государственному радиационно-экологическому заповеднику; город сохранил деревянную и кирпичную застройку. Костёл — главная историческая вертикаль на карте между Речицей и южной границей.",
+    "createdOn": {
+      "day": null,
+      "sortKey": 18900000,
+      "precision": "year",
+      "display": "кон. XIX в.",
+      "year": 1890,
+      "month": null
+    },
+    "author": null,
+    "openingDate": "кон. XIX в.",
+    "name": "Костёл Святого Станислава (Житковичи)",
+    "openingAddress": "",
+    "i18n": {
+      "ru": {
+        "address": "Житковичи, Гомельская область, Беларусь",
+        "city": "Житковичи",
+        "author": null,
+        "description": "Костёл Святого Станислава в Житковичах — фарный храм на окраине Полесья, недалеко от зоны Припятского радиационно-экологического заповедника. Кирпичная базилика с башней напоминает о польско-литовском наследии района. Житковичи — ворота к Полесскому государственному радиационно-экологическому заповеднику; город сохранил деревянную и кирпичную застройку. Костёл — главная историческая вертикаль на карте между Речицей и южной границей.",
+        "openingAddress": "",
+        "name": "Костёл Святого Станислава (Житковичи)"
+      },
+      "en": {
+        "address": "Житковичи, Gomel Region, Belarus",
+        "city": "Житковичи",
+        "author": null,
+        "name": "Church of Saint Stanislaus (Zhitkovichi)",
+        "description": "The Church of Saint Stanislaus in Zhitkovichi is a parish church on the edge of Polesie near the Pripyat reserve. A brick basilica with a tower reflects Polish-Lithuanian heritage. Zhitkovichi gateway to the Pripyat reserve retains historic fabric. The church is the main landmark between Rechitsa and the southern border.",
+        "tags": [
+          "Belarus",
+          "Gomel Region",
+          "Zhitkovichi",
+          "Church",
+          "Polesie",
+          "19th century"
+        ]
+      },
+      "be": {
+        "address": "Житковичи, Гомельская вобласць, Беларусь",
+        "city": "Житковичи",
+        "author": null,
+        "name": "Касцёл Святога Станіслава (Жыткавічы)",
+        "description": "Касцёл Святога Станіслава ў Жыткавічах — фарны храм на ўскрайку Палесся каля Прыпяцкага запаведніка, галоўная гістарычная вертыкаль раёна.",
+        "tags": [
+          "Беларусь",
+          "Гомельская вобласць",
+          "Жыткавічы",
+          "Касцёл",
+          "Палессе",
+          "XIX стагоддзе"
+        ]
+      }
+    },
+    "sketchfabUrl": null,
+    "photos": [],
+    "city": "Житковичи",
+    "modelType": null,
+    "hasPhotos": false,
+    "tags": [
+      "Беларусь",
+      "Гомельская область",
+      "Житковичи",
+      "Костёл",
+      "Полесье",
+      "XIX век"
+    ],
+    "id": "belarus_place_085"
+  },
+  {
+    "has3D": false,
+    "modelUrl": null,
+    "location": {
+      "lng": 29.3267,
+      "lat": 52.1303,
+      "address": "Костёл Непорочного Зачатия, Калинковичи, Гомельская область, Беларусь"
+    },
+    "createdAt": "2026-05-21T14:00:00.000Z",
+    "featured": false,
+    "featuredOrder": null,
+    "updatedAt": "2026-05-21T14:00:00.000Z",
+    "description": "Костёл Непорочного Зачатия Пресвятой Девы Марии в Калинковичах — монументальный храм в центре города на Соже, важного узла на пути к Мозырю и Украине. Неороманские формы и высокая башня доминируют над набережной. Калинковичи известны лесной и деревоперерабатывающей промышленностью, но исторический центр сохраняет черты местечка. Костёл закрывает пробел на карте юго-восточного Полесья.",
+    "createdOn": {
+      "day": null,
+      "sortKey": 18900000,
+      "precision": "year",
+      "display": "кон. XIX в.",
+      "year": 1890,
+      "month": null
+    },
+    "author": null,
+    "openingDate": "кон. XIX в.",
+    "name": "Костёл Непорочного Зачатия (Калинковичи)",
+    "openingAddress": "",
+    "i18n": {
+      "ru": {
+        "address": "Калинковичи, Гомельская область, Беларусь",
+        "city": "Калинковичи",
+        "author": null,
+        "description": "Костёл Непорочного Зачатия Пресвятой Девы Марии в Калинковичах — монументальный храм в центре города на Соже, важного узла на пути к Мозырю и Украине. Неороманские формы и высокая башня доминируют над набережной. Калинковичи известны лесной и деревоперерабатывающей промышленностью, но исторический центр сохраняет черты местечка. Костёл закрывает пробел на карте юго-восточного Полесья.",
+        "openingAddress": "",
+        "name": "Костёл Непорочного Зачатия (Калинковичи)"
+      },
+      "en": {
+        "address": "Калинковичи, Gomel Region, Belarus",
+        "city": "Калинковичи",
+        "author": null,
+        "name": "Immaculate Conception Church (Kalinkovichi)",
+        "description": "The Immaculate Conception Church in Kalinkovichi is a monumental church on the Sozh, a hub towards Mozyr and Ukraine. Neo-Romanesque forms and a tall tower dominate the embankment. The town is known for timber industry yet retains historic centre character. The church fills a gap in south-eastern Polesie.",
+        "tags": [
+          "Belarus",
+          "Gomel Region",
+          "Kalinkovichi",
+          "Church",
+          "Sozh",
+          "19th century"
+        ]
+      },
+      "be": {
+        "address": "Калинковичи, Гомельская вобласць, Беларусь",
+        "city": "Калинковичи",
+        "author": null,
+        "name": "Касцёл Непахрыўнага Зачаття (Калінкавічы)",
+        "description": "Касцёл Непахрыўнага Зачатця ў Калінкавічах — манументальны храм у цэнтры горада на Сожы, дамінанта гістарычнай забудовы.",
+        "tags": [
+          "Беларусь",
+          "Гомельская вобласць",
+          "Калінкавічы",
+          "Касцёл",
+          "Сож",
+          "XIX стагоддзе"
+        ]
+      }
+    },
+    "sketchfabUrl": null,
+    "photos": [],
+    "city": "Калинковичи",
+    "modelType": null,
+    "hasPhotos": false,
+    "tags": [
+      "Беларусь",
+      "Гомельская область",
+      "Калинковичи",
+      "Костёл",
+      "Сож",
+      "XIX век"
+    ],
+    "id": "belarus_place_086"
+  },
+  {
+    "has3D": false,
+    "modelUrl": null,
+    "location": {
+      "lng": 29.6292,
+      "lat": 51.8136,
+      "address": "Церковь Успения, Ельск, Гомельская область, Беларусь"
+    },
+    "createdAt": "2026-05-21T14:00:00.000Z",
+    "featured": false,
+    "featuredOrder": null,
+    "updatedAt": "2026-05-21T14:00:00.000Z",
+    "description": "Церковь Успения Пресвятой Богородицы в Ельске — православный храм в глубинном полесском городе недалеко от границы с Украиной. Пятиглавие и колокольня выделяются на фоне низкой застройки. Ельск — центр района с развитой аграрной экономикой; церковь напоминает о русско-православной традиции этих земель. Это редкая «точка» на карте у самой южной оконечности Гомельщины.",
+    "createdOn": {
+      "day": null,
+      "sortKey": 18900000,
+      "precision": "year",
+      "display": "кон. XIX в.",
+      "year": 1890,
+      "month": null
+    },
+    "author": null,
+    "openingDate": "кон. XIX в.",
+    "name": "Церковь Успения Пресвятой Богородицы (Ельск)",
+    "openingAddress": "",
+    "i18n": {
+      "ru": {
+        "address": "Ельск, Гомельская область, Беларусь",
+        "city": "Ельск",
+        "author": null,
+        "description": "Церковь Успения Пресвятой Богородицы в Ельске — православный храм в глубинном полесском городе недалеко от границы с Украиной. Пятиглавие и колокольня выделяются на фоне низкой застройки. Ельск — центр района с развитой аграрной экономикой; церковь напоминает о русско-православной традиции этих земель. Это редкая «точка» на карте у самой южной оконечности Гомельщины.",
+        "openingAddress": "",
+        "name": "Церковь Успения Пресвятой Богородицы (Ельск)"
+      },
+      "en": {
+        "address": "Ельск, Gomel Region, Belarus",
+        "city": "Ельск",
+        "author": null,
+        "name": "Dormition Church (Yelsk)",
+        "description": "The Dormition Church in Yelsk is an Orthodox church in a remote Polesie town near the Ukrainian border. Five domes and a bell tower stand above low-rise fabric. Yelsk is a district centre with agriculture; the church reflects Orthodox tradition. It is a rare landmark at the southern tip of Gomel Region.",
+        "tags": [
+          "Belarus",
+          "Gomel Region",
+          "Yelsk",
+          "Church",
+          "Orthodox",
+          "19th century"
+        ]
+      },
+      "be": {
+        "address": "Ельск, Гомельская вобласць, Беларусь",
+        "city": "Ельск",
+        "author": null,
+        "name": "Царква Унебаўзяцця (Ельск)",
+        "description": "Царква Унебаўзяцця ў Ельску — праваслаўны храм у глыбінным палескім горадзе каля ўкраінскай мяжы, рэдкая кропка на карце паўднёвай Гомельшчыны.",
+        "tags": [
+          "Беларусь",
+          "Гомельская вобласць",
+          "Ельск",
+          "Царква",
+          "Праваслаўе",
+          "XIX стагоддзе"
+        ]
+      }
+    },
+    "sketchfabUrl": null,
+    "photos": [],
+    "city": "Ельск",
+    "modelType": null,
+    "hasPhotos": false,
+    "tags": [
+      "Беларусь",
+      "Гомельская область",
+      "Ельск",
+      "Церковь",
+      "Православие",
+      "XIX век"
+    ],
+    "id": "belarus_place_087"
+  },
+  {
+    "has3D": false,
+    "modelUrl": null,
+    "location": {
+      "lng": 29.4972,
+      "lat": 51.7961,
+      "address": "Свято-Троицкая церковь, Наровля, Гомельская область, Беларусь"
+    },
+    "createdAt": "2026-05-21T14:00:00.000Z",
+    "featured": false,
+    "featuredOrder": null,
+    "updatedAt": "2026-05-21T14:00:00.000Z",
+    "description": "Свято-Троицкая церковь в Наровле — деревянный православный храм на берегу Припяти, в городе-порте близ украинской границы. Силуэт шатровых глав контрастирует с пойменным ландшафтом. Наровля связана с речной торговлей и рыболовством; церковь — один из старейших архитектурных акцентов посёлка, ставшего городом. Место важно для маршрутов по южному Полесью и Припятскому краю.",
+    "createdOn": {
+      "day": null,
+      "sortKey": 18900000,
+      "precision": "year",
+      "display": "кон. XIX в.",
+      "year": 1890,
+      "month": null
+    },
+    "author": null,
+    "openingDate": "кон. XIX в.",
+    "name": "Свято-Троицкая церковь (Наровля)",
+    "openingAddress": "",
+    "i18n": {
+      "ru": {
+        "address": "Наровля, Гомельская область, Беларусь",
+        "city": "Наровля",
+        "author": null,
+        "description": "Свято-Троицкая церковь в Наровле — деревянный православный храм на берегу Припяти, в городе-порте близ украинской границы. Силуэт шатровых глав контрастирует с пойменным ландшафтом. Наровля связана с речной торговлей и рыболовством; церковь — один из старейших архитектурных акцентов посёлка, ставшего городом. Место важно для маршрутов по южному Полесью и Припятскому краю.",
+        "openingAddress": "",
+        "name": "Свято-Троицкая церковь (Наровля)"
+      },
+      "en": {
+        "address": "Наровля, Gomel Region, Belarus",
+        "city": "Наровля",
+        "author": null,
+        "name": "Holy Trinity Church (Narowlya)",
+        "description": "The Holy Trinity Church in Narowlya is a wooden Orthodox church on the Pripyat in a river port near Ukraine. Tent roofs contrast with floodplain landscape. Narowlya is linked to river trade; the church is among the oldest architectural accents of the settlement. It anchors routes through southern Polesie.",
+        "tags": [
+          "Belarus",
+          "Gomel Region",
+          "Narowlya",
+          "Church",
+          "Wooden architecture",
+          "Pripyat"
+        ]
+      },
+      "be": {
+        "address": "Наровля, Гомельская вобласць, Беларусь",
+        "city": "Наровля",
+        "author": null,
+        "name": "Троіцкая царква (Нароўля)",
+        "description": "Троіцкая царква ў Нароўлі — драўляны праваслаўны храм на беразе Прыпяці, стары архітэктурны акцэнт горада-порта.",
+        "tags": [
+          "Беларусь",
+          "Гомельская вобласць",
+          "Нароўля",
+          "Царква",
+          "Драўлянае зодчва",
+          "Прыпяць"
+        ]
+      }
+    },
+    "sketchfabUrl": null,
+    "photos": [],
+    "city": "Наровля",
+    "modelType": null,
+    "hasPhotos": false,
+    "tags": [
+      "Беларусь",
+      "Гомельская область",
+      "Наровля",
+      "Церковь",
+      "Деревянное зодчество",
+      "Припять"
+    ],
+    "id": "belarus_place_088"
+  },
+  {
+    "has3D": false,
+    "modelUrl": null,
+    "location": {
+      "lng": 26.7333,
+      "lat": 53.4833,
+      "address": "Мемориал «Прорыв», Столбцы, Минская область, Беларусь"
+    },
+    "createdAt": "2026-05-21T14:00:00.000Z",
+    "featured": false,
+    "featuredOrder": null,
+    "updatedAt": "2026-05-21T14:00:00.000Z",
+    "description": "Мемориальный комплекс «Прорыв» под Столбцами отмечает героизм воинов, прорвавших оборону противника в 1944 году на пути освобождения Беларуси. Монумент и аллея памяти расположены в пригородном лесу; сюда приходят жители и гости города 8 мая и в День Победы. Столбцы — старый город на реке Неман с костёлами и сутинцем; мемориал дополняет исторический маршрут юго-западнее Минска в «пустой» зоне карты.",
+    "createdOn": {
+      "day": null,
+      "sortKey": 19750000,
+      "precision": "year",
+      "display": "XX в.",
+      "year": 1975,
+      "month": null
+    },
+    "author": null,
+    "openingDate": "XX в.",
+    "name": "Мемориальный комплекс «Прорыв» (Столбцы)",
+    "openingAddress": "",
+    "i18n": {
+      "ru": {
+        "address": "Столбцы, Минская область, Беларусь",
+        "city": "Столбцы",
+        "author": null,
+        "description": "Мемориальный комплекс «Прорыв» под Столбцами отмечает героизм воинов, прорвавших оборону противника в 1944 году на пути освобождения Беларуси. Монумент и аллея памяти расположены в пригородном лесу; сюда приходят жители и гости города 8 мая и в День Победы. Столбцы — старый город на реке Неман с костёлами и сутинцем; мемориал дополняет исторический маршрут юго-западнее Минска в «пустой» зоне карты.",
+        "openingAddress": "",
+        "name": "Мемориальный комплекс «Прорыв» (Столбцы)"
+      },
+      "en": {
+        "address": "Столбцы, Minsk Region, Belarus",
+        "city": "Столбцы",
+        "author": null,
+        "name": "Breakthrough Memorial Complex (Stolbtsy)",
+        "description": "The Breakthrough memorial near Stolbtsy honours soldiers who pierced enemy defences in 1944 during Belarus's liberation. A monument and alley stand in suburban forest; ceremonies mark Victory Day. Stolbtsy is an old Neman town with churches; the memorial adds a point south-west of Minsk where the map was sparse.",
+        "tags": [
+          "Belarus",
+          "Minsk Region",
+          "Stolbtsy",
+          "Memorial",
+          "WWII",
+          "20th century"
+        ]
+      },
+      "be": {
+        "address": "Столбцы, Мінская вобласць, Беларусь",
+        "city": "Столбцы",
+        "author": null,
+        "name": "Мемарыяльны комплекс «Прорыў» (Стоўбцы)",
+        "description": "Мемарыяльны комплекс «Прорыў» пад Стоўбцамі — помнік воінам, якія прарвалі абарону ў 1944 годзе, важная кропка памяці на паўднёвым захадзе Міншчыны.",
+        "tags": [
+          "Беларусь",
+          "Мінская вобласць",
+          "Стоўбцы",
+          "Мемарыял",
+          "ВОВ",
+          "XX стагоддзе"
+        ]
+      }
+    },
+    "sketchfabUrl": null,
+    "photos": [],
+    "city": "Столбцы",
+    "modelType": null,
+    "hasPhotos": false,
+    "tags": [
+      "Беларусь",
+      "Минская область",
+      "Столбцы",
+      "Мемориал",
+      "ВОВ",
+      "XX век"
+    ],
+    "id": "belarus_place_089"
+  },
+  {
+    "has3D": false,
+    "modelUrl": null,
+    "location": {
+      "lng": 30.2678,
+      "lat": 51.8011,
+      "address": "Костёл Святого Иосифа, Брагин, Гомельская область, Беларусь"
+    },
+    "createdAt": "2026-05-21T14:00:00.000Z",
+    "featured": false,
+    "featuredOrder": null,
+    "updatedAt": "2026-05-21T14:00:00.000Z",
+    "description": "Костёл Святого Иосифа в Брагине — кирпичный храм в районном центре на Днепре, в зоне, пострадавшей от аварии на ЧАЭС. Башня и неоготические детали сохранились как символ довоенного и послевоенного местечка. Брагин — ворота к Чернобыльской зоне отчуждения с белорусской стороны; город пережил переселение, но костёл остаётся ориентиром. Точка закрывает южную «дыру» на карте между Речицей и границей.",
+    "createdOn": {
+      "day": null,
+      "sortKey": 18900000,
+      "precision": "year",
+      "display": "кон. XIX в.",
+      "year": 1890,
+      "month": null
+    },
+    "author": null,
+    "openingDate": "кон. XIX в.",
+    "name": "Костёл Святого Иосифа (Брагин)",
+    "openingAddress": "",
+    "i18n": {
+      "ru": {
+        "address": "Брагин, Гомельская область, Беларусь",
+        "city": "Брагин",
+        "author": null,
+        "description": "Костёл Святого Иосифа в Брагине — кирпичный храм в районном центре на Днепре, в зоне, пострадавшей от аварии на ЧАЭС. Башня и неоготические детали сохранились как символ довоенного и послевоенного местечка. Брагин — ворота к Чернобыльской зоне отчуждения с белорусской стороны; город пережил переселение, но костёл остаётся ориентиром. Точка закрывает южную «дыру» на карте между Речицей и границей.",
+        "openingAddress": "",
+        "name": "Костёл Святого Иосифа (Брагин)"
+      },
+      "en": {
+        "address": "Брагин, Gomel Region, Belarus",
+        "city": "Брагин",
+        "author": null,
+        "name": "Church of Saint Joseph (Bragin)",
+        "description": "The Church of Saint Joseph in Bragin is a brick church in a district centre on the Dnieper in the area affected by Chernobyl. A tower and neo-Gothic details symbolise the pre-war town. Bragin gates the exclusion zone from Belarus; the church remains a landmark filling the southern map gap.",
+        "tags": [
+          "Belarus",
+          "Gomel Region",
+          "Bragin",
+          "Church",
+          "Dnieper",
+          "19th century"
+        ]
+      },
+      "be": {
+        "address": "Брагин, Гомельская вобласць, Беларусь",
+        "city": "Брагин",
+        "author": null,
+        "name": "Касцёл Святога Іосіфа (Брагін)",
+        "description": "Касцёл Святога Іосіфа ў Брагіне — цагляны храм у раённым цэнтры на Дняпрэ, арыенцір гістарычнага мястэчка ў паўднёвай Гомельшчыне.",
+        "tags": [
+          "Беларусь",
+          "Гомельская вобласць",
+          "Брагін",
+          "Касцёл",
+          "Дняпро",
+          "XIX стагоддзе"
+        ]
+      }
+    },
+    "sketchfabUrl": null,
+    "photos": [],
+    "city": "Брагин",
+    "modelType": null,
+    "hasPhotos": false,
+    "tags": [
+      "Беларусь",
+      "Гомельская область",
+      "Брагин",
+      "Костёл",
+      "Днепр",
+      "XIX век"
+    ],
+    "id": "belarus_place_090"
+  },
+  {
+    "has3D": false,
+    "modelUrl": null,
+    "location": {
+      "lng": 28.0597,
+      "lat": 54.7342,
+      "address": "Костёл Рождества Пресвятой Девы Марии, Бегомль, Витебская область, Беларусь"
+    },
+    "createdAt": "2026-05-21T14:00:00.000Z",
+    "featured": false,
+    "featuredOrder": null,
+    "updatedAt": "2026-05-21T14:00:00.000Z",
+    "description": "Костёл Рождества Пресвятой Девы Марии в Бегомле — главный памятник посёлка на трассе Минск — Витебск, в «пустом» клине между Борисовом и Лепелем. Кирпичный неоготический храм с высокой башней виден с дороги. Бегомль вырос как торгово-ремесленный пункт; сегодня это остановка для путешественников, исследующих северо-восток Минской области. Костёл — якорная точка для заполнения карты вокруг Бегомля.",
+    "createdOn": {
+      "day": null,
+      "sortKey": 18900000,
+      "precision": "year",
+      "display": "кон. XIX в.",
+      "year": 1890,
+      "month": null
+    },
+    "author": null,
+    "openingDate": "кон. XIX в.",
+    "name": "Костёл Рождества Пресвятой Девы Марии (Бегомль)",
+    "openingAddress": "",
+    "i18n": {
+      "ru": {
+        "address": "Бегомль, Витебская область, Беларусь",
+        "city": "Бегомль",
+        "author": null,
+        "description": "Костёл Рождества Пресвятой Девы Марии в Бегомле — главный памятник посёлка на трассе Минск — Витебск, в «пустом» клине между Борисовом и Лепелем. Кирпичный неоготический храм с высокой башней виден с дороги. Бегомль вырос как торгово-ремесленный пункт; сегодня это остановка для путешественников, исследующих северо-восток Минской области. Костёл — якорная точка для заполнения карты вокруг Бегомля.",
+        "openingAddress": "",
+        "name": "Костёл Рождества Пресвятой Девы Марии (Бегомль)"
+      },
+      "en": {
+        "address": "Бегомль, Vitebsk Region, Belarus",
+        "city": "Бегомль",
+        "author": null,
+        "name": "Nativity of the Virgin Church (Begoml)",
+        "description": "The Nativity Church in Begoml is the main monument of a town on the Minsk–Vitebsk highway in a gap between Borisov and Lepel. A brick neo-Gothic church with a tall tower is visible from the road. Begoml grew as a crafts and trade point; today it anchors map coverage around Begoml.",
+        "tags": [
+          "Belarus",
+          "Vitebsk Region",
+          "Begoml",
+          "Church",
+          "Neo-Gothic",
+          "19th century"
+        ]
+      },
+      "be": {
+        "address": "Бегомль, Віцебская вобласць, Беларусь",
+        "city": "Бегомль",
+        "author": null,
+        "name": "Касцёл Нараджэння Найсвяцейшай Багародзіцы (Бегомль)",
+        "description": "Касцёл Нараджэння ў Бегомлі — галоўны помнік пасёлка на трассе Мінск — Віцебск, якорная кропка для карты паміж Барысаў і Лепелем.",
+        "tags": [
+          "Беларусь",
+          "Віцебская вобласць",
+          "Бегомль",
+          "Касцёл",
+          "Неаготыка",
+          "XIX стагоддзе"
+        ]
+      }
+    },
+    "sketchfabUrl": null,
+    "photos": [],
+    "city": "Бегомль",
+    "modelType": null,
+    "hasPhotos": false,
+    "tags": [
+      "Беларусь",
+      "Витебская область",
+      "Бегомль",
+      "Костёл",
+      "Неоготика",
+      "XIX век"
+    ],
+    "id": "belarus_place_091"
+  },
+  {
+    "has3D": false,
+    "modelUrl": null,
+    "location": {
+      "lng": 27.7667,
+      "lat": 54.8917,
+      "address": "Костёл Воскресения Христова, Докшицы, Витебская область, Беларусь"
+    },
+    "createdAt": "2026-05-21T14:00:00.000Z",
+    "featured": false,
+    "featuredOrder": null,
+    "updatedAt": "2026-05-21T14:00:00.000Z",
+    "description": "Костёл Воскресения Христова в Докшицах — барочный фарный храм в районном центре на севере Витебщины, недалеко от Бегомля и Лепеля. Активный фасад с волютами и внутреннее убранство относят к виленской школе. Докшицы известны также еврейским наследием и памятниками ВОВ; костёл доминирует над центральной площадью. Важная точка для северного сектора карты между Полоцком и Минском.",
+    "createdOn": {
+      "day": null,
+      "sortKey": 17800000,
+      "precision": "year",
+      "display": "кон. XVIII в.",
+      "year": 1780,
+      "month": null
+    },
+    "author": null,
+    "openingDate": "кон. XVIII в.",
+    "name": "Костёл Воскресения Христова (Докшицы)",
+    "openingAddress": "",
+    "i18n": {
+      "ru": {
+        "address": "Докшицы, Витебская область, Беларусь",
+        "city": "Докшицы",
+        "author": null,
+        "description": "Костёл Воскресения Христова в Докшицах — барочный фарный храм в районном центре на севере Витебщины, недалеко от Бегомля и Лепеля. Активный фасад с волютами и внутреннее убранство относят к виленской школе. Докшицы известны также еврейским наследием и памятниками ВОВ; костёл доминирует над центральной площадью. Важная точка для северного сектора карты между Полоцком и Минском.",
+        "openingAddress": "",
+        "name": "Костёл Воскресения Христова (Докшицы)"
+      },
+      "en": {
+        "address": "Докшицы, Vitebsk Region, Belarus",
+        "city": "Докшицы",
+        "author": null,
+        "name": "Church of the Resurrection (Dokshitsy)",
+        "description": "The Resurrection Church in Dokshitsy is a Baroque parish church in a northern district centre near Begoml and Lepel. A dynamic façade belongs to the Vilnius school. Dokshitsy also has Jewish heritage and WWII memorials; the church dominates the square. It fills the northern sector between Polotsk and Minsk.",
+        "tags": [
+          "Belarus",
+          "Vitebsk Region",
+          "Dokshitsy",
+          "Church",
+          "Baroque",
+          "18th century"
+        ]
+      },
+      "be": {
+        "address": "Докшицы, Віцебская вобласць, Беларусь",
+        "city": "Докшицы",
+        "author": null,
+        "name": "Касцёл Уваскрасення Хрыста (Докшыцы)",
+        "description": "Касцёл Уваскрасення ў Докшыцах — барокавы фарны храм у раённым цэнтры на поўначы Віцебшчыны, дамінанта плошчы.",
+        "tags": [
+          "Беларусь",
+          "Віцебская вобласць",
+          "Докшыцы",
+          "Касцёл",
+          "Барока",
+          "XVIII стагоддзе"
+        ]
+      }
+    },
+    "sketchfabUrl": null,
+    "photos": [],
+    "city": "Докшицы",
+    "modelType": null,
+    "hasPhotos": false,
+    "tags": [
+      "Беларусь",
+      "Витебская область",
+      "Докшицы",
+      "Костёл",
+      "Барокко",
+      "XVIII век"
+    ],
+    "id": "belarus_place_092"
+  },
+  {
+    "has3D": false,
+    "modelUrl": null,
+    "location": {
+      "lng": 26.8333,
+      "lat": 55.1167,
+      "address": "Костёл святого Антония, Поставы, Витебская область, Беларусь"
+    },
+    "createdAt": "2026-05-21T14:00:00.000Z",
+    "featured": false,
+    "featuredOrder": null,
+    "updatedAt": "2026-05-21T14:00:00.000Z",
+    "description": "Костёл святого Антония в Поставах — один из выдающихся памятников виленского барокко на севере Беларуси, с двумя башнями и богатым интерьером. Поставы — старый город на реке Миорке, центр озёрного края. Храм действующий, привлекает паломников и любителей архитектуры. Вместе с окрестными костёлами и усадьбами формирует кластер, закрывающий «белое пятно» северо-западнее Бегомля.",
+    "createdOn": {
+      "day": null,
+      "sortKey": 17800000,
+      "precision": "year",
+      "display": "кон. XVIII в.",
+      "year": 1780,
+      "month": null
+    },
+    "author": null,
+    "openingDate": "кон. XVIII в.",
+    "name": "Костёл святого Антония (Поставы)",
+    "openingAddress": "",
+    "i18n": {
+      "ru": {
+        "address": "Поставы, Витебская область, Беларусь",
+        "city": "Поставы",
+        "author": null,
+        "description": "Костёл святого Антония в Поставах — один из выдающихся памятников виленского барокко на севере Беларуси, с двумя башнями и богатым интерьером. Поставы — старый город на реке Миорке, центр озёрного края. Храм действующий, привлекает паломников и любителей архитектуры. Вместе с окрестными костёлами и усадьбами формирует кластер, закрывающий «белое пятно» северо-западнее Бегомля.",
+        "openingAddress": "",
+        "name": "Костёл святого Антония (Поставы)"
+      },
+      "en": {
+        "address": "Поставы, Vitebsk Region, Belarus",
+        "city": "Поставы",
+        "author": null,
+        "name": "Church of Saint Anthony (Postavy)",
+        "description": "The Church of Saint Anthony in Postavy is among the finest Vilnius Baroque monuments in northern Belarus, with two towers and rich interiors. Postavy is an old town on the Myoryanka river in lake country. The active church draws pilgrims and architecture lovers, filling the map north-west of Begoml.",
+        "tags": [
+          "Belarus",
+          "Vitebsk Region",
+          "Postavy",
+          "Church",
+          "Baroque",
+          "18th century"
+        ]
+      },
+      "be": {
+        "address": "Поставы, Віцебская вобласць, Беларусь",
+        "city": "Поставы",
+        "author": null,
+        "name": "Касцёл святога Антона (Паставы)",
+        "description": "Касцёл святога Антона ў Паставах — выбітны помнік віленскага барока на поўначы Беларусі з дзвюма вежамі, цэнтр азёрнага краю.",
+        "tags": [
+          "Беларусь",
+          "Віцебская вобласць",
+          "Паставы",
+          "Касцёл",
+          "Барока",
+          "XVIII стагоддзе"
+        ]
+      }
+    },
+    "sketchfabUrl": null,
+    "photos": [],
+    "city": "Поставы",
+    "modelType": null,
+    "hasPhotos": false,
+    "tags": [
+      "Беларусь",
+      "Витебская область",
+      "Поставы",
+      "Костёл",
+      "Барокко",
+      "XVIII век"
+    ],
+    "id": "belarus_place_093"
+  },
+  {
+    "has3D": false,
+    "modelUrl": null,
+    "location": {
+      "lng": 26.6111,
+      "lat": 55.3944,
+      "address": "Костёл Преображения Господня, Видзы, Витебская область, Беларусь"
+    },
+    "createdAt": "2026-05-21T14:00:00.000Z",
+    "featured": false,
+    "featuredOrder": null,
+    "updatedAt": "2026-05-21T14:00:00.000Z",
+    "description": "Костёл Преображения Господня в Видзах — крупный неоготический храм на границе с Литвой, в историческом регионе Браславщины. Две башни и стрельчатые окна видны издалека на фоне холмистого рельефа. Видзы — центр сельского района с смешанным населением; костёл стал символом католического наследия пограничья. Точка дополняет кластер Постав — Браслав — Бегомль на карте.",
+    "createdOn": {
+      "day": null,
+      "sortKey": 18900000,
+      "precision": "year",
+      "display": "кон. XIX в.",
+      "year": 1890,
+      "month": null
+    },
+    "author": null,
+    "openingDate": "кон. XIX в.",
+    "name": "Костёл Преображения Господня (Видзы)",
+    "openingAddress": "",
+    "i18n": {
+      "ru": {
+        "address": "Видзы, Витебская область, Беларусь",
+        "city": "Видзы",
+        "author": null,
+        "description": "Костёл Преображения Господня в Видзах — крупный неоготический храм на границе с Литвой, в историческом регионе Браславщины. Две башни и стрельчатые окна видны издалека на фоне холмистого рельефа. Видзы — центр сельского района с смешанным населением; костёл стал символом католического наследия пограничья. Точка дополняет кластер Постав — Браслав — Бегомль на карте.",
+        "openingAddress": "",
+        "name": "Костёл Преображения Господня (Видзы)"
+      },
+      "en": {
+        "address": "Видзы, Vitebsk Region, Belarus",
+        "city": "Видзы",
+        "author": null,
+        "name": "Church of the Transfiguration (Vidzy)",
+        "description": "The Transfiguration Church in Vidzy is a large neo-Gothic church on the Lithuanian border in Braslav region. Two towers are visible on hilly terrain. Vidzy is a rural district centre; the church symbolises Catholic heritage of the frontier. It complements the Postavy–Braslav–Begoml cluster on the map.",
+        "tags": [
+          "Belarus",
+          "Vitebsk Region",
+          "Vidzy",
+          "Church",
+          "Neo-Gothic",
+          "19th century"
+        ]
+      },
+      "be": {
+        "address": "Видзы, Віцебская вобласць, Беларусь",
+        "city": "Видзы",
+        "author": null,
+        "name": "Касцёл Праабражэння (Відзы)",
+        "description": "Касцёл Праабражэння ў Відзах — неагатычны храм на мяжы з Літвой у Браслаўшчыне, сімвал каталіцкай спадчыны пагранічча.",
+        "tags": [
+          "Беларусь",
+          "Віцебская вобласць",
+          "Відзы",
+          "Касцёл",
+          "Неаготыка",
+          "XIX стагоддзе"
+        ]
+      }
+    },
+    "sketchfabUrl": null,
+    "photos": [],
+    "city": "Видзы",
+    "modelType": null,
+    "hasPhotos": false,
+    "tags": [
+      "Беларусь",
+      "Витебская область",
+      "Видзы",
+      "Костёл",
+      "Неоготика",
+      "XIX век"
+    ],
+    "id": "belarus_place_094"
+  },
+  {
+    "has3D": false,
+    "modelUrl": null,
+    "location": {
+      "lng": 28.51,
+      "lat": 54.2244,
+      "address": "Свято-Борисо-Глебская церковь, Борисов, Минская область, Беларусь"
+    },
+    "createdAt": "2026-05-21T14:00:00.000Z",
+    "featured": false,
+    "featuredOrder": null,
+    "updatedAt": "2026-05-21T14:00:00.000Z",
+    "description": "Свято-Борисо-Глебская церковь в Борисове — православный храм в городе на Березине, ключевом узле между Минском и Могилёвом. Купола и колокольня украшают исторический центр рядом с мемориалами и застройкой XIX–XX веков. Борисов известен спортивной историей и промышленностью, но церковь напоминает о древней традиции имени Бориса и Глеба. Закрывает пробел на карте в полосе 30–50 км северо-восточнее Минска.",
+    "createdOn": {
+      "day": null,
+      "sortKey": 18900000,
+      "precision": "year",
+      "display": "кон. XIX в.",
+      "year": 1890,
+      "month": null
+    },
+    "author": null,
+    "openingDate": "кон. XIX в.",
+    "name": "Свято-Борисо-Глебская церковь (Борисов)",
+    "openingAddress": "",
+    "i18n": {
+      "ru": {
+        "address": "Борисов, Минская область, Беларусь",
+        "city": "Борисов",
+        "author": null,
+        "description": "Свято-Борисо-Глебская церковь в Борисове — православный храм в городе на Березине, ключевом узле между Минском и Могилёвом. Купола и колокольня украшают исторический центр рядом с мемориалами и застройкой XIX–XX веков. Борисов известен спортивной историей и промышленностью, но церковь напоминает о древней традиции имени Бориса и Глеба. Закрывает пробел на карте в полосе 30–50 км северо-восточнее Минска.",
+        "openingAddress": "",
+        "name": "Свято-Борисо-Глебская церковь (Борисов)"
+      },
+      "en": {
+        "address": "Борисов, Minsk Region, Belarus",
+        "city": "Борисов",
+        "author": null,
+        "name": "Saints Boris and Gleb Church (Borisov)",
+        "description": "The Saints Boris and Gleb Church in Borisov is an Orthodox church on the Berezina between Minsk and Mogilev. Domes adorn the historic centre near 19th–20th-century fabric. Borisov is known for industry and sport; the church recalls ancient patron saints. It fills the 30–50 km strip north-east of Minsk.",
+        "tags": [
+          "Belarus",
+          "Minsk Region",
+          "Borisov",
+          "Church",
+          "Orthodox",
+          "19th century"
+        ]
+      },
+      "be": {
+        "address": "Борисов, Мінская вобласць, Беларусь",
+        "city": "Борисов",
+        "author": null,
+        "name": "Свята-Барыса-Глебская царква (Барысаў)",
+        "description": "Свята-Барыса-Глебская царква ў Барысаўе — праваслаўны храм на Бярозіне ў пасе Мінск — Магілёў, важная кропка на карце паўночна-усход ад Мінска.",
+        "tags": [
+          "Беларусь",
+          "Мінская вобласць",
+          "Барысаў",
+          "Царква",
+          "Праваслаўе",
+          "XIX стагоддзе"
+        ]
+      }
+    },
+    "sketchfabUrl": null,
+    "photos": [],
+    "city": "Борисов",
+    "modelType": null,
+    "hasPhotos": false,
+    "tags": [
+      "Беларусь",
+      "Минская область",
+      "Борисов",
+      "Церковь",
+      "Православие",
+      "XIX век"
+    ],
+    "id": "belarus_place_095"
+  },
+  {
+    "has3D": false,
+    "modelUrl": null,
+    "location": {
+      "lng": 28.0897,
+      "lat": 54.0258,
+      "address": "Костёл Успения, Смолевичи, Минская область, Беларусь"
+    },
+    "createdAt": "2026-05-21T14:00:00.000Z",
+    "featured": false,
+    "featuredOrder": null,
+    "updatedAt": "2026-05-21T14:00:00.000Z",
+    "description": "Костёл Успения Пресвятой Девы Марии в Смолевичах — неоготический храм в городе у «Белорусской Макеевки» и аэропорта Минск. Высокая башня видна с трассы Минск — Москва. Смолевичи выросли как железнодорожная станция; костёл сохранил роль духовного центра для местной общины. Точка на карте между Минском и Борисовом, в запрошенной полосе к Могилёву.",
+    "createdOn": {
+      "day": null,
+      "sortKey": 18900000,
+      "precision": "year",
+      "display": "кон. XIX в.",
+      "year": 1890,
+      "month": null
+    },
+    "author": null,
+    "openingDate": "кон. XIX в.",
+    "name": "Костёл Успения Пресвятой Девы Марии (Смолевичи)",
+    "openingAddress": "",
+    "i18n": {
+      "ru": {
+        "address": "Смолевичи, Минская область, Беларусь",
+        "city": "Смолевичи",
+        "author": null,
+        "description": "Костёл Успения Пресвятой Девы Марии в Смолевичах — неоготический храм в городе у «Белорусской Макеевки» и аэропорта Минск. Высокая башня видна с трассы Минск — Москва. Смолевичи выросли как железнодорожная станция; костёл сохранил роль духовного центра для местной общины. Точка на карте между Минском и Борисовом, в запрошенной полосе к Могилёву.",
+        "openingAddress": "",
+        "name": "Костёл Успения Пресвятой Девы Марии (Смолевичи)"
+      },
+      "en": {
+        "address": "Смолевичи, Minsk Region, Belarus",
+        "city": "Смолевичи",
+        "author": null,
+        "name": "Church of the Assumption (Smolevichi)",
+        "description": "The Assumption Church in Smolevichi is a neo-Gothic church near Belarusian Makiivka and Minsk airport. A tall tower is seen from the Minsk–Moscow highway. Smolevichi grew as a railway station; the church remains a spiritual centre between Minsk and Borisov on the corridor to Mogilev.",
+        "tags": [
+          "Belarus",
+          "Minsk Region",
+          "Smolevichi",
+          "Church",
+          "Neo-Gothic",
+          "19th century"
+        ]
+      },
+      "be": {
+        "address": "Смолевичи, Мінская вобласць, Беларусь",
+        "city": "Смолевичи",
+        "author": null,
+        "name": "Касцёл Унебаўзяцця (Смалявічы)",
+        "description": "Касцёл Унебаўзяцця ў Смалявічах — неагатычны храм каля аэрапорта Мінск, важная кропка на карце паміж Мінскам і Барысаў.",
+        "tags": [
+          "Беларусь",
+          "Мінская вобласць",
+          "Смалявічы",
+          "Касцёл",
+          "Неаготыка",
+          "XIX стагоддзе"
+        ]
+      }
+    },
+    "sketchfabUrl": null,
+    "photos": [],
+    "city": "Смолевичи",
+    "modelType": null,
+    "hasPhotos": false,
+    "tags": [
+      "Беларусь",
+      "Минская область",
+      "Смолевичи",
+      "Костёл",
+      "Неоготика",
+      "XIX век"
+    ],
+    "id": "belarus_place_096"
+  },
+  {
+    "has3D": false,
+    "modelUrl": null,
+    "location": {
+      "lng": 28.4331,
+      "lat": 53.6428,
+      "address": "Костёл Успения, Червень, Минская область, Беларусь"
+    },
+    "createdAt": "2026-05-21T14:00:00.000Z",
+    "featured": false,
+    "featuredOrder": null,
+    "updatedAt": "2026-05-21T14:00:00.000Z",
+    "description": "Костёл Успения Пресвятой Девы Марии в Червене — монументальный кирпичный храм в городе на реке Усадзе, восточнее Минска по старой Борисовской дороге. Неороманский стиль и центральное положение делают его доминантой площади. Червень известен с XVI века; сохранились фрагменты исторической застройки. Костёл заполняет карту в «коридоре» Минск — Могилёв, где мало точек между Смолевичами и Бобруйском.",
+    "createdOn": {
+      "day": null,
+      "sortKey": 18900000,
+      "precision": "year",
+      "display": "кон. XIX в.",
+      "year": 1890,
+      "month": null
+    },
+    "author": null,
+    "openingDate": "кон. XIX в.",
+    "name": "Костёл Успения Пресвятой Девы Марии (Червень)",
+    "openingAddress": "",
+    "i18n": {
+      "ru": {
+        "address": "Червень, Минская область, Беларусь",
+        "city": "Червень",
+        "author": null,
+        "description": "Костёл Успения Пресвятой Девы Марии в Червене — монументальный кирпичный храм в городе на реке Усадзе, восточнее Минска по старой Борисовской дороге. Неороманский стиль и центральное положение делают его доминантой площади. Червень известен с XVI века; сохранились фрагменты исторической застройки. Костёл заполняет карту в «коридоре» Минск — Могилёв, где мало точек между Смолевичами и Бобруйском.",
+        "openingAddress": "",
+        "name": "Костёл Успения Пресвятой Девы Марии (Червень)"
+      },
+      "en": {
+        "address": "Червень, Minsk Region, Belarus",
+        "city": "Червень",
+        "author": null,
+        "name": "Church of the Assumption (Cherven)",
+        "description": "The Assumption Church in Cherven is a monumental brick church on the Usada east of Minsk on the old Borisov road. Neo-Romanesque forms dominate the square. Cherven is known since the 16th century; the church fills the Minsk–Mogilev corridor between Smolevichi and Bobruisk.",
+        "tags": [
+          "Belarus",
+          "Minsk Region",
+          "Cherven",
+          "Church",
+          "19th century",
+          "Usada"
+        ]
+      },
+      "be": {
+        "address": "Червень, Мінская вобласць, Беларусь",
+        "city": "Червень",
+        "author": null,
+        "name": "Касцёл Унебаўзяцця (Чэрвень)",
+        "description": "Касцёл Унебаўзяцця ў Чэрвені — манументальны храм на раке Усада ў «калідоры» Мінск — Магілёў, дамінанта плошчы.",
+        "tags": [
+          "Беларусь",
+          "Мінская вобласць",
+          "Чэрвень",
+          "Касцёл",
+          "XIX стагоддзе",
+          "Усада"
+        ]
+      }
+    },
+    "sketchfabUrl": null,
+    "photos": [],
+    "city": "Червень",
+    "modelType": null,
+    "hasPhotos": false,
+    "tags": [
+      "Беларусь",
+      "Минская область",
+      "Червень",
+      "Костёл",
+      "XIX век",
+      "Усада"
+    ],
+    "id": "belarus_place_097"
+  },
+  {
+    "has3D": false,
+    "modelUrl": null,
+    "location": {
+      "lng": 29.1333,
+      "lat": 54.3167,
+      "address": "Костёл Святого Иоанна Крестителя, Крупки, Минская область, Беларусь"
+    },
+    "createdAt": "2026-05-21T14:00:00.000Z",
+    "featured": false,
+    "featuredOrder": null,
+    "updatedAt": "2026-05-21T14:00:00.000Z",
+    "description": "Костёл Святого Иоанна Крестителя в Крупках — кирпичный храм в городе на севере Минской области, между Борисовом и Могилёвом. Башня и стрельчатые окна выделяют центр поселения, выросшего вокруг железнодорожного узла. Крупки связаны с партизанским движением и мемориалами ВОВ; костёл напоминает о довоенном облике местечка. Важная точка для заполнения северо-восточного сектора карты.",
+    "createdOn": {
+      "day": null,
+      "sortKey": 18900000,
+      "precision": "year",
+      "display": "кон. XIX в.",
+      "year": 1890,
+      "month": null
+    },
+    "author": null,
+    "openingDate": "кон. XIX в.",
+    "name": "Костёл Святого Иоанна Крестителя (Крупки)",
+    "openingAddress": "",
+    "i18n": {
+      "ru": {
+        "address": "Крупки, Минская область, Беларусь",
+        "city": "Крупки",
+        "author": null,
+        "description": "Костёл Святого Иоанна Крестителя в Крупках — кирпичный храм в городе на севере Минской области, между Борисовом и Могилёвом. Башня и стрельчатые окна выделяют центр поселения, выросшего вокруг железнодорожного узла. Крупки связаны с партизанским движением и мемориалами ВОВ; костёл напоминает о довоенном облике местечка. Важная точка для заполнения северо-восточного сектора карты.",
+        "openingAddress": "",
+        "name": "Костёл Святого Иоанна Крестителя (Крупки)"
+      },
+      "en": {
+        "address": "Крупки, Minsk Region, Belarus",
+        "city": "Крупки",
+        "author": null,
+        "name": "Church of Saint John the Baptist (Krupki)",
+        "description": "The Church of Saint John the Baptist in Krupki is a brick church north of Minsk Region between Borisov and Mogilev. A tower marks the centre of a railway junction town. Krupki is linked to partisan history; the church recalls the pre-war townscape and fills the north-east map sector.",
+        "tags": [
+          "Belarus",
+          "Minsk Region",
+          "Krupki",
+          "Church",
+          "19th century",
+          "Railway"
+        ]
+      },
+      "be": {
+        "address": "Крупки, Мінская вобласць, Беларусь",
+        "city": "Крупки",
+        "author": null,
+        "name": "Касцёл Святога Іаана Хрысціціця (Крупкі)",
+        "description": "Касцёл Святога Іаана Хрысціціця ў Крупках — храм у чыгуначным вузле паміж Барысаў і Магілёв, кропка на паўночна-усходнім сектары карты.",
+        "tags": [
+          "Беларусь",
+          "Мінская вобласць",
+          "Крупкі",
+          "Касцёл",
+          "XIX стагоддзе",
+          "Чыгунка"
+        ]
+      }
+    },
+    "sketchfabUrl": null,
+    "photos": [],
+    "city": "Крупки",
+    "modelType": null,
+    "hasPhotos": false,
+    "tags": [
+      "Беларусь",
+      "Минская область",
+      "Крупки",
+      "Костёл",
+      "XIX век",
+      "Железная дорога"
+    ],
+    "id": "belarus_place_098"
+  },
+  {
+    "has3D": false,
+    "modelUrl": null,
+    "location": {
+      "lng": 28.6278,
+      "lat": 53.5286,
+      "address": "Костёл Святого Николая, Пуховичи, Минская область, Беларусь"
+    },
+    "createdAt": "2026-05-21T14:00:00.000Z",
+    "featured": false,
+    "featuredOrder": null,
+    "updatedAt": "2026-05-21T14:00:00.000Z",
+    "description": "Костёл Святого Николая в Пуховичах — неоготический храм в районном центре на реке Птичь, по направлению к Могилёву от Минска. Высокие контрфорсы и острые арки украшают главную улицу. Пуховичи окружены лесами и аграрными угодьями; город служит транспортным узлом юго-восточного направления от столицы. Костёл — редкий архитектурный акцент в полосе, где на карте почти нет других объектов.",
+    "createdOn": {
+      "day": null,
+      "sortKey": 18900000,
+      "precision": "year",
+      "display": "кон. XIX в.",
+      "year": 1890,
+      "month": null
+    },
+    "author": null,
+    "openingDate": "кон. XIX в.",
+    "name": "Костёл Святого Николая (Пуховичи)",
+    "openingAddress": "",
+    "i18n": {
+      "ru": {
+        "address": "Пуховичи, Минская область, Беларусь",
+        "city": "Пуховичи",
+        "author": null,
+        "description": "Костёл Святого Николая в Пуховичах — неоготический храм в районном центре на реке Птичь, по направлению к Могилёву от Минска. Высокие контрфорсы и острые арки украшают главную улицу. Пуховичи окружены лесами и аграрными угодьями; город служит транспортным узлом юго-восточного направления от столицы. Костёл — редкий архитектурный акцент в полосе, где на карте почти нет других объектов.",
+        "openingAddress": "",
+        "name": "Костёл Святого Николая (Пуховичи)"
+      },
+      "en": {
+        "address": "Пуховичи, Minsk Region, Belarus",
+        "city": "Пуховичи",
+        "author": null,
+        "name": "Church of Saint Nicholas (Pukhovichi)",
+        "description": "The Church of Saint Nicholas in Pukhovichi is a neo-Gothic church on the Ptich river towards Mogilev from Minsk. Buttresses line the main street. Pukhovichi is surrounded by forests and farms; the church is a rare architectural point in a sparse map strip.",
+        "tags": [
+          "Belarus",
+          "Minsk Region",
+          "Pukhovichi",
+          "Church",
+          "Neo-Gothic",
+          "19th century"
+        ]
+      },
+      "be": {
+        "address": "Пуховичи, Мінская вобласць, Беларусь",
+        "city": "Пуховичи",
+        "author": null,
+        "name": "Касцёл Святога Мікалая (Пухавічы)",
+        "description": "Касцёл Святога Мікалая ў Пухавічах — неагатычны храм на Пцічы ў пасе Мінск — Магілёў, рэдкі архітэктурны акцэнт раёна.",
+        "tags": [
+          "Беларусь",
+          "Мінская вобласць",
+          "Пухавічы",
+          "Касцёл",
+          "Неаготыка",
+          "XIX стагоддзе"
+        ]
+      }
+    },
+    "sketchfabUrl": null,
+    "photos": [],
+    "city": "Пуховичи",
+    "modelType": null,
+    "hasPhotos": false,
+    "tags": [
+      "Беларусь",
+      "Минская область",
+      "Пуховичи",
+      "Костёл",
+      "Неоготика",
+      "XIX век"
+    ],
+    "id": "belarus_place_099"
+  },
+  {
+    "has3D": false,
+    "modelUrl": null,
+    "location": {
+      "lng": 27.0344,
+      "lat": 54.8778,
+      "address": "Музей Нарочанского края, Мядель, Минская область, Беларусь"
+    },
+    "createdAt": "2026-05-21T14:00:00.000Z",
+    "featured": false,
+    "featuredOrder": null,
+    "updatedAt": "2026-05-21T14:00:00.000Z",
+    "description": "Музей Нарочанского края в Мяделе — краеведческий центр озёрного края, рассказывающий о природе, рыболовстве, этнографии и истории сёл вокруг Нарочи. Мядель — ворота к национальному парку, но музей даёт контекст без необходимости ограничиваться только природным маршрутом. Экспозиции включают археологию, быт и события XX века. Точка заполняет северный сектор карты между Вилейкой и Бегомлем, где мало культурных объектов.",
+    "createdOn": {
+      "day": null,
+      "sortKey": 19860000,
+      "precision": "year",
+      "display": "XX в.",
+      "year": 1986,
+      "month": null
+    },
+    "author": null,
+    "openingDate": "XX в.",
+    "name": "Музей Нарочанского края (Мядель)",
+    "openingAddress": "",
+    "i18n": {
+      "ru": {
+        "address": "Мядель, Минская область, Беларусь",
+        "city": "Мядель",
+        "author": null,
+        "description": "Музей Нарочанского края в Мяделе — краеведческий центр озёрного края, рассказывающий о природе, рыболовстве, этнографии и истории сёл вокруг Нарочи. Мядель — ворота к национальному парку, но музей даёт контекст без необходимости ограничиваться только природным маршрутом. Экспозиции включают археологию, быт и события XX века. Точка заполняет северный сектор карты между Вилейкой и Бегомлем, где мало культурных объектов.",
+        "openingAddress": "",
+        "name": "Музей Нарочанского края (Мядель)"
+      },
+      "en": {
+        "address": "Мядель, Minsk Region, Belarus",
+        "city": "Мядель",
+        "author": null,
+        "name": "Naroch Region Museum (Myadel)",
+        "description": "The Naroch Region Museum in Myadel is a local history centre of lake country covering nature, fishing, ethnography and village history around Lake Naroch. Myadel gates the national park; the museum adds cultural context. Exhibits span archaeology, daily life and the 20th century, filling the northern sector between Vileika and Begoml.",
+        "tags": [
+          "Belarus",
+          "Minsk Region",
+          "Myadel",
+          "Museum",
+          "Naroch",
+          "20th century"
+        ]
+      },
+      "be": {
+        "address": "Мядель, Мінская вобласць, Беларусь",
+        "city": "Мядель",
+        "author": null,
+        "name": "Музей Нарачанскага края (Мядзел)",
+        "description": "Музей Нарачанскага края ў Мядзеле — краязнаўчы цэнтр азёрнага краю, кропка на карце паміж Вілейкай і Бегамлем.",
+        "tags": [
+          "Беларусь",
+          "Мінская вобласць",
+          "Мядзел",
+          "Музей",
+          "Нароч",
+          "XX стагоддзе"
+        ]
+      }
+    },
+    "sketchfabUrl": null,
+    "photos": [],
+    "city": "Мядель",
+    "modelType": null,
+    "hasPhotos": false,
+    "tags": [
+      "Беларусь",
+      "Минская область",
+      "Мядель",
+      "Музей",
+      "Нарочь",
+      "XX век"
+    ],
+    "id": "belarus_place_100"
+  }
+]

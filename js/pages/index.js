@@ -1,6 +1,6 @@
 import { initNav } from '../shared/nav.js';
 import { getPlaces } from '../shared/places.js';
-import { showToast, showSkeletons, markActiveNav } from '../shared/utils.js';
+import { showToast, showSkeletons, markActiveNav, homeStatPlacesLabel, homeStatCitiesLabel } from '../shared/utils.js';
 import { db } from '../shared/firebase-init.js';
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 import { pickPlaceDateLabel } from '../shared/placeDate.js';
@@ -244,7 +244,13 @@ function updateStats(places) {
   const statPlaces = document.getElementById('stat-places');
   const statCities = document.getElementById('stat-cities');
   const statYears  = document.getElementById('stat-years');
-  if (statPlaces) animateCounter(statPlaces, places.length);
+  const placesCount = places.length;
+
+  if (statPlaces) {
+    animateCounter(statPlaces, placesCount);
+    const label = statPlaces.nextElementSibling;
+    if (label) label.textContent = homeStatPlacesLabel(placesCount, lang);
+  }
 
   if (statCities) {
     // Count unique cities from addresses
@@ -259,8 +265,13 @@ function updateStats(places) {
         cities.add(parts[0].trim());
       }
     });
-    if (cities.size) animateCounter(statCities, cities.size);
-    else statCities.textContent = '—';
+    if (cities.size) {
+      animateCounter(statCities, cities.size);
+      const label = statCities.nextElementSibling;
+      if (label) label.textContent = homeStatCitiesLabel(cities.size, lang);
+    } else {
+      statCities.textContent = '—';
+    }
   }
 
   if (statYears) {

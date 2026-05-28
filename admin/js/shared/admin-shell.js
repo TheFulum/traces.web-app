@@ -1,4 +1,6 @@
 import { getLang, loadDict, t, applyDict } from '../../../js/shared/i18n.js';
+import { db } from '../../../js/shared/firebase-init.js';
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
 // Optional: configure media worker URL without editing HTML.
 // Set once in devtools: localStorage.setItem('traces_media_worker_url', 'https://...workers.dev')
@@ -11,6 +13,24 @@ try {
   }
 } catch {}
 
+// Firestore overrides (admins edit in Dashboard): config/site.mediaWorkerUrl
+(function hydrateMediaWorkerFromFirestore() {
+  if (typeof window === 'undefined') return;
+  queueMicrotask(async () => {
+    try {
+      const snap = await getDoc(doc(db, 'config', 'site'));
+      if (!snap.exists()) return;
+      const data = snap.data() || {};
+      if (!Object.prototype.hasOwnProperty.call(data, 'mediaWorkerUrl')) return;
+      const u = String(data.mediaWorkerUrl ?? '').trim().replace(/\/+$/, '');
+      if (/^https:\/\/.+/i.test(u)) window.__TRACES_MEDIA_WORKER_URL__ = u;
+      else delete window.__TRACES_MEDIA_WORKER_URL__;
+    } catch {
+      // offline / rules — ignore
+    }
+  });
+})();
+
 // href → i18n key mapping for sidebar links
 const NAV_KEYS = {
   'dashboard.html': 'admin.nav.dashboard',
@@ -20,7 +40,6 @@ const NAV_KEYS = {
   'places-import-report.html': 'admin.nav.importReport',
   'home.html':      'admin.nav.home',
   'pages.html':     'admin.nav.pages',
-  'media.html':     'admin.nav.media',
   'feedback.html':  'admin.nav.feedback',
   'reviews.html':   'admin.nav.reviews',
   'users.html':     'admin.nav.users',

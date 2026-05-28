@@ -1,0 +1,553 @@
+[
+  {
+    "has3D": false,
+    "modelUrl": null,
+    "location": {
+      "lng": 29.8278,
+      "lat": 52.2458,
+      "address": "Костёл Святого Михаила, Василевичи, Гомельская область, Беларусь"
+    },
+    "createdAt": "2026-05-21T18:30:00.000Z",
+    "featured": false,
+    "featuredOrder": null,
+    "updatedAt": "2026-05-21T18:30:00.000Z",
+    "description": "Костёл Святого Михаила в Василевичах — фарный храм в городе на восточном конце коридора Василевичи — Ивацевичи. Кирпичная башня доминирует над центром железнодорожного узла. Василевичи известны промышленностью и связью с Березиной; костёл — стартовая точка для заполнения «пустой» полосы карты на юго-востоке Полесья.",
+    "createdOn": {
+      "day": null,
+      "sortKey": 18900000,
+      "precision": "year",
+      "display": "кон. XIX в.",
+      "year": 1890,
+      "month": null
+    },
+    "author": null,
+    "openingDate": "кон. XIX в.",
+    "name": "Костёл Святого Михаила (Василевичи)",
+    "openingAddress": "",
+    "i18n": {
+      "ru": {
+        "address": "Василевичи, Гомельская область, Беларусь",
+        "city": "Василевичи",
+        "author": null,
+        "description": "Костёл Святого Михаила в Василевичах — фарный храм в городе на восточном конце коридора Василевичи — Ивацевичи. Кирпичная башня доминирует над центром железнодорожного узла. Василевичи известны промышленностью и связью с Березиной; костёл — стартовая точка для заполнения «пустой» полосы карты на юго-востоке Полесья.",
+        "openingAddress": "",
+        "name": "Костёл Святого Михаила (Василевичи)"
+      },
+      "en": {
+        "address": "Василевичи, Gomel Region, Belarus",
+        "city": "Василевичи",
+        "author": null,
+        "name": "Church of Saint Michael (Vasilevichi)",
+        "description": "The Church of Saint Michael in Vasilevichi is a parish church at the eastern end of the Vasilevichi–Ivatsevichi corridor. A brick tower dominates the railway junction centre. It anchors map coverage of south-eastern Polesie.",
+        "tags": [
+          "Belarus",
+          "Gomel Region",
+          "Vasilevichi",
+          "Church",
+          "19th century"
+        ]
+      },
+      "be": {
+        "address": "Василевичи, Гомельская вобласць, Беларусь",
+        "city": "Василевичи",
+        "author": null,
+        "name": "Касцёл Святога Міхаіла (Васілевічы)",
+        "description": "Касцёл Святога Міхаіла ў Васілевічах — фарны храм на ўсходнім канцы калідора Васілевічы — Івацэвічы, стартавая кропка на карце.",
+        "tags": [
+          "Беларусь",
+          "Гомельская вобласць",
+          "Васілевічы",
+          "Касцёл",
+          "XIX стагоддзе"
+        ]
+      }
+    },
+    "sketchfabUrl": null,
+    "photos": [],
+    "city": "Василевичи",
+    "modelType": null,
+    "hasPhotos": false,
+    "tags": [
+      "Беларусь",
+      "Гомельская область",
+      "Василевичи",
+      "Костёл",
+      "XIX век"
+    ],
+    "id": "belarus_place_139"
+  },
+  {
+    "has3D": false,
+    "modelUrl": null,
+    "location": {
+      "lng": 29.475,
+      "lat": 52.2333,
+      "address": "Костёл Успения, Микашевичи, Брестская область, Беларусь"
+    },
+    "createdAt": "2026-05-21T18:30:00.000Z",
+    "featured": false,
+    "featuredOrder": null,
+    "updatedAt": "2026-05-21T18:30:00.000Z",
+    "description": "Костёл Успения в Микашевичах — храм в посёлке у крупнейших в Европе залежей калийных солей. Неоготическая башня контрастирует с промышленным ландшафтом. Микашевичи выросли вокруг рудников; костёл сохраняет память о дореволюционном местечке в начале трассы на запад.",
+    "createdOn": {
+      "day": null,
+      "sortKey": 18900000,
+      "precision": "year",
+      "display": "кон. XIX в.",
+      "year": 1890,
+      "month": null
+    },
+    "author": null,
+    "openingDate": "кон. XIX в.",
+    "name": "Костёл Успения Пресвятой Девы Марии (Микашевичи)",
+    "openingAddress": "",
+    "i18n": {
+      "ru": {
+        "address": "Микашевичи, Брестская область, Беларусь",
+        "city": "Микашевичи",
+        "author": null,
+        "description": "Костёл Успения в Микашевичах — храм в посёлке у крупнейших в Европе залежей калийных солей. Неоготическая башня контрастирует с промышленным ландшафтом. Микашевичи выросли вокруг рудников; костёл сохраняет память о дореволюционном местечке в начале трассы на запад.",
+        "openingAddress": "",
+        "name": "Костёл Успения Пресвятой Девы Марии (Микашевичи)"
+      },
+      "en": {
+        "address": "Микашевичи, Brest Region, Belarus",
+        "city": "Микашевичи",
+        "author": null,
+        "name": "Church of the Assumption (Mikashevichi)",
+        "description": "The Assumption Church in Mikashevichi stands near major potassium salt deposits. A neo-Gothic tower contrasts with industrial landscape. The church marks the start of the westward corridor on the map.",
+        "tags": [
+          "Belarus",
+          "Brest Region",
+          "Mikashevichi",
+          "Church",
+          "Neo-Gothic",
+          "19th century"
+        ]
+      },
+      "be": {
+        "address": "Микашевичи, Брэсцкая вобласць, Беларусь",
+        "city": "Микашевичи",
+        "author": null,
+        "name": "Касцёл Унебаўзяцця (Мікашэвічы)",
+        "description": "Касцёл Унебаўзяцця ў Мікашэвічах — храм каля залежаў калійных соляў, кропка на пачатку калідора на захад.",
+        "tags": [
+          "Беларусь",
+          "Брэсцкая вобласць",
+          "Мікашэвічы",
+          "Касцёл",
+          "Неаготыка",
+          "XIX стагоддзе"
+        ]
+      }
+    },
+    "sketchfabUrl": null,
+    "photos": [],
+    "city": "Микашевичи",
+    "modelType": null,
+    "hasPhotos": false,
+    "tags": [
+      "Беларусь",
+      "Брестская область",
+      "Микашевичи",
+      "Костёл",
+      "Неоготика",
+      "XIX век"
+    ],
+    "id": "belarus_place_140"
+  },
+  {
+    "has3D": false,
+    "modelUrl": null,
+    "location": {
+      "lng": 29.815,
+      "lat": 52.355,
+      "address": "Костёл Святого Антония, Лельчицы, Гомельская область, Беларусь"
+    },
+    "createdAt": "2026-05-21T18:30:00.000Z",
+    "featured": false,
+    "featuredOrder": null,
+    "updatedAt": "2026-05-21T18:30:00.000Z",
+    "description": "Костёл Святого Антония в Лельчицах — кирпичный храм районного центра в лесистом крае у самой линии Василевичи — Ивацевичи. Башня украшает площадь небольшого города. Лельчицы связаны с торфом и лесозаготовкой; костёл — редкий архитектурный ориентир в зоне, где на карте почти нет точек.",
+    "createdOn": {
+      "day": null,
+      "sortKey": 18900000,
+      "precision": "year",
+      "display": "кон. XIX в.",
+      "year": 1890,
+      "month": null
+    },
+    "author": null,
+    "openingDate": "кон. XIX в.",
+    "name": "Костёл Святого Антония (Лельчицы)",
+    "openingAddress": "",
+    "i18n": {
+      "ru": {
+        "address": "Лельчицы, Гомельская область, Беларусь",
+        "city": "Лельчицы",
+        "author": null,
+        "description": "Костёл Святого Антония в Лельчицах — кирпичный храм районного центра в лесистом крае у самой линии Василевичи — Ивацевичи. Башня украшает площадь небольшого города. Лельчицы связаны с торфом и лесозаготовкой; костёл — редкий архитектурный ориентир в зоне, где на карте почти нет точек.",
+        "openingAddress": "",
+        "name": "Костёл Святого Антония (Лельчицы)"
+      },
+      "en": {
+        "address": "Лельчицы, Gomel Region, Belarus",
+        "city": "Лельчицы",
+        "author": null,
+        "name": "Church of Saint Anthony (Lelchitsy)",
+        "description": "The Church of Saint Anthony in Lelchitsy is a brick church in a forested district centre on the Vasilevichi–Ivatsevichi line. A tower adorns the square. It is a rare landmark in an empty map belt.",
+        "tags": [
+          "Belarus",
+          "Gomel Region",
+          "Lelchitsy",
+          "Church",
+          "19th century"
+        ]
+      },
+      "be": {
+        "address": "Лельчицы, Гомельская вобласць, Беларусь",
+        "city": "Лельчицы",
+        "author": null,
+        "name": "Касцёл Святога Антона (Лельчыцы)",
+        "description": "Касцёл Святога Антона ў Лельчыцах — храм раённага цэнтра на лініі Васілевічы — Івацэвічы ў лясістым краі.",
+        "tags": [
+          "Беларусь",
+          "Гомельская вобласць",
+          "Лельчыцы",
+          "Касцёл",
+          "XIX стагоддзе"
+        ]
+      }
+    },
+    "sketchfabUrl": null,
+    "photos": [],
+    "city": "Лельчицы",
+    "modelType": null,
+    "hasPhotos": false,
+    "tags": [
+      "Беларусь",
+      "Гомельская область",
+      "Лельчицы",
+      "Костёл",
+      "XIX век"
+    ],
+    "id": "belarus_place_141"
+  },
+  {
+    "has3D": false,
+    "modelUrl": null,
+    "location": {
+      "lng": 25.8642,
+      "lat": 52.6608,
+      "address": "Собор Рождества, Белоозёрск, Брестская область, Беларусь"
+    },
+    "createdAt": "2026-05-21T18:30:00.000Z",
+    "featured": false,
+    "featuredOrder": null,
+    "updatedAt": "2026-05-21T18:30:00.000Z",
+    "description": "Собор Рождества в Белоозёрске — православный храм молодого города нефтехимиков и строителей водохранилища на реке Горынь. Купола видны издалека на подъезде с трассы. Белоозёрск лежит почти на прямой между Василевичами и Ивацевичами; собор — главная вертикаль поселка в «пустом» коридоре.",
+    "createdOn": {
+      "day": null,
+      "sortKey": 19600000,
+      "precision": "year",
+      "display": "XX в.",
+      "year": 1960,
+      "month": null
+    },
+    "author": null,
+    "openingDate": "XX в.",
+    "name": "Собор Рождества Пресвятой Богородицы (Белоозёрск)",
+    "openingAddress": "",
+    "i18n": {
+      "ru": {
+        "address": "Белоозёрск, Брестская область, Беларусь",
+        "city": "Белоозёрск",
+        "author": null,
+        "description": "Собор Рождества в Белоозёрске — православный храм молодого города нефтехимиков и строителей водохранилища на реке Горынь. Купола видны издалека на подъезде с трассы. Белоозёрск лежит почти на прямой между Василевичами и Ивацевичами; собор — главная вертикаль поселка в «пустом» коридоре.",
+        "openingAddress": "",
+        "name": "Собор Рождества Пресвятой Богородицы (Белоозёрск)"
+      },
+      "en": {
+        "address": "Белоозёрск, Brest Region, Belarus",
+        "city": "Белоозёрск",
+        "author": null,
+        "name": "Nativity Cathedral (Beloozersk)",
+        "description": "The Nativity Cathedral in Beloozersk is the main Orthodox church of a town built for petrochemical workers near the Gorin reservoir. Domes are visible from the highway. The town lies on the Vasilevichi–Ivatsevichi line and fills a gap on the map.",
+        "tags": [
+          "Belarus",
+          "Brest Region",
+          "Beloozersk",
+          "Cathedral",
+          "Orthodox",
+          "20th century"
+        ]
+      },
+      "be": {
+        "address": "Белоозёрск, Брэсцкая вобласць, Беларусь",
+        "city": "Белоозёрск",
+        "author": null,
+        "name": "Сабор Нараджэння (Белаязерск)",
+        "description": "Сабор Нараджэння ў Белаязерску — праваслаўны храм на лініі Васілевічы — Івацэвічы, галоўная вертыкаль горада на Гарыні.",
+        "tags": [
+          "Беларусь",
+          "Брэсцкая вобласць",
+          "Белаязерск",
+          "Сабор",
+          "Праваслаўе",
+          "XX стагоддзе"
+        ]
+      }
+    },
+    "sketchfabUrl": null,
+    "photos": [],
+    "city": "Белоозёрск",
+    "modelType": null,
+    "hasPhotos": false,
+    "tags": [
+      "Беларусь",
+      "Брестская область",
+      "Белоозёрск",
+      "Собор",
+      "Православие",
+      "XX век"
+    ],
+    "id": "belarus_place_142"
+  },
+  {
+    "has3D": false,
+    "modelUrl": null,
+    "location": {
+      "lng": 25.4986,
+      "lat": 52.7003,
+      "address": "Болотный массив Споровское, Спорово, Брестская область, Беларусь"
+    },
+    "createdAt": "2026-05-21T18:30:00.000Z",
+    "featured": false,
+    "featuredOrder": null,
+    "updatedAt": "2026-05-21T18:30:00.000Z",
+    "description": "Болото «Споровское» у посёлка Спорово — крупнейший в Беларуси массив переходных болот, Ramsar-сайт с уникальными сообществами мхов и клюквой. Экотропы и наблюдение за птицами привлекают натуралистов. Спорово лежит на линии Василевичи — Ивацевичи; объект даёт природную «точку» в коридоре, где мало культурных памятников.",
+    "createdOn": {
+      "day": null,
+      "sortKey": 19800000,
+      "precision": "year",
+      "display": "XX в.",
+      "year": 1980,
+      "month": null
+    },
+    "author": null,
+    "openingDate": "XX в.",
+    "name": "Болото «Споровское» (Спорово)",
+    "openingAddress": "",
+    "i18n": {
+      "ru": {
+        "address": "Спорово, Брестская область, Беларусь",
+        "city": "Спорово",
+        "author": null,
+        "description": "Болото «Споровское» у посёлка Спорово — крупнейший в Беларуси массив переходных болот, Ramsar-сайт с уникальными сообществами мхов и клюквой. Экотропы и наблюдение за птицами привлекают натуралистов. Спорово лежит на линии Василевичи — Ивацевичи; объект даёт природную «точку» в коридоре, где мало культурных памятников.",
+        "openingAddress": "",
+        "name": "Болото «Споровское» (Спорово)"
+      },
+      "en": {
+        "address": "Спорово, Brest Region, Belarus",
+        "city": "Спорово",
+        "author": null,
+        "name": "Sporovo Fenland (Sporovo)",
+        "description": "The Sporovo fen near Sporovo village is Belarus's largest transitional bog, a Ramsar site with unique moss and cranberry communities. Boardwalks and birdwatching attract naturalists. It adds a nature landmark on the Vasilevichi–Ivatsevichi corridor.",
+        "tags": [
+          "Belarus",
+          "Brest Region",
+          "Sporovo",
+          "Nature",
+          "Wetland",
+          "Ramsar"
+        ]
+      },
+      "be": {
+        "address": "Спорово, Брэсцкая вобласць, Беларусь",
+        "city": "Спорово",
+        "author": null,
+        "name": "Балота «Спораўскае» (Спорава)",
+        "description": "Балота «Спораўскае» каля Спорава — найбольшы пераходны балотны масіў Беларусі, Ramsar-сайт, прыродная кропка на калідоры Васілевічы — Івацэвічы.",
+        "tags": [
+          "Беларусь",
+          "Брэсцкая вобласць",
+          "Спорава",
+          "Прырода",
+          "Балота",
+          "Ramsar"
+        ]
+      }
+    },
+    "sketchfabUrl": null,
+    "photos": [],
+    "city": "Спорово",
+    "modelType": null,
+    "hasPhotos": false,
+    "tags": [
+      "Беларусь",
+      "Брестская область",
+      "Спорово",
+      "Природа",
+      "Болото",
+      "Ramsar"
+    ],
+    "id": "belarus_place_143"
+  },
+  {
+    "has3D": false,
+    "modelUrl": null,
+    "location": {
+      "lng": 26.4272,
+      "lat": 52.7594,
+      "address": "Костёл Святого Симеона, Ганцевичи, Брестская область, Беларусь"
+    },
+    "createdAt": "2026-05-21T18:30:00.000Z",
+    "featured": false,
+    "featuredOrder": null,
+    "updatedAt": "2026-05-21T18:30:00.000Z",
+    "description": "Костёл Святого Симеона в Ганцевичах — кирпичный храм в районном центре на западном фланге коридора, недалеко от Ивацевичей. Башня и неоготические детали украшают центр. Ганцевичи — ворота к Полесью с севера; костёл заполняет карту между Белоозёрском и пущей.",
+    "createdOn": {
+      "day": null,
+      "sortKey": 18900000,
+      "precision": "year",
+      "display": "кон. XIX в.",
+      "year": 1890,
+      "month": null
+    },
+    "author": null,
+    "openingDate": "кон. XIX в.",
+    "name": "Костёл Святого Симеона (Ганцевичи)",
+    "openingAddress": "",
+    "i18n": {
+      "ru": {
+        "address": "Ганцевичи, Брестская область, Беларусь",
+        "city": "Ганцевичи",
+        "author": null,
+        "description": "Костёл Святого Симеона в Ганцевичах — кирпичный храм в районном центре на западном фланге коридора, недалеко от Ивацевичей. Башня и неоготические детали украшают центр. Ганцевичи — ворота к Полесью с севера; костёл заполняет карту между Белоозёрском и пущей.",
+        "openingAddress": "",
+        "name": "Костёл Святого Симеона (Ганцевичи)"
+      },
+      "en": {
+        "address": "Ганцевичи, Brest Region, Belarus",
+        "city": "Ганцевичи",
+        "author": null,
+        "name": "Church of Saint Simeon (Hantsavichy)",
+        "description": "The Church of Saint Simeon in Hantsavichy is a brick church on the western side of the corridor near Ivatsevichi. A tower adorns the district centre. It fills the map between Beloozersk and the forest.",
+        "tags": [
+          "Belarus",
+          "Brest Region",
+          "Hantsavichy",
+          "Church",
+          "19th century"
+        ]
+      },
+      "be": {
+        "address": "Ганцевичи, Брэсцкая вобласць, Беларусь",
+        "city": "Ганцевичи",
+        "author": null,
+        "name": "Касцёл Святога Сімяона (Ганцавічы)",
+        "description": "Касцёл Святога Сімяона ў Ганцавічах — храм раённага цэнтра на захаднім фланцы калідора Васілевічы — Івацэвічы.",
+        "tags": [
+          "Беларусь",
+          "Брэсцкая вобласць",
+          "Ганцавічы",
+          "Касцёл",
+          "XIX стагоддзе"
+        ]
+      }
+    },
+    "sketchfabUrl": null,
+    "photos": [],
+    "city": "Ганцевичи",
+    "modelType": null,
+    "hasPhotos": false,
+    "tags": [
+      "Беларусь",
+      "Брестская область",
+      "Ганцевичи",
+      "Костёл",
+      "XIX век"
+    ],
+    "id": "belarus_place_144"
+  },
+  {
+    "has3D": false,
+    "modelUrl": null,
+    "location": {
+      "lng": 27.3467,
+      "lat": 52.2603,
+      "address": "Костёл Святого Александра Невского, Лахва, Брестская область, Беларусь"
+    },
+    "createdAt": "2026-05-21T18:30:00.000Z",
+    "featured": false,
+    "featuredOrder": null,
+    "updatedAt": "2026-05-21T18:30:00.000Z",
+    "description": "Костёл Святого Александра Невского в Лахве — храм в посёлке на полпути по коридору между Василевичами и Ивацевичами. Кирпичная архитектура напоминает о польско-католическом наследии центрального Полесья. Лахва связана с лесной промышленностью; костёл — заметная точка в полосе 20–30 км от линии.",
+    "createdOn": {
+      "day": null,
+      "sortKey": 18900000,
+      "precision": "year",
+      "display": "кон. XIX в.",
+      "year": 1890,
+      "month": null
+    },
+    "author": null,
+    "openingDate": "кон. XIX в.",
+    "name": "Костёл Святого Александра Невского (Лахва)",
+    "openingAddress": "",
+    "i18n": {
+      "ru": {
+        "address": "Лахва, Брестская область, Беларусь",
+        "city": "Лахва",
+        "author": null,
+        "description": "Костёл Святого Александра Невского в Лахве — храм в посёлке на полпути по коридору между Василевичами и Ивацевичами. Кирпичная архитектура напоминает о польско-католическом наследии центрального Полесья. Лахва связана с лесной промышленностью; костёл — заметная точка в полосе 20–30 км от линии.",
+        "openingAddress": "",
+        "name": "Костёл Святого Александра Невского (Лахва)"
+      },
+      "en": {
+        "address": "Лахва, Brest Region, Belarus",
+        "city": "Лахва",
+        "author": null,
+        "name": "Church of Saint Alexander Nevsky (Lakhva)",
+        "description": "The Church of Saint Alexander Nevsky in Lakhva stands midway along the Vasilevichi–Ivatsevichi corridor. Brick architecture reflects Catholic heritage of central Polesie. It is a visible point within the 20–30 km belt on the map.",
+        "tags": [
+          "Belarus",
+          "Brest Region",
+          "Lakhva",
+          "Church",
+          "Polesie",
+          "19th century"
+        ]
+      },
+      "be": {
+        "address": "Лахва, Брэсцкая вобласць, Беларусь",
+        "city": "Лахва",
+        "author": null,
+        "name": "Касцёл Святога Аляксандра Неўскага (Лахва)",
+        "description": "Касцёл Святога Аляксандра Неўскага ў Лахве — храм на паловіні калідора Васілевічы — Івацэвічы ў цэнтральным Палессі.",
+        "tags": [
+          "Беларусь",
+          "Брэсцкая вобласць",
+          "Лахва",
+          "Касцёл",
+          "Палессе",
+          "XIX стагоддзе"
+        ]
+      }
+    },
+    "sketchfabUrl": null,
+    "photos": [],
+    "city": "Лахва",
+    "modelType": null,
+    "hasPhotos": false,
+    "tags": [
+      "Беларусь",
+      "Брестская область",
+      "Лахва",
+      "Костёл",
+      "Полесье",
+      "XIX век"
+    ],
+    "id": "belarus_place_145"
+  }
+]

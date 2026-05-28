@@ -1,4 +1,4 @@
-const SUPPORTED = ['ru', 'en'];
+const SUPPORTED = ['ru', 'en', 'be'];
 const DEFAULT_LANG = 'ru';
 
 /** Приводит значение lang из URL/storage к ru | en или ''. */
@@ -8,6 +8,14 @@ export function normalizeLangCode(raw) {
   if (!s) return '';
   const base = s.split(/[-_]/)[0].slice(0, 8);
   return SUPPORTED.includes(base) ? base : '';
+}
+
+/** Accept-Language / Nominatim `accept-language` (BCP‑47-ish). */
+export function nominatimAcceptLanguage(siteLang) {
+  const c = normalizeLangCode(siteLang) || DEFAULT_LANG;
+  if (c === 'en') return 'en';
+  if (c === 'be') return 'be';
+  return 'ru';
 }
 
 export function getLang() {
@@ -53,6 +61,23 @@ export function setLang(lang) {
 
 export async function loadDict(lang) {
   const safe = normalizeLangCode(lang) || DEFAULT_LANG;
+  // For be we load ru as a base and overlay small be-specific overrides.
+  // This keeps the site functional even if be.json is partial.
+  if (safe === 'be') {
+    const baseUrl = new URL(`../i18n/locales/ru.json`, import.meta.url);
+    const beUrl = new URL(`../i18n/locales/be.json`, import.meta.url);
+    const [baseRes, beRes] = await Promise.all([
+      fetch(baseUrl, { cache: 'no-store' }),
+      fetch(beUrl, { cache: 'no-store' })
+    ]);
+    if (!baseRes.ok) throw new Error('Failed to load dict: ru');
+    const base = await baseRes.json();
+    const be = beRes.ok ? await beRes.json() : {};
+    const merged = deepMerge(base, be);
+    merged.__lang = 'be';
+    return merged;
+  }
+
   const url = new URL(`../i18n/locales/${safe}.json`, import.meta.url);
   const res = await fetch(url, { cache: 'no-store' });
   if (!res.ok) throw new Error(`Failed to load dict: ${safe}`);
@@ -135,6 +160,7 @@ export function applyLanguageSeo(lang) {
   };
   ensureAlt('ru');
   ensureAlt('en');
+  ensureAlt('be');
 
   // og:locale
   let og = document.querySelector('meta[property="og:locale"]');
@@ -143,7 +169,22 @@ export function applyLanguageSeo(lang) {
     og.setAttribute('property', 'og:locale');
     document.head.appendChild(og);
   }
-  og.setAttribute('content', safeLang === 'en' ? 'en_US' : 'ru_RU');
+  og.setAttribute('content', safeLang === 'en' ? 'en_US' : safeLang === 'be' ? 'be_BY' : 'ru_RU');
+}
+
+function isPlainObject(x) {
+  return !!x && typeof x === 'object' && !Array.isArray(x);
+}
+
+function deepMerge(base, over) {
+  if (!isPlainObject(base)) return isPlainObject(over) ? { ...over } : over;
+  const out = { ...base };
+  if (!isPlainObject(over)) return out;
+  for (const [k, v] of Object.entries(over)) {
+    if (isPlainObject(v) && isPlainObject(out[k])) out[k] = deepMerge(out[k], v);
+    else out[k] = v;
+  }
+  return out;
 }
 
 export function withLang(href, lang) {

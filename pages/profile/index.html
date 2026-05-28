@@ -6,6 +6,9 @@
   <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml" />
   <title>Личный кабинет — Следы прошлого</title>
   <meta name="description" content="Профиль, избранное, история просмотров и ваши отзывы о памятных местах." />
+  <link rel="preconnect" href="https://traces-media-upload.lipouski-daniil.workers.dev" />
+  <link rel="preconnect" href="https://www.gstatic.com" />
+  <link rel="preconnect" href="https://firestore.googleapis.com" />
   <link rel="stylesheet" href="../../css/style.css" />
   <link rel="stylesheet" href="../../css/user-pages.css" />
 </head>
@@ -110,6 +113,7 @@
             </div>
           </div>
           <p class="user-card__hint" data-i18n="profileDashboard.routesCardHint">Сохраняйте подборки на странице «Маршрут» и открывайте их здесь — тот же порядок точек.</p>
+          <div class="user-list" id="saved-routes-preview"></div>
           <div class="user-actions-row user-actions-row--end" style="margin-top:12px">
             <a class="user-link-btn" href="routes.html" data-i18n="profileDashboard.linkAllRoutes">Все сохранённые маршруты →</a>
           </div>

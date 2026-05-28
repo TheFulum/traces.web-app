@@ -5,13 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Места — Админ</title>
   <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://traces-media-upload.lipouski-daniil.workers.dev" />
+  <link rel="preconnect" href="https://www.gstatic.com" />
+  <link rel="preconnect" href="https://firestore.googleapis.com" />
   <link rel="stylesheet" href="../../css/style.css" />
   <link rel="stylesheet" href="../css/layout-v2.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
-  <script>
-    // R2 upload worker for 3D models (photos stay in Cloudinary)
-    window.__TRACES_MEDIA_WORKER_URL__ = "https://traces-media-upload.lipouski-daniil.workers.dev";
-  </script>
   <style>
     /* ── table ── */
     .table-thumb {
@@ -20,6 +19,13 @@
       border-radius: var(--radius-sm);
       background: var(--c-accent-soft);
       display: block;
+    }
+    .table-thumb--preview { cursor: zoom-in; }
+    img.table-thumb.media-img--failed,
+    .photo-preview img.media-img--failed {
+      object-fit: none;
+      background: var(--c-accent-soft);
+      outline: 1px dashed var(--c-text-muted);
     }
     .table-thumb--empty {
       width: 52px; height: 38px;
@@ -70,15 +76,19 @@
       background: var(--c-surface);
       border-radius: var(--radius-lg);
       width: 100%; max-width: 620px;
-      max-height: 90vh; overflow-y: auto;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
       box-shadow: 0 20px 60px rgba(0,0,0,.18);
       animation: slideUp .18s ease;
     }
     @keyframes slideUp { from { transform: translateY(12px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
     .modal__header {
+      flex-shrink: 0;
       display: flex; align-items: center; justify-content: space-between;
-      padding: 24px 28px 0; margin-bottom: 24px;
+      padding: 24px 28px 0; margin-bottom: 16px;
     }
     .modal__title { font-family: var(--font-display); font-size: 1.4rem; }
     .modal__close {
@@ -91,7 +101,13 @@
       transition: color var(--transition), border-color var(--transition);
     }
     .modal__close:hover { color: var(--c-text); border-color: var(--c-accent); }
-    .modal__body { padding: 0 28px 28px; }
+    .modal__body {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      padding: 0 28px 20px;
+      -webkit-overflow-scrolling: touch;
+    }
 
     /* photo upload */
     .photo-upload-area {
@@ -107,10 +123,37 @@
     .photo-upload-area span { font-size: .8rem; color: var(--c-text-muted); }
 
     .photo-previews { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
-    .photo-preview { position: relative; width: 80px; height: 60px; }
+    .photo-preview {
+      position: relative;
+      width: 80px;
+      height: 60px;
+      cursor: grab;
+      touch-action: none;
+    }
+    .photo-preview:active { cursor: grabbing; }
+    .photo-preview--dragging { opacity: 0.4; }
+    .photo-preview--over {
+      outline: 2px solid var(--c-accent);
+      outline-offset: 2px;
+    }
     .photo-preview img {
       width: 100%; height: 100%; object-fit: cover;
       border-radius: var(--radius-sm); border: 1px solid var(--c-border);
+      pointer-events: none;
+      user-select: none;
+    }
+    .photo-preview__badge {
+      position: absolute;
+      left: 4px;
+      bottom: 4px;
+      padding: 1px 5px;
+      border-radius: 4px;
+      background: rgba(0, 0, 0, .55);
+      color: #fff;
+      font-size: .65rem;
+      font-weight: 700;
+      line-height: 1.2;
+      z-index: 1;
     }
     .photo-preview__del {
       position: absolute; top: -6px; right: -6px;
@@ -119,11 +162,42 @@
       color: #fff; border: none; cursor: pointer;
       display: flex; align-items: center; justify-content: center;
       font-size: .7rem; line-height: 1;
+      z-index: 2;
+    }
+    .photo-preview-popover {
+      position: fixed;
+      z-index: 1250;
+      left: 0;
+      top: 0;
+      pointer-events: none;
+      visibility: hidden;
+      background: none;
+      box-shadow: none;
+    }
+    .photo-preview-popover.is-visible {
+      visibility: visible;
+    }
+    .photo-preview-popover img {
+      display: block;
+      max-width: min(700px, calc(100vw - 32px));
+      max-height: min(500px, calc(100vh - 32px));
+      width: auto;
+      height: auto;
+      background: transparent;
+      border: none;
+      border-radius: 0;
+      box-shadow: 0 14px 40px rgba(0, 0, 0, .28);
     }
     .photo-progress { font-size: .8125rem; color: var(--c-text-muted); margin-bottom: 12px; min-height: 18px; }
+    .photo-url-row { display: flex; gap: 8px; align-items: center; margin-top: 8px; }
+    .photo-url-row .form-control { flex: 1; min-width: 0; }
     .modal__footer {
+      flex-shrink: 0;
       display: flex; gap: 10px; justify-content: flex-end;
-      padding-top: 8px; border-top: 1px solid var(--c-border); margin-top: 24px;
+      padding: 14px 28px 20px;
+      border-top: 1px solid var(--c-border);
+      background: var(--c-surface);
+      box-shadow: 0 -8px 24px rgba(0, 0, 0, .06);
     }
 
     /* map picker */
@@ -163,6 +237,15 @@
       color:var(--c-danger);
       margin-top:6px;
       min-height:18px;
+    }
+    .field-help-address {
+      font-size: .78rem;
+      color: var(--c-text-muted);
+      margin: 4px 0 10px;
+      line-height: 1.4;
+    }
+    .field-help-address.field-help-address--warn {
+      color: #9a6b00;
     }
 
     /* ── model type switcher ── */
@@ -211,6 +294,279 @@
       font-size: .75rem;
     }
 
+    /* ── city autocomplete ── */
+    .city-autocomplete-wrap { position: relative; margin-top: 8px; }
+    .city-suggestions {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0; right: 0;
+      background: var(--c-surface);
+      border: 1px solid var(--c-border);
+      border-radius: var(--radius-sm);
+      box-shadow: 0 8px 24px rgba(0,0,0,.12);
+      z-index: 200;
+      overflow: hidden;
+    }
+    .city-suggestions.hidden { display: none; }
+    .city-suggestion-item {
+      padding: 9px 14px;
+      font-size: .875rem;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      transition: background var(--transition);
+      border-bottom: 1px solid var(--c-border);
+    }
+    .city-suggestion-item:last-child { border-bottom: none; }
+    .city-suggestion-item:hover,
+    .city-suggestion-item.kbd-active { background: var(--c-accent-soft); }
+    .city-suggestion-item__name { font-weight: 500; color: var(--c-text); }
+    .city-suggestion-item__sub { font-size: .75rem; color: var(--c-text-muted); }
+
+    .places-header__aside {
+      display: flex;
+      align-items: center;
+    }
+    .places-stats {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      align-items: baseline;
+      gap: 4px 12px;
+      margin: 0 0 0 auto;
+      padding: 0;
+      list-style: none;
+      font-size: .78rem;
+      color: var(--c-text-muted);
+      flex: 0 1 auto;
+      min-width: 0;
+    }
+    .places-stats li {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 5px;
+      white-space: nowrap;
+    }
+    .places-stats strong {
+      font-size: .9rem;
+      font-weight: 600;
+      color: var(--c-text);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* ── toolbar: search + filters (как в каталоге) ── */
+    .places-toolbar { margin: 0 0 14px; }
+    .places-toolbar__row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      gap: 10px 12px;
+    }
+    .places-toolbar__filters {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      gap: 10px 12px;
+    }
+    .places-toolbar__filters .places-filter-group,
+    .places-toolbar__filters .places-control,
+    .places-toolbar__filters .places-filters-reset {
+      height: 37.25px;
+      box-sizing: border-box;
+    }
+    .places-filter-group {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 10px;
+      border: 1px solid var(--c-border);
+      border-radius: var(--radius-md);
+      background: var(--c-surface);
+    }
+    .places-filter-group__label {
+      margin: 0;
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--c-text-muted);
+      white-space: nowrap;
+    }
+    .places-filter-seg {
+      display: inline-flex;
+      height: 27px;
+      border: 1px solid var(--c-border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .places-filter-seg__btn {
+      border: none;
+      border-right: 1px solid var(--c-border);
+      padding: 0 9px;
+      font-size: .75rem;
+      font-weight: 600;
+      font-family: var(--font-body);
+      background: var(--c-surface);
+      color: var(--c-text-muted);
+      cursor: pointer;
+      transition: background var(--transition), color var(--transition);
+    }
+    .places-filter-seg__btn:last-child { border-right: none; }
+    .places-filter-seg__btn:hover { background: var(--c-accent-soft); color: var(--c-text); }
+    .places-filter-seg__btn.is-active {
+      background: var(--c-accent);
+      color: #fff;
+    }
+    .places-toolbar__filters .places-control {
+      padding: 0 10px;
+    }
+    .places-toolbar__filters .places-years input[type="number"] {
+      height: 27px;
+      padding: 4px 8px;
+      box-sizing: border-box;
+    }
+    .places-toolbar__filters .places-filters-reset {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 12px;
+      line-height: 1;
+    }
+    .places-control {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border: 1px solid var(--c-border);
+      border-radius: var(--radius-md);
+      background: var(--c-surface);
+    }
+    .places-control label {
+      margin: 0;
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--c-text-muted);
+      white-space: nowrap;
+    }
+    .places-control--search {
+      flex: 1 1 280px;
+      max-width: min(100%, 440px);
+      min-width: 200px;
+      padding: 0;
+      border: none;
+      background: none;
+      align-items: stretch;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .places-control--search > label { padding-left: 2px; }
+    .places-search-field {
+      position: relative;
+      width: 100%;
+    }
+    .places-search-field input {
+      width: 100%;
+      height: 37.25px;
+      box-sizing: border-box;
+      padding: 0 36px 0 34px;
+      border: 1px solid var(--c-border);
+      border-radius: 8px;
+      background: var(--c-surface);
+      font-size: .875rem;
+      color: var(--c-text);
+      outline: none;
+      transition: border-color var(--transition), box-shadow var(--transition);
+    }
+    .places-search-field input:focus {
+      border-color: var(--c-accent);
+      box-shadow: 0 0 0 3px var(--c-accent-soft);
+    }
+    .places-search-field__icon {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      color: var(--c-text-light);
+    }
+    .places-search__clear {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 24px;
+      height: 24px;
+      padding: 0;
+      border-radius: 999px;
+      border: 1px solid var(--c-border);
+      background: var(--c-surface);
+      color: var(--c-text-muted);
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      transition: color var(--transition), border-color var(--transition), background var(--transition);
+    }
+    .places-search__clear:hover {
+      color: var(--c-text);
+      border-color: var(--c-accent);
+      background: var(--c-accent-soft);
+    }
+    .places-search__clear.visible { display: flex; }
+    .places-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border: 1px solid var(--c-border);
+      border-radius: var(--radius-md);
+      background: var(--c-surface);
+      color: var(--c-text-muted);
+      font-size: .8rem;
+      font-weight: 600;
+      user-select: none;
+      cursor: pointer;
+    }
+    .places-toggle input { accent-color: var(--c-accent); cursor: pointer; }
+    .places-years {
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .places-years input[type="number"] {
+      width: 92px;
+      border: 1px solid var(--c-border);
+      border-radius: 8px;
+      padding: 6px 8px;
+      background: var(--c-surface);
+      font-size: .875rem;
+    }
+    .places-years__sep { color: var(--c-text-muted); font-size: .8rem; }
+    .places-search-meta {
+      margin: 8px 0 0;
+      font-size: .8125rem;
+      color: var(--c-text-muted);
+      min-height: 1.2em;
+    }
+    .places-table__empty-filter {
+      padding: 28px 16px;
+      text-align: center;
+      color: var(--c-text-muted);
+      font-size: .9rem;
+    }
+    @media (max-width: 720px) {
+      .places-stats {
+        margin-left: 0;
+        width: 100%;
+        justify-content: flex-start;
+      }
+      .places-control--search { max-width: 100%; }
+      .places-toolbar__filters { width: 100%; }
+    }
+
   </style>
 </head>
 <body>
@@ -245,10 +601,6 @@
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
           Страницы
         </a>
-        <a href="media.html">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
-          Медиа
-        </a>
         <a href="feedback.html">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
           Обратная связь
@@ -273,7 +625,69 @@
       </div>
       <div class="admin-main__header">
         <h1 class="admin-main__title" data-i18n="admin.places.title">Места</h1>
-        <button class="btn btn--primary" id="add-btn" data-i18n="admin.places.addBtn">+ Добавить</button>
+        <div class="places-header__aside">
+          <button class="btn btn--primary" id="add-btn" data-i18n="admin.places.addBtn">+ Добавить</button>
+        </div>
+      </div>
+
+      <div class="places-toolbar">
+        <div class="places-toolbar__row" aria-label="Фильтры списка мест">
+          <span class="places-control places-control--search">
+            <label for="places-search" data-i18n="admin.places.searchLabel">Поиск</label>
+            <div class="places-search-field">
+              <svg class="places-search-field__icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+              <input
+                type="search"
+                id="places-search"
+                autocomplete="off"
+                data-i18n-placeholder="admin.places.searchPlaceholder"
+                placeholder="Название, адрес, id, теги…"
+              />
+              <button type="button" class="places-search__clear" id="places-search-clear" aria-label="Очистить поиск" data-i18n-aria-label="admin.places.searchClear">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+              </button>
+            </div>
+          </span>
+          <div class="places-toolbar__filters">
+            <div class="places-filter-group">
+              <span class="places-filter-group__label" data-i18n="admin.places.filter3d">3D</span>
+              <div class="places-filter-seg" data-filter-key="3d" role="group" aria-label="3D">
+                <button type="button" class="places-filter-seg__btn is-active" data-value="" data-i18n="admin.places.filterAll">Все</button>
+                <button type="button" class="places-filter-seg__btn" data-value="yes" data-i18n="admin.places.filterYes">Есть</button>
+                <button type="button" class="places-filter-seg__btn" data-value="no" data-i18n="admin.places.filterNo">Нет</button>
+              </div>
+            </div>
+            <div class="places-filter-group">
+              <span class="places-filter-group__label" data-i18n="admin.places.filterPhotos">Фото</span>
+              <div class="places-filter-seg" data-filter-key="photos" role="group" aria-label="Фото">
+                <button type="button" class="places-filter-seg__btn is-active" data-value="" data-i18n="admin.places.filterAll">Все</button>
+                <button type="button" class="places-filter-seg__btn" data-value="yes" data-i18n="admin.places.filterYes">Есть</button>
+                <button type="button" class="places-filter-seg__btn" data-value="no" data-i18n="admin.places.filterNo">Нет</button>
+              </div>
+            </div>
+            <span class="places-control">
+              <label data-i18n="admin.places.filterYears">Годы</label>
+              <span class="places-years">
+                <input type="number" id="f-datefrom" placeholder="От" min="0" step="1" data-i18n-placeholder="admin.places.yearFrom" />
+                <span class="places-years__sep">—</span>
+                <input type="number" id="f-dateto" placeholder="До" min="0" step="1" data-i18n-placeholder="admin.places.yearTo" />
+              </span>
+            </span>
+            <button type="button" class="btn btn--outline btn--sm places-filters-reset hidden" id="places-filters-reset" data-i18n="admin.places.resetFilters">Сбросить фильтры</button>
+          </div>
+          <ul class="places-stats" id="places-stats" aria-label="Статистика мест" data-i18n-aria-label="admin.places.statAria">
+            <li><span data-i18n="admin.places.statTotal">Всего</span> <strong id="stat-total">0</strong></li>
+            <li><span data-i18n="admin.places.stat3d">С 3D</span> <strong id="stat-3d">0</strong></li>
+            <li><span data-i18n="admin.places.statNo3d">Без 3D</span> <strong id="stat-no-3d">0</strong></li>
+            <li><span data-i18n="admin.places.statPhotos">С фото</span> <strong id="stat-photos">0</strong></li>
+            <li><span data-i18n="admin.places.statNoPhotos">Без фото</span> <strong id="stat-no-photos">0</strong></li>
+          </ul>
+        </div>
+        <p class="places-search-meta" id="places-search-meta" aria-live="polite"></p>
       </div>
 
       <div id="table-wrap" class="admin-table-shell">
@@ -326,6 +740,7 @@
           <div class="lang-tabs">
             <button type="button" class="lang-tab active" data-lang-tab="ru">RU</button>
             <button type="button" class="lang-tab" data-lang-tab="en">EN</button>
+            <button type="button" class="lang-tab" data-lang-tab="be">BE</button>
           </div>
           <div class="lang-panel" data-lang-panel="ru">
             <label class="form-label" for="f-name-ru" data-i18n="admin.places.nameRu">Название (RU) *</label>
@@ -335,12 +750,16 @@
             <label class="form-label" for="f-name-en" data-i18n="admin.places.nameEn">Название (EN)</label>
             <input type="text" id="f-name-en" class="form-control" maxlength="200" />
           </div>
+          <div class="lang-panel hidden" data-lang-panel="be">
+            <label class="form-label" for="f-name-be">Назва (BE)</label>
+            <input type="text" id="f-name-be" class="form-control" maxlength="200" />
+          </div>
         </div>
 
         <div class="form-group">
-          <label class="form-label" data-i18n="admin.places.coords">Координаты (кликните по карте)</label>
+          <label class="form-label" data-i18n="admin.places.coords">Координаты и карта</label>
           <div id="coord-map"></div>
-          <p class="coord-hint" id="coord-hint" data-i18n="admin.places.coordsHint">Координаты не выбраны</p>
+          <p class="coord-hint" id="coord-hint" data-i18n="admin.places.coordsHint">Клик по карте или ввод координат — маркер синхронизируется. Адрес вводите вручную ниже.</p>
           <div class="coord-row">
             <div>
               <label class="form-label" for="f-lat">Широта</label>
@@ -357,10 +776,32 @@
           <div class="lang-panel" data-lang-panel="ru">
             <label class="form-label" for="f-address-ru">Адрес (RU)</label>
             <input type="text" id="f-address-ru" class="form-control" maxlength="300" />
+            <p class="field-help-address" id="f-address-ru-hint" hidden></p>
+            <div class="city-autocomplete-wrap">
+              <label class="form-label" for="f-city-ru" style="font-size:.78rem;margin-bottom:4px">Город (RU)</label>
+              <input type="text" id="f-city-ru" class="form-control" maxlength="100" placeholder="Введите или выберите город…" autocomplete="off" />
+              <div class="city-suggestions hidden" id="city-suggestions-ru"></div>
+            </div>
           </div>
           <div class="lang-panel hidden" data-lang-panel="en">
             <label class="form-label" for="f-address-en">Адрес (EN)</label>
             <input type="text" id="f-address-en" class="form-control" maxlength="300" />
+            <p class="field-help-address" id="f-address-en-hint" hidden></p>
+            <div class="city-autocomplete-wrap">
+              <label class="form-label" for="f-city-en" style="font-size:.78rem;margin-bottom:4px">City (EN)</label>
+              <input type="text" id="f-city-en" class="form-control" maxlength="100" placeholder="Enter or select city…" autocomplete="off" />
+              <div class="city-suggestions hidden" id="city-suggestions-en"></div>
+            </div>
+          </div>
+          <div class="lang-panel hidden" data-lang-panel="be">
+            <label class="form-label" for="f-address-be">Адрас (BE)</label>
+            <input type="text" id="f-address-be" class="form-control" maxlength="300" />
+            <p class="field-help-address" id="f-address-be-hint" hidden></p>
+            <div class="city-autocomplete-wrap">
+              <label class="form-label" for="f-city-be" style="font-size:.78rem;margin-bottom:4px">Горад (BE)</label>
+              <input type="text" id="f-city-be" class="form-control" maxlength="100" placeholder="Увядзіце горад…" autocomplete="off" />
+              <div class="city-suggestions hidden" id="city-suggestions-be"></div>
+            </div>
           </div>
         </div>
 
@@ -451,6 +892,10 @@
             <label class="form-label" for="f-opening-address-en">Адрес открытия (EN)</label>
             <input type="text" id="f-opening-address-en" class="form-control" maxlength="300" />
           </div>
+          <div class="lang-panel hidden" data-lang-panel="be">
+            <label class="form-label" for="f-opening-address-be">Адрас адкрыцця (BE)</label>
+            <input type="text" id="f-opening-address-be" class="form-control" maxlength="300" />
+          </div>
         </div>
 
         <div class="form-group">
@@ -461,6 +906,10 @@
           <div class="lang-panel hidden" data-lang-panel="en">
             <label class="form-label" for="f-author-en">Author / Sculptor (EN)</label>
             <input type="text" id="f-author-en" class="form-control" maxlength="200" />
+          </div>
+          <div class="lang-panel hidden" data-lang-panel="be">
+            <label class="form-label" for="f-author-be">Аўтар / Скульптар (BE)</label>
+            <input type="text" id="f-author-be" class="form-control" maxlength="200" />
           </div>
         </div>
 
@@ -485,6 +934,16 @@
             <input type="text" id="f-tags-input-en" class="form-control" placeholder="Enter tag and press Enter…" style="margin-top:6px" />
             <p style="font-size:.78rem;color:var(--c-text-muted);margin-top:4px">E.g. Sculpture, Memorial, WWII</p>
           </div>
+          <div class="lang-panel hidden" data-lang-panel="be">
+            <label class="form-label">Катэгорыі / Тэгі (BE)</label>
+            <div class="tags-input-wrap" id="tags-wrap-be" style="
+              display:flex;flex-wrap:wrap;gap:6px;padding:8px 10px;
+              border:1px solid var(--c-border);border-radius:var(--radius-sm);
+              background:var(--c-surface);cursor:text;min-height:44px;
+            "></div>
+            <input type="text" id="f-tags-input-be" class="form-control" placeholder="Увядзіце тэг і націсніце Enter…" style="margin-top:6px" />
+            <p style="font-size:.78rem;color:var(--c-text-muted);margin-top:4px">Напрыклад: Скульптура, Мемарыял, Другая сусветная</p>
+          </div>
         </div>
 
         <div class="form-group">
@@ -496,18 +955,26 @@
             <label class="form-label" for="f-desc-en">Description (EN)</label>
             <textarea id="f-desc-en" class="form-control" rows="6" maxlength="20000"></textarea>
           </div>
+          <div class="lang-panel hidden" data-lang-panel="be">
+            <label class="form-label" for="f-desc-be">Апісанне (BE)</label>
+            <textarea id="f-desc-be" class="form-control" rows="6" maxlength="20000"></textarea>
+          </div>
         </div>
 
         <!-- photos -->
         <div class="form-group">
           <label class="form-label" data-i18n="admin.places.photos">Фотографии (до 10)</label>
           <div class="photo-previews" id="photo-previews"></div>
+          <div class="photo-url-row">
+            <input type="text" id="photo-url-input" class="form-control" placeholder="https://… или photos/…" spellcheck="false" />
+            <button type="button" class="btn btn--outline btn--sm" id="photo-url-add" data-i18n="admin.places.photosUrlAdd">Добавить по ссылке</button>
+          </div>
           <div class="photo-upload-area" id="upload-area">
             <p data-i18n="admin.places.photosDrag">Перетащите фото или нажмите для выбора</p>
             <span data-i18n="admin.places.photosFormat">JPEG, PNG, WEBP · до 10 МБ каждое</span>
           </div>
           <p class="photo-progress" id="photo-progress"></p>
-          <input type="file" id="file-input" accept="image/*" multiple style="display:none" />
+          <input type="file" id="file-input" accept="image/jpeg,image/png,image/webp,image/gif,image/avif,.jpg,.jpeg,.png,.webp,.gif,.avif" multiple style="display:none" />
         </div>
 
         <!-- ═══ 3D MODEL: file OR Sketchfab ═══ -->
@@ -525,6 +992,10 @@
 
           <!-- Panel: file upload -->
           <div class="model-panel active" id="model-panel-file">
+            <p class="admin-hint" style="margin:0 0 10px;font-size:.8125rem">
+              Файл загружается на сервер (R2) через медиа‑воркер. Базовый URL воркера задаётся в
+              <strong>Dashboard → Интеграции</strong> (Firestore <code>config/site</code>).
+            </p>
             <div class="photo-upload-area" id="model-upload-area">
               <p data-i18n="admin.places.modelDrag">Перетащите .glb / .gltf или нажмите для выбора</p>
               <span data-i18n="admin.places.modelMax">Максимум 100 МБ</span>
@@ -548,18 +1019,22 @@
           </div>
         </div>
 
-        <div class="modal__footer">
-          <button class="btn btn--outline" id="modal-cancel" data-i18n="admin.places.modalCancel">Отмена</button>
-          <button class="btn btn--primary" id="modal-save" data-i18n="admin.places.modalSave">Сохранить</button>
-        </div>
+      </div>
+
+      <div class="modal__footer">
+        <button class="btn btn--outline" id="modal-cancel" data-i18n="admin.places.modalCancel">Отмена</button>
+        <button class="btn btn--primary" id="modal-save" data-i18n="admin.places.modalSave">Сохранить</button>
       </div>
     </div>
   </div>
 
+  <div class="photo-preview-popover" id="photo-preview-popover" aria-hidden="true">
+    <img alt="" />
+  </div>
+
   <div id="toast" class="toast"></div>
 
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ru.js"></script>
   <script type="module" src="../js/shared/admin-shell.js"></script>

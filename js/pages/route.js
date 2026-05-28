@@ -1,5 +1,5 @@
 import { initNav } from '../shared/nav.js';
-import { getLang, loadDict, applyDict, applyLanguageSeo, t } from '../shared/i18n.js';
+import { getLang, loadDict, applyDict, applyLanguageSeo, t, nominatimAcceptLanguage } from '../shared/i18n.js';
 import {
   buildRoutePageUrlWithSnapshot,
   readRouteSnapshotFromLocation,
@@ -8,12 +8,14 @@ import {
 import { auth } from '../shared/firebase-init.js';
 import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js';
 import { saveUserRoute } from '../features/user-saved-routes.js';
-import { fetchLocalizedLibertyStyle } from '../shared/map-liberty-style.js';
 import { getTrip, clearTrip, removeFromTrip, moveTripItem, setTripItems } from './trips.js';
 import { showToast } from '../shared/utils.js';
 import { getPlaces } from '../shared/places.js';
+import { ensureLeafletReady } from '../shared/load-leaflet.js';
+import { buildOsrmWorkerProxyUrl } from '../shared/media-worker-url.js';
 
-const L = window.L;
+/** Filled after `ensureLeafletReady()` (see bootstrap below). */
+let L = null;
 
 initNav('../');
 
@@ -46,6 +48,7 @@ const btnOpenGmaps = document.getElementById('btn-open-gmaps');
 const optimizeModeEl = document.getElementById('optimize-mode');
 const btnDetectEndHotel = document.getElementById('btn-detect-end-hotel');
 const dayCountEl = document.getElementById('day-count');
+const planSplitModeEl = document.getElementById('plan-split-mode');
 const summaryEl = document.getElementById('route-summary');
 const daysPlanEl = document.getElementById('route-days');
 const routeMapEl = document.getElementById('route-map');
@@ -73,12 +76,37 @@ let endAddressPoint = null;
 let routeMap = null;
 let routeMapMarkers = [];
 let routeMapPolylineLayers = [];
+let routeMapHitLayers = [];
 let routeAlternativesCache = [];
 let selectedRouteAlternativeIndex = 0;
 let lastRouteCoordsForMap = [];
 let routeLegMarkers = [];
 let routeMapGeometryGen = 0;
-const ROUTING_API_BASE = 'https://router.project-osrm.org';
+/** Отпечаток точек маршрута — без изменений не дергаем OSRM заново. */
+let lastRouteCoordsFingerprint = '';
+let mapLayoutRefreshTimer = null;
+/** Только авто. Два зеркала: DE (основной) и project-osrm (часто даёт alternatives). */
+const ROUTING_ENDPOINTS = [
+  { kind: 'osrm', base: 'https://routing.openstreetmap.de', prefix: '/routed-car' },
+  { kind: 'osrm', base: 'https://router.project-osrm.org', prefix: '' }
+];
+const MAX_ROUTE_DAYS = 7;
+const ROUTE_PROFILE_DRIVING = 'driving';
+/** Средняя скорость для оценки времени по дням (км/ч), пока нет OSRM по сегменту. */
+const AVG_DRIVE_KMH = 72;
+const OVERPASS_ENDPOINTS = [
+  'https://overpass-api.de/api/interpreter',
+  'https://overpass.kumi.systems/api/interpreter'
+];
+/** Номер дня (1…N) для каждого места в порядке маршрута; не убывает по списку. */
+let dayAssignments = [];
+/** Дебаунс тяжёлых OSRM-запросов при частых updateMap (иначе 429 и спам запросов). */
+let routeGeometryDebounceTimer = null;
+const OSRM_CACHE = new Map();
+const OSRM_CACHE_TTL_MS = 8 * 60 * 1000;
+const OSRM_CACHE_MAX = 48;
+const OSRM_INFLIGHT = new Map();
+let osrmCooldownUntil = 0;
 let firebaseUser = null;
 /** Ночёвки между днями: индекс = после chunks[idx], длина chunks.length - 1 */
 let overnightStops = [];
@@ -254,7 +282,7 @@ function endHotelSlotMarkup() {
 async function geocodeAddress(query) {
   const q = String(query ?? '').trim();
   if (!q) return null;
-  const locale = lang === 'en' ? 'en' : 'ru';
+  const locale = nominatimAcceptLanguage(lang);
   const url = new URL('https://nominatim.openstreetmap.org/search');
   url.searchParams.set('format', 'json');
   url.searchParams.set('limit', '1');
@@ -337,6 +365,13 @@ if (snapFromUrl && applyRouteSnapshot(snapFromUrl)) {
 
 syncRouteAddressUi();
 render();
+try {
+  await ensureLeafletReady();
+  L = window.L;
+} catch (e) {
+  console.warn(e);
+  L = window.L;
+}
 await initRouteMap();
 if (openedRouteFromLink) {
   setTimeout(() => {
@@ -358,6 +393,8 @@ btnClear.addEventListener('click', () => {
   endAddressPoint = null;
   overnightStops = [];
   nightHotelChoicesByGap = {};
+  dayAssignments = [];
+  lastRouteCoordsFingerprint = '';
   if (startAddressInput) startAddressInput.value = '';
   if (endAddressInput) endAddressInput.value = '';
   syncRouteAddressUi();
@@ -384,7 +421,7 @@ endAddressInput?.addEventListener('keydown', (e) => {
   }
 });
 btnOptimize.addEventListener('click', optimizeRoute);
-btnPlanDays.addEventListener('click', renderDayPlan);
+btnPlanDays.addEventListener('click', applyDaySplit);
 btnOpenGmaps.addEventListener('click', openInGoogleMaps);
 btnDetectEndHotel?.addEventListener('click', openEndHotelPicker);
 
@@ -451,8 +488,21 @@ endModeEl?.addEventListener('change', () => {
   updateMap();
 });
 dayCountEl?.addEventListener('change', () => {
+  syncDayCountSelect();
+  ensureDayAssignments();
+  render();
   renderDayPlan();
   renderPoiTargets();
+  updateMap();
+});
+
+listEl?.addEventListener('change', (e) => {
+  const sel = e.target.closest('select[data-place-day]');
+  if (!sel) return;
+  const idx = Number(sel.getAttribute('data-place-day'));
+  const day = Number(sel.value);
+  if (!Number.isFinite(idx) || !Number.isFinite(day)) return;
+  setPlaceDay(idx, day);
 });
 optimizeModeEl?.addEventListener('change', () => setStatus(''));
 
@@ -521,6 +571,8 @@ saveRouteTitleInput?.addEventListener('keydown', (e) => {
 function render() {
   const trip = getTrip();
   const items = trip.items || [];
+  syncDayCountSelect();
+  ensureDayAssignments();
 
   emptyEl.classList.toggle('hidden', items.length !== 0);
   listEl.innerHTML = '';
@@ -535,7 +587,8 @@ function render() {
     const placeName = x.name || (lang === 'en' ? 'Place' : 'Место');
     return `
       <article class="route-item" draggable="true" data-route-id="${escAttr(x.id)}">
-        <div>
+        ${placeDaySelectMarkup(i)}
+        <div class="route-item__main">
           <a class="route-item__title" href="place.html?id=${encodeURIComponent(x.id)}">${esc(placeName)}</a>
           <div class="route-item__meta">
             ${esc(t('route.point', dictI18n))} ${i + 1}
@@ -566,7 +619,10 @@ function render() {
     btn.addEventListener('click', () => {
       const dir = btn.getAttribute('data-move');
       const id = btn.getAttribute('data-id');
+      const fromIdx = items.findIndex((x) => String(x.id) === String(id));
       moveTripItem(id, dir === 'up' ? 'up' : 'down');
+      const toIdx = dir === 'up' ? fromIdx - 1 : fromIdx + 1;
+      if (fromIdx >= 0 && toIdx >= 0) reorderDayAssignments(fromIdx, toIdx);
       render();
       renderSummary();
       renderDayPlan();
@@ -631,7 +687,7 @@ async function openEndHotelPicker() {
   syncRouteAddressUi();
   setStatus(t('route.findingEndHotelsList', dictI18n));
   try {
-    const hotels = await fetchPoi(lastCoord, 8000, 'hotel');
+    const hotels = await fetchHotelsNearCenters([lastCoord]);
     if (!hotels.length) {
       setStatus(t('route.endHotelNotFound', dictI18n), 'error');
     } else {
@@ -813,17 +869,226 @@ function getPlaceCoord(placeId) {
   return { lat, lng };
 }
 
+function getMaxRouteDays() {
+  const n = (getTrip().items || []).length;
+  if (n < 1) return 1;
+  return Math.min(MAX_ROUTE_DAYS, n);
+}
+
+function getRouteDayCount() {
+  const max = getMaxRouteDays();
+  return Math.max(1, Math.min(max, Number(dayCountEl?.value || 1)));
+}
+
+function syncDayCountSelect() {
+  if (!dayCountEl) return;
+  const max = getMaxRouteDays();
+  const prev = Math.max(1, Math.min(max, Number(dayCountEl.value) || 1));
+  const opts = [];
+  for (let d = 1; d <= max; d += 1) {
+    opts.push(`<option value="${d}"${d === prev ? ' selected' : ''}>${d}</option>`);
+  }
+  dayCountEl.innerHTML = opts.join('');
+  if (Number(dayCountEl.value) !== prev) dayCountEl.value = String(prev);
+}
+
+function enforceMonotonicDayAssignments() {
+  const dc = getRouteDayCount();
+  let prev = 1;
+  for (let i = 0; i < dayAssignments.length; i += 1) {
+    let d = Math.round(Number(dayAssignments[i])) || prev;
+    d = Math.max(prev, Math.min(dc, d));
+    dayAssignments[i] = d;
+    prev = d;
+  }
+}
+
+function ensureDayAssignments() {
+  const items = getTrip().items || [];
+  const dc = getRouteDayCount();
+  while (dayAssignments.length < items.length) {
+    const last = dayAssignments.length ? dayAssignments[dayAssignments.length - 1] : 1;
+    dayAssignments.push(Math.min(last, dc));
+  }
+  dayAssignments.length = items.length;
+  if (!dayAssignments.length) return;
+  enforceMonotonicDayAssignments();
+}
+
+function buildDayChunks(items, dayCount, assignments) {
+  const chunks = Array.from({ length: dayCount }, () => []);
+  (assignments || []).forEach((dayNum, i) => {
+    if (!items[i]) return;
+    const slot = Math.max(1, Math.min(dayCount, Math.round(Number(dayNum)) || 1)) - 1;
+    chunks[slot].push(items[i]);
+  });
+  return chunks;
+}
+
+function getDayChunks() {
+  const trip = getTrip();
+  const items = trip.items || [];
+  const dayCount = getRouteDayCount();
+  if (dayCount <= 1 || !items.length) return [];
+  ensureDayAssignments();
+  return buildDayChunks(items, dayCount, dayAssignments);
+}
+
+function setPlaceDay(index, newDay) {
+  const dc = getRouteDayCount();
+  const minDay = index > 0 ? dayAssignments[index - 1] : 1;
+  dayAssignments[index] = Math.max(minDay, Math.min(dc, Math.round(Number(newDay)) || minDay));
+  enforceMonotonicDayAssignments();
+  render();
+  renderSummary();
+  renderDayPlan();
+  renderPoiTargets();
+  updateMap();
+}
+
+function reorderDayAssignments(fromIdx, toIdx) {
+  if (fromIdx === toIdx || fromIdx < 0 || toIdx < 0) return;
+  if (fromIdx >= dayAssignments.length || toIdx >= dayAssignments.length) return;
+  const [moved] = dayAssignments.splice(fromIdx, 1);
+  dayAssignments.splice(toIdx, 0, moved);
+  enforceMonotonicDayAssignments();
+}
+
+function autoAssignDaysEvenCount() {
+  const items = getTrip().items || [];
+  const dc = getRouteDayCount();
+  if (dc <= 1 || !items.length) {
+    dayAssignments = items.map(() => 1);
+    return;
+  }
+  const perDay = Math.ceil(items.length / dc);
+  dayAssignments = items.map((_, i) => Math.min(dc, Math.floor(i / perDay) + 1));
+  enforceMonotonicDayAssignments();
+}
+
+function autoAssignDaysEvenKm() {
+  const items = getTrip().items || [];
+  const dc = getRouteDayCount();
+  if (dc <= 1 || !items.length) {
+    dayAssignments = items.map(() => 1);
+    return;
+  }
+  const legKm = [];
+  let prev = getStartCoord();
+  for (const item of items) {
+    const coord = getPlaceCoord(item.id);
+    if (!coord) {
+      legKm.push(0);
+      continue;
+    }
+    legKm.push(prev ? haversineKm(prev, coord) : 0);
+    prev = coord;
+  }
+  const total = legKm.reduce((a, b) => a + b, 0);
+  const target = total > 0 ? total / dc : 0;
+  dayAssignments = [];
+  let day = 1;
+  let acc = 0;
+  for (let i = 0; i < items.length; i += 1) {
+    dayAssignments.push(day);
+    if (day >= dc) continue;
+    acc += legKm[i];
+    const remaining = items.length - i - 1;
+    const daysLeft = dc - day;
+    if (target > 0 && acc >= target && daysLeft > 0 && remaining >= daysLeft) {
+      day += 1;
+      acc = 0;
+    }
+  }
+  enforceMonotonicDayAssignments();
+}
+
+function migrateLegacyDayAssignments(items, dayCount) {
+  if (dayCount <= 1 || !items.length) {
+    dayAssignments = items.map(() => 1);
+    return;
+  }
+  const perDay = Math.ceil(items.length / dayCount);
+  dayAssignments = items.map((_, i) => Math.min(dayCount, Math.floor(i / perDay) + 1));
+  enforceMonotonicDayAssignments();
+}
+
+function applyDaySplit() {
+  const dc = getRouteDayCount();
+  if (dc <= 1) {
+    renderDayPlan();
+    return;
+  }
+  const mode = planSplitModeEl?.value || 'count';
+  if (mode === 'km') autoAssignDaysEvenKm();
+  else autoAssignDaysEvenCount();
+  render();
+  renderSummary();
+  renderDayPlan();
+  renderPoiTargets();
+  updateMap();
+  showToast(t('route.planDaysDone', dictI18n));
+}
+
+function formatRouteDuration(seconds) {
+  const sec = Number(seconds);
+  if (!Number.isFinite(sec) || sec < 0) return '';
+  const totalMin = Math.round(sec / 60);
+  if (totalMin < 60) {
+    return `${totalMin} ${t('route.durationMinShort', dictI18n)}`;
+  }
+  const days = Math.floor(totalMin / (24 * 60));
+  const rem = totalMin - days * 24 * 60;
+  const hours = Math.floor(rem / 60);
+  const mins = rem % 60;
+  const parts = [];
+  if (days > 0) parts.push(`${days} ${t('route.durationDayShort', dictI18n)}`);
+  if (hours > 0) parts.push(`${hours} ${t('route.durationHourShort', dictI18n)}`);
+  if (mins > 0 && days === 0) parts.push(`${mins} ${t('route.durationMinShort', dictI18n)}`);
+  else if (mins > 0 && days > 0 && hours === 0) parts.push(`${mins} ${t('route.durationMinShort', dictI18n)}`);
+  return parts.join(' ');
+}
+
+function routeSpeedKmH(distanceM, durationS) {
+  const d = Number(distanceM);
+  const tSec = Number(durationS);
+  if (!Number.isFinite(d) || !Number.isFinite(tSec) || tSec <= 0) return NaN;
+  return (d / 1000) / (tSec / 3600);
+}
+
+function isPlausibleDrivingRoute(route) {
+  const speed = routeSpeedKmH(route?.distanceM, route?.durationS);
+  if (!Number.isFinite(speed)) return true;
+  return speed >= 4 && speed <= 140;
+}
+
+function placeDaySelectMarkup(index) {
+  const dc = getRouteDayCount();
+  if (dc <= 1) return '';
+  ensureDayAssignments();
+  const minDay = index > 0 ? dayAssignments[index - 1] : 1;
+  const cur = dayAssignments[index] ?? minDay;
+  const opts = [];
+  for (let d = minDay; d <= dc; d += 1) {
+    opts.push(`<option value="${d}"${d === cur ? ' selected' : ''}>${d}</option>`);
+  }
+  return `
+    <div class="route-item__day">
+      <label class="route-item__day-label" for="place-day-${index}">${esc(t('route.placeDay', dictI18n))}</label>
+      <select id="place-day-${index}" class="form-control route-item__day-select" data-place-day="${index}" aria-label="${escAttr(`${t('route.placeDay', dictI18n)} ${index + 1}`)}">${opts.join('')}</select>
+    </div>`;
+}
+
 function syncOvernightSlots() {
   const trip = getTrip();
   const items = trip.items || [];
-  const dayCount = Math.max(1, Math.min(4, Number(dayCountEl?.value || 1)));
+  const dayCount = getRouteDayCount();
   if (dayCount <= 1 || items.length === 0) {
     overnightStops = [];
     nightHotelChoicesByGap = {};
     return;
   }
-  const chunks = splitIntoDays(items, dayCount);
-  const slots = Math.max(0, chunks.length - 1);
+  const slots = Math.max(0, dayCount - 1);
   const next = Array.from({ length: slots }, (_, i) => {
     const prev = overnightStops[i];
     if (prev && Number.isFinite(prev.lat) && Number.isFinite(prev.lng)) return prev;
@@ -834,8 +1099,9 @@ function syncOvernightSlots() {
 
 function collectRouteSnapshot() {
   syncOvernightSlots();
+  ensureDayAssignments();
   const trip = getTrip();
-  const dc = Math.max(1, Math.min(4, Number(dayCountEl?.value || 1)));
+  const dc = getRouteDayCount();
   const overnight = overnightStops.map((s) =>
     s && Number.isFinite(s.lat) && Number.isFinite(s.lng)
       ? { lat: s.lat, lng: s.lng, name: String(s.name || '').slice(0, 200) }
@@ -888,6 +1154,7 @@ function collectRouteSnapshot() {
       name: String(i.name || '').trim().slice(0, 300)
     })),
     dayCount: dc,
+    dayAssignments: dayAssignments.slice(),
     overnight,
     start,
     end
@@ -910,8 +1177,18 @@ function applyRouteSnapshot(snap) {
   setTripItems(items);
 
   if (dayCountEl) {
-    const dc = Math.max(1, Math.min(4, Number(snap.dayCount) || 1));
+    const dc = Math.max(1, Math.min(MAX_ROUTE_DAYS, Number(snap.dayCount) || 1));
     dayCountEl.value = String(dc);
+    syncDayCountSelect();
+  }
+
+  const dcSnap = Math.max(1, Math.min(MAX_ROUTE_DAYS, Number(snap.dayCount) || 1));
+  const rawAssign = Array.isArray(snap.dayAssignments) ? snap.dayAssignments : [];
+  if (rawAssign.length === items.length) {
+    dayAssignments = rawAssign.map((d) => Math.round(Number(d)) || 1);
+    enforceMonotonicDayAssignments();
+  } else {
+    migrateLegacyDayAssignments(items, dcSnap);
   }
 
   const ov = Array.isArray(snap.overnight) ? snap.overnight : [];
@@ -969,20 +1246,28 @@ function applyRouteSnapshot(snap) {
   return true;
 }
 
-function computeNightPivot(gapIdx) {
-  const trip = getTrip();
-  const items = trip.items || [];
-  const dayCount = Math.max(1, Math.min(4, Number(dayCountEl?.value || 1)));
-  const chunks = splitIntoDays(items, dayCount);
+/** Точки поиска отеля между днями: конец дня, начало след., середина. */
+function computeNightSearchCenters(gapIdx) {
+  const chunks = getDayChunks();
   const a = chunks[gapIdx];
   const b = chunks[gapIdx + 1];
-  if (!a && !b) return null;
+  const centers = [];
+  const seen = new Set();
+  const push = (c) => {
+    if (!c || !Number.isFinite(c.lat) || !Number.isFinite(c.lng)) return;
+    const key = `${c.lat.toFixed(4)},${c.lng.toFixed(4)}`;
+    if (seen.has(key)) return;
+    seen.add(key);
+    centers.push(c);
+  };
   const lastA = a?.length ? getLastCoord(a) : null;
   const firstB = b?.length ? getPlaceCoord(b[0].id) : null;
+  push(lastA);
+  push(firstB);
   if (lastA && firstB) {
-    return { lat: (lastA.lat + firstB.lat) / 2, lng: (lastA.lng + firstB.lng) / 2 };
+    push({ lat: (lastA.lat + firstB.lat) / 2, lng: (lastA.lng + firstB.lng) / 2 });
   }
-  return lastA || firstB || null;
+  return centers;
 }
 
 function nightSlotMarkup(gapIdx) {
@@ -1042,27 +1327,33 @@ function applyNightHotelChoice(gapIdx, hotelIdx) {
 async function openNightHotelPicker(gapIdx) {
   const slot = document.getElementById(`route-night-slot-${gapIdx}`);
   if (!slot || nightPickLoading.has(gapIdx)) return;
-  const pivot = computeNightPivot(gapIdx);
-  if (!pivot) {
-    setStatus(t('route.nightHotelNeedCoords', dictI18n), 'error');
+  const centers = computeNightSearchCenters(gapIdx);
+  if (!centers.length) {
+    slot.innerHTML = `<p class="route-night-error">${esc(t('route.nightHotelNeedCoords', dictI18n))}</p>`;
     return;
   }
   nightPickLoading.add(gapIdx);
   slot.innerHTML = `<span class="route-night-loading">${esc(t('route.findingHotel', dictI18n))}</span>`;
   try {
-    const hotels = await fetchPoi(pivot, 8000, 'hotel');
+    const hotels = await fetchHotelsNearCenters(centers);
     if (!hotels.length) {
       delete nightHotelChoicesByGap[gapIdx];
-      slot.innerHTML = nightSlotMarkup(gapIdx);
-      setStatus(t('route.endHotelNotFound', dictI18n), 'error');
+      slot.innerHTML = `
+        <div class="route-night-row route-night-row--error">
+          <p class="route-night-error">${esc(t('route.nightHotelNotFound', dictI18n))}</p>
+          <button type="button" class="btn btn--outline btn--sm" data-night-pick="${gapIdx}">${esc(t('route.nightHotelRetry', dictI18n))}</button>
+        </div>`;
       return;
     }
     nightHotelChoicesByGap[gapIdx] = hotels;
     slot.innerHTML = nightSlotMarkup(gapIdx);
   } catch {
     delete nightHotelChoicesByGap[gapIdx];
-    slot.innerHTML = nightSlotMarkup(gapIdx);
-    setStatus(t('route.endHotelDetectError', dictI18n), 'error');
+    slot.innerHTML = `
+      <div class="route-night-row route-night-row--error">
+        <p class="route-night-error">${esc(t('route.nightHotelDetectError', dictI18n))}</p>
+        <button type="button" class="btn btn--outline btn--sm" data-night-pick="${gapIdx}">${esc(t('route.nightHotelRetry', dictI18n))}</button>
+      </div>`;
   } finally {
     nightPickLoading.delete(gapIdx);
   }
@@ -1082,7 +1373,9 @@ function renderSummary() {
   const sum = routeDistance(withCoords, getStartCoord(), end);
   const missing = (trip.items || []).length - nodes.length;
   const missingText = missing > 0 ? ` · ${t('route.missingCoords', dictI18n)}: ${missing}` : '';
-  summaryEl.textContent = `${t('route.summaryDistance', dictI18n)}: ${sum.toFixed(1)} km${missingText}`;
+  const durEst = formatRouteDuration((sum / AVG_DRIVE_KMH) * 3600);
+  const timePart = durEst ? ` · ${durEst}` : '';
+  summaryEl.textContent = `${t('route.summaryDistance', dictI18n)}: ${sum.toFixed(1)} km${timePart}${missingText}`;
   renderDayPlan();
   updateMap();
 }
@@ -1095,13 +1388,14 @@ function renderDayPlan() {
   daysPlanEl.innerHTML = '';
   if (!items.length) return;
 
-  const dayCount = Math.max(1, Math.min(4, Number(dayCountEl?.value || 1)));
+  const dayCount = getRouteDayCount();
   if (dayCount <= 1) {
     daysPlanEl.innerHTML = `<div class="route-day"><div class="route-day__hint">${esc(t('route.oneDayHint', dictI18n))}</div></div>`;
     return;
   }
 
-  const chunks = splitIntoDays(items, dayCount);
+  ensureDayAssignments();
+  const chunks = buildDayChunks(items, dayCount, dayAssignments);
   const startCoord = getStartCoord();
   const returnToStart = endModeEl?.value === 'return' && startCoord;
 
@@ -1111,20 +1405,25 @@ function renderDayPlan() {
     const dayStart = idx === 0 ? startCoord : prevDayEnd;
     const dayEnd = isLast && returnToStart ? startCoord : null;
     const dist = estimateChunkDistance(chunk, dayStart, dayEnd);
+    const durSec = estimateChunkDurationSec(chunk, dayStart, dayEnd);
+    const durText = formatRouteDuration(durSec);
+    const timePart = durText ? ` · ${durText}` : '';
     prevDayEnd = getLastCoord(chunk) || prevDayEnd;
-    const placeLines = chunk.map((x) => `<li>${esc(x.name || x.id)}</li>`).join('');
+    const placeLines = chunk.length
+      ? chunk.map((x) => `<li>${esc(x.name || x.id)}</li>`).join('')
+      : `<li class="route-day__empty">${esc(t('route.dayEmpty', dictI18n))}</li>`;
     const overnightHint =
-      idx < chunks.length - 1
+      idx < dayCount - 1
         ? `<div class="route-day__hint">${esc(t('route.overnightHint', dictI18n))}</div>`
         : '';
     const nightSlot =
-      idx < chunks.length - 1
+      idx < dayCount - 1
         ? `<div class="route-day__night" id="route-night-slot-${idx}" aria-live="polite">${nightSlotMarkup(idx)}</div>`
         : '';
     return `
       <article class="route-day">
         <div class="route-day__title">${esc(t('route.dayLabel', dictI18n))} ${idx + 1}</div>
-        <div class="route-day__meta">${esc(t('route.summaryDistance', dictI18n))}: ${dist.toFixed(1)} km</div>
+        <div class="route-day__meta">${esc(t('route.summaryDistance', dictI18n))}: ${dist.toFixed(1)} km${timePart}</div>
         <ol class="route-day__list">${placeLines}</ol>
         ${overnightHint}
         ${nightSlot}
@@ -1170,10 +1469,15 @@ function renderPoiTargets() {
   let options = [];
 
   if (mode === 'day') {
-    const dayCount = Math.max(1, Math.min(4, Number(dayCountEl?.value || 1)));
-    const chunks = splitIntoDays(items, dayCount);
+    const dayCount = getRouteDayCount();
+    ensureDayAssignments();
+    const chunks = buildDayChunks(items, dayCount, dayAssignments);
     options = chunks.map((chunk, i) => {
-      const center = calcDayCenter(chunk);
+      let center = chunk.length ? calcDayCenter(chunk) : null;
+      if (!center && i > 0) {
+        const night = overnightStops[i - 1];
+        if (night && Number.isFinite(night.lat)) center = { lat: night.lat, lng: night.lng };
+      }
       return {
         key: `day-${i}`,
         label: `${t('route.dayLabel', dictI18n)} ${i + 1}`,
@@ -1269,49 +1573,96 @@ function routeHotelListSelectSize(count) {
   return Math.min(Math.max(n, 4), 12);
 }
 
+function osmElementCoord(el) {
+  const lat = Number(el?.lat ?? el?.center?.lat);
+  const lng = Number(el?.lon ?? el?.center?.lon);
+  if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
+  return { lat, lng };
+}
+
+async function runOverpassQuery(query) {
+  let lastErr = null;
+  for (const base of OVERPASS_ENDPOINTS) {
+    try {
+      const res = await fetch(base, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
+        body: query
+      });
+      if (res.status === 429 || res.status === 504) {
+        lastErr = new Error(`overpass_${res.status}`);
+        await sleep(1200);
+        continue;
+      }
+      if (!res.ok) {
+        lastErr = new Error('overpass_failed');
+        continue;
+      }
+      return await res.json();
+    } catch (e) {
+      lastErr = e;
+    }
+  }
+  throw lastErr || new Error('overpass_failed');
+}
+
 async function fetchPoi(center, radius, type) {
   const filters = type === 'hotel'
     ? [
         'node(around:R,LAT,LNG)[tourism=hotel];',
         'node(around:R,LAT,LNG)[tourism=guest_house];',
-        'node(around:R,LAT,LNG)[tourism=motel];'
+        'node(around:R,LAT,LNG)[tourism=motel];',
+        'node(around:R,LAT,LNG)[tourism=hostel];',
+        'way(around:R,LAT,LNG)[tourism=hotel];',
+        'way(around:R,LAT,LNG)[tourism=guest_house];',
+        'way(around:R,LAT,LNG)[tourism=motel];'
       ]
     : [
         'node(around:R,LAT,LNG)[amenity=restaurant];',
         'node(around:R,LAT,LNG)[amenity=cafe];',
         'node(around:R,LAT,LNG)[amenity=fast_food];'
       ];
-  const query = `[out:json][timeout:25];(${filters.join('')});out body 50;`
+  const query = `[out:json][timeout:28];(${filters.join('')});out center 60;`
     .replaceAll('R', String(radius))
     .replaceAll('LAT', String(center.lat))
     .replaceAll('LNG', String(center.lng));
 
-  const res = await fetch('https://overpass-api.de/api/interpreter', {
-    method: 'POST',
-    headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
-    body: query
-  });
-  if (!res.ok) throw new Error('overpass_failed');
-
-  const data = await res.json();
+  const data = await runOverpassQuery(query);
   const elements = Array.isArray(data?.elements) ? data.elements : [];
   return elements
     .map((el) => {
-      const lat = Number(el?.lat);
-      const lng = Number(el?.lon);
-      if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
+      const coord = osmElementCoord(el);
+      if (!coord) return null;
       const display = poiNameFromOsmTags(el?.tags, lang);
       const name = display || t('route.poiUnnamed', dictI18n);
       return {
-        id: String(el?.id || `${lat}:${lng}`),
+        id: String(el?.id || `${coord.lat}:${coord.lng}`),
         name,
-        lat,
-        lng,
-        dist: distance(center, { lat, lng }),
+        lat: coord.lat,
+        lng: coord.lng,
+        dist: distance(center, coord),
         kind: String(el?.tags?.amenity || el?.tags?.tourism || '')
       };
     })
     .filter(Boolean)
+    .sort((a, b) => a.dist - b.dist)
+    .slice(0, 20);
+}
+
+async function fetchHotelsNearCenters(centers) {
+  const radii = [8000, 18000, 35000, 55000];
+  const byId = new Map();
+  for (const center of centers) {
+    for (const radius of radii) {
+      const batch = await fetchPoi(center, radius, 'hotel');
+      for (const h of batch) {
+        if (!byId.has(h.id)) byId.set(h.id, h);
+      }
+      if (byId.size >= 8) break;
+    }
+    if (byId.size >= 12) break;
+  }
+  return Array.from(byId.values())
     .sort((a, b) => a.dist - b.dist)
     .slice(0, 20);
 }
@@ -1384,10 +1735,14 @@ async function requestApiOrder(nodes) {
 
   const src = start ? 'first' : 'any';
   const dst = useHotelEnd || useAddressEnd ? 'last' : 'any';
-  const url = `${ROUTING_API_BASE}/trip/v1/driving/${points.join(';')}?overview=false&steps=false&roundtrip=false&source=${src}&destination=${dst}`;
-  const res = await fetch(url);
-  if (!res.ok) throw new Error('routing_api_failed');
-  const data = await res.json();
+  const tripQs = `overview=false&steps=false&roundtrip=false&source=${encodeURIComponent(src)}&destination=${encodeURIComponent(dst)}`;
+  const data = await fetchOsrmJsonWithFallback({
+    service: 'trip',
+    profile: 'driving',
+    coordPath: points.join(';'),
+    qs: tripQs
+  });
+  if (!data || !Array.isArray(data?.waypoints)) throw new Error('routing_api_failed');
   const waypoints = Array.isArray(data?.waypoints) ? data.waypoints : [];
   const ordered = waypoints
     .slice()
@@ -1431,6 +1786,7 @@ function bindDnDReorder() {
       if (from < 0 || to < 0) return;
       const [moved] = items.splice(from, 1);
       items.splice(to, 0, moved);
+      reorderDayAssignments(from, to);
       setTripItems(items);
       render();
       renderSummary();
@@ -1442,36 +1798,68 @@ function bindDnDReorder() {
 }
 
 function fixLeafletDefaultIcons() {
+  const base = 'https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/images/';
   delete L.Icon.Default.prototype._getIconUrl;
   L.Icon.Default.mergeOptions({
-    iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
-    iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-    shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png'
+    iconRetinaUrl: `${base}marker-icon-2x.png`,
+    iconUrl: `${base}marker-icon.png`,
+    shadowUrl: `${base}marker-shadow.png`
   });
 }
 
 async function initRouteMap() {
-  if (!routeMapEl || !L || typeof L.map !== 'function') return;
+  if (!routeMapEl) return;
+  if (!L || typeof L.map !== 'function') {
+    const raw = t('route.leafletLoadError', dictI18n);
+    const msg =
+      raw && raw !== 'route.leafletLoadError'
+        ? raw
+        : 'Карта не загрузилась (библиотека карты недоступна). Обновите страницу или проверьте блокировщики и сеть.';
+    routeMapEl.innerHTML = `<div style="padding:14px;color:var(--c-text-muted);font-size:.9rem">${msg}</div>`;
+    return;
+  }
   fixLeafletDefaultIcons();
+  const rcInit = getRouteCoords();
   routeMap = L.map(routeMapEl, {
     zoomControl: true,
     attributionControl: false
-  }).setView([53.9, 27.56], 11);
-  try {
-    const style = await fetchLocalizedLibertyStyle(lang);
-    const canUseMapLibre = window.maplibregl && typeof L.maplibreGL === 'function';
-    if (!canUseMapLibre) throw new Error('maplibre_missing');
-    L.maplibreGL({
-      style,
-      maplibreOptions: { attributionControl: false }
-    }).addTo(routeMap);
-  } catch {
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-      maxZoom: 19,
-      subdomains: 'abcd',
-      attribution: ''
-    }).addTo(routeMap);
+  });
+  if (rcInit.length >= 2) {
+    const b0 = L.latLngBounds(rcInit.map((x) => [x.lat, x.lng]));
+    routeMap.fitBounds(b0.pad(0.14), { maxZoom: 15, animate: false });
+  } else if (rcInit.length === 1) {
+    routeMap.setView([rcInit[0].lat, rcInit[0].lng], 13);
+  } else {
+    routeMap.setView([53.9, 27.56], 11);
   }
+  // Use raster tiles by default for maximum reliability.
+  // Some environments load MapLibre but fail to render WebGL, resulting in a blank map without console errors.
+  const primaryTiles = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+    maxZoom: 19,
+    subdomains: 'abcd',
+    attribution: ''
+  });
+  primaryTiles.addTo(routeMap);
+
+  let currentRaster = primaryTiles;
+  let tileErr = 0;
+  primaryTiles.on('tileerror', () => {
+    tileErr += 1;
+    if (tileErr === 6) {
+      try {
+        currentRaster.remove();
+      } catch {}
+      currentRaster = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        subdomains: 'abc',
+        attribution: ''
+      }).addTo(routeMap);
+    }
+  });
+
+  // Векторный Liberty на странице маршрута отключён: с маркерами/полилинией даёт дёрганье при pan.
+  // Подложка — только растр Carto (+ fallback OSM).
+
   requestAnimationFrame(() => {
     routeMap.invalidateSize(true);
     setTimeout(() => routeMap.invalidateSize(true), 260);
@@ -1479,38 +1867,133 @@ async function initRouteMap() {
   updateMap();
 }
 
+function routeCoordsFingerprint(coords) {
+  return (coords || [])
+    .map((c) => `${Number(c.lat).toFixed(5)},${Number(c.lng).toFixed(5)}`)
+    .join('|');
+}
+
+function polylinesStillOnMap() {
+  return routeMapPolylineLayers.some((layer) => {
+    try {
+      return routeMap?.hasLayer(layer);
+    } catch {
+      return false;
+    }
+  });
+}
+
+/** Прямая «хорда» между точками — не считаем готовым маршрутом по дорогам. */
+function hasValidRoadGeometry() {
+  if (!routeAlternativesCache?.length) return false;
+  const alt = routeAlternativesCache[selectedRouteAlternativeIndex] ?? routeAlternativesCache[0];
+  const n = alt?.latLngs?.length ?? 0;
+  if (n < 4) return false;
+  if (n >= 12) return true;
+  const pathKm = polylinePathKm(alt.latLngs);
+  const chordKm = routeDistance(
+    lastRouteCoordsForMap.map((c) => ({ coord: { lat: c.lat, lng: c.lng } })),
+    null,
+    null
+  );
+  return chordKm > 0 && pathKm / chordKm > 1.06;
+}
+
+function refreshRouteMarkers(routeCoords) {
+  routeMapMarkers.forEach((m) => m.remove());
+  routeMapMarkers = [];
+  (routeCoords || []).forEach((point, idx) => {
+    const marker = L.marker([point.lat, point.lng]).addTo(routeMap);
+    marker.bindTooltip(`${idx + 1}. ${point.label}`);
+    routeMapMarkers.push(marker);
+  });
+}
+
+function addAlternativePolylinesToMap(alternatives) {
+  clearRoutePolylines();
+  (alternatives || []).forEach((alt, idx) => {
+    const poly = L.polyline(alt.latLngs, {
+      color: '#94a3b8',
+      weight: 3,
+      opacity: 0.42,
+      dashArray: '10 14',
+      interactive: true
+    });
+    poly.on('click', () => selectRouteAlternative(idx));
+    poly.addTo(routeMap);
+    routeMapPolylineLayers.push(poly);
+    const hit = L.polyline(alt.latLngs, {
+      color: '#000',
+      weight: 20,
+      opacity: 0.01,
+      interactive: true
+    });
+    hit.on('click', () => selectRouteAlternative(idx));
+    hit.addTo(routeMap);
+    routeMapHitLayers.push(hit);
+  });
+}
+
+/** Переклеить линии из кэша, если Leaflet их сбросил (resize / alt-tab). */
+function repaintRouteFromCache() {
+  if (!routeMap || !routeAlternativesCache?.length || !lastRouteCoordsForMap?.length) return;
+  if (polylinesStillOnMap()) {
+    applyRouteAlternativeStyles();
+    refreshLegMarkersForSelection();
+    return;
+  }
+  addAlternativePolylinesToMap(routeAlternativesCache);
+  applyRouteAlternativeStyles();
+  renderRouteAltPicker();
+  try {
+    const bounds = boundsCoveringAlternatives(routeAlternativesCache, lastRouteCoordsForMap);
+    routeMap.fitBounds(bounds.pad(0.15), { animate: false });
+  } catch {}
+  refreshLegMarkersForSelection();
+}
+
+/** Только layout карты — без OSRM и без сброса линий. */
+function refreshMapLayoutOnly() {
+  if (!routeMap) return;
+  routeMap.invalidateSize(true);
+  try {
+    routeMap.panBy([0, 0], { animate: false });
+  } catch {}
+  const routeCoords = getRouteCoords();
+  const fp = routeCoordsFingerprint(routeCoords);
+  if (fp && fp === lastRouteCoordsFingerprint && hasValidRoadGeometry()) {
+    repaintRouteFromCache();
+    return;
+  }
+  if (routeCoords.length) updateMap({ force: !hasValidRoadGeometry() });
+}
+
+function scheduleMapLayoutRefresh(delayMs = 140) {
+  clearTimeout(mapLayoutRefreshTimer);
+  mapLayoutRefreshTimer = setTimeout(refreshMapLayoutOnly, delayMs);
+}
+
 function ensureRouteMapVisibleFix() {
   if (!routeMapEl) return;
 
-  const poke = () => {
-    if (!routeMap) return;
-    routeMap.invalidateSize(true);
-    // Sometimes tiles don't render on first paint after navigation; force a tiny pan.
-    try { routeMap.panBy([0, 0], { animate: false }); } catch {}
-    updateMap();
-  };
+  window.addEventListener('pageshow', () => scheduleMapLayoutRefresh(80));
 
-  // When tab becomes visible again
   document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'visible') setTimeout(poke, 60);
+    if (document.visibilityState === 'visible') scheduleMapLayoutRefresh(80);
   });
 
-  // After layout changes
-  window.addEventListener('resize', () => setTimeout(poke, 60), { passive: true });
+  window.addEventListener('resize', () => scheduleMapLayoutRefresh(160), { passive: true });
 
-  // When the map enters viewport (common case after opening by deep link)
   if ('IntersectionObserver' in window) {
     const io = new IntersectionObserver((entries) => {
       const entry = entries && entries[0];
       if (!entry?.isIntersecting) return;
-      setTimeout(poke, 60);
-      setTimeout(poke, 260);
+      scheduleMapLayoutRefresh(80);
       io.disconnect();
     }, { threshold: 0.15 });
     io.observe(routeMapEl);
   } else {
-    // Fallback
-    setTimeout(poke, 300);
+    scheduleMapLayoutRefresh(300);
   }
 }
 
@@ -1528,16 +2011,76 @@ function nearlySameLatLngPair(a, b) {
   return Math.abs(a[0] - b[0]) < 1e-5 && Math.abs(a[1] - b[1]) < 1e-5;
 }
 
+function osrmRouteToAlt(route) {
+  if (!route?.geometry?.coordinates?.length) return null;
+  return {
+    latLngs: route.geometry.coordinates.map(([lng, lat]) => [lat, lng]),
+    distanceM: Number(route.distance),
+    durationS: Number(route.duration)
+  };
+}
+
+async function fetchOsrmFullRoute(points, options = {}) {
+  if (points.length < 2) return null;
+  const coordPath = points.map((p) => `${p.lng},${p.lat}`).join(';');
+  const qs = new URLSearchParams({
+    overview: 'full',
+    geometries: 'geojson',
+    continue_straight: options.continueStraight !== false ? 'true' : 'false',
+    alternatives: 'false'
+  });
+  const data = await fetchOsrmJsonWithFallback({
+    service: 'route',
+    profile: options.profile || ROUTE_PROFILE_DRIVING,
+    coordPath,
+    qs: qs.toString()
+  });
+  if (!data || data.code !== 'Ok' || !data.routes?.[0]) return null;
+  const alt = osrmRouteToAlt(data.routes[0]);
+  return alt?.latLngs?.length >= 2 ? alt : null;
+}
+
 async function fetchOsrmLeg(from, to, profile) {
   const coordPath = `${from.lng},${from.lat};${to.lng},${to.lat}`;
-  const url =
-    `${ROUTING_API_BASE}/route/v1/${profile}/${coordPath}` +
-    '?overview=full&geometries=geojson&continue_straight=true';
-  const res = await fetch(url);
-  if (!res.ok) return null;
-  const data = await res.json();
-  if (data.code !== 'Ok' || !data.routes?.[0]?.geometry?.coordinates?.length) return null;
+  const qs = 'overview=full&geometries=geojson&continue_straight=true';
+  const data = await fetchOsrmJsonWithFallback({ service: 'route', profile, coordPath, qs });
+  if (!data || data.code !== 'Ok' || !data.routes?.[0]?.geometry?.coordinates?.length) return null;
   return data.routes[0].geometry.coordinates.map(([lng, lat]) => [lat, lng]);
+}
+
+/** Маршрут по отрезкам A→B (часто отличается от одного OSRM-запроса со всеми via). */
+async function fetchRoadPolylineRoute(points, options = {}) {
+  if (points.length < 2) return null;
+  const continueStraight = options.continueStraight !== false;
+  const merged = [];
+  let distanceM = 0;
+  let durationS = 0;
+  for (let i = 0; i < points.length - 1; i += 1) {
+    const a = points[i];
+    const b = points[i + 1];
+    const coordPath = `${a.lng},${a.lat};${b.lng},${b.lat}`;
+    const qs = `overview=full&geometries=geojson&continue_straight=${continueStraight ? 'true' : 'false'}&alternatives=false`;
+    const data = await fetchOsrmJsonWithFallback({
+      service: 'route',
+      profile: ROUTE_PROFILE_DRIVING,
+      coordPath,
+      qs
+    });
+    const route = data?.routes?.[0];
+    const leg = route ? osrmRouteToAlt(route) : null;
+    if (!leg?.latLngs?.length) return null;
+    distanceM += Number(leg.distanceM) || 0;
+    durationS += Number(leg.durationS) || 0;
+    let coords = leg.latLngs;
+    if (merged.length) {
+      const prev = merged[merged.length - 1];
+      const head = coords[0];
+      if (nearlySameLatLngPair(prev, head)) coords = coords.slice(1);
+    }
+    merged.push(...coords);
+  }
+  if (merged.length < 2) return null;
+  return { latLngs: merged, distanceM, durationS };
 }
 
 /** Запрос по каждому отрезку A→B: один общий запрос с несколькими via часто даёт «развороты под машину»
@@ -1548,10 +2091,9 @@ async function fetchRoadPolyline(points) {
   for (let i = 0; i < points.length - 1; i += 1) {
     const a = points[i];
     const b = points[i + 1];
-    let leg =
-      (await fetchOsrmLeg(a, b, 'foot')) ||
-      (await fetchOsrmLeg(a, b, 'driving'));
-    if (!leg?.length) return null;
+    const legRaw = await fetchOsrmLeg(a, b, ROUTE_PROFILE_DRIVING);
+    if (!legRaw?.length) return null;
+    let leg = legRaw;
     if (merged.length) {
       const prev = merged[merged.length - 1];
       const head = leg[0];
@@ -1573,11 +2115,8 @@ async function fetchOsrmAlternativeRoutes(points, profile, options = {}) {
     continue_straight: continueStraight ? 'true' : 'false',
     alternatives: String(altCount)
   });
-  const url = `${ROUTING_API_BASE}/route/v1/${profile}/${coordPath}?${qs}`;
-  const res = await fetch(url);
-  if (!res.ok) return [];
-  const data = await res.json();
-  if (data.code !== 'Ok' || !Array.isArray(data.routes)) return [];
+  const data = await fetchOsrmJsonWithFallback({ service: 'route', profile, coordPath, qs: qs.toString() });
+  if (!data || data.code !== 'Ok' || !Array.isArray(data.routes)) return [];
   return data.routes
     .filter((r) => r.geometry?.coordinates?.length)
     .map((r) => ({
@@ -1588,7 +2127,194 @@ async function fetchOsrmAlternativeRoutes(points, profile, options = {}) {
     .filter((x) => x.latLngs.length >= 2);
 }
 
+function endpointSupportsProfile(ep, profile) {
+  if (!ep?.base) return false;
+  if (ep.base.includes('routing.openstreetmap.de')) {
+    if (profile === 'foot') return ep.prefix === '/routed-foot';
+    if (profile === 'driving') return ep.prefix === '/routed-car';
+    return false;
+  }
+  return true;
+}
+
+function endpointsForOsrmRequest(service, profile) {
+  if (service === 'trip') {
+    return ROUTING_ENDPOINTS.filter(
+      (ep) => ep.base.includes('routing.openstreetmap.de') && ep.prefix === '/routed-car'
+    );
+  }
+  return ROUTING_ENDPOINTS.filter((ep) => endpointSupportsProfile(ep, profile));
+}
+
+function buildOsrmUrl(ep, service, profile, coordPath, qs) {
+  const base = String(ep.base).replace(/\/+$/, '');
+  const prefix = String(ep.prefix || '').replace(/\/+$/, '');
+  const path = `${prefix}/${service}/v1/${profile}/${coordPath}`.replace(/\/{2,}/g, '/');
+  return `${base}${path}?${qs || ''}`;
+}
+
+let lastOsrmFetchAt = 0;
+/** Пауза между любыми запросами к публичному OSRM (снижает 429). */
+const OSRM_MIN_INTERVAL_MS = 420;
+
+function sleep(ms) {
+  return new Promise((r) => setTimeout(r, ms));
+}
+
+function pruneOsrmCache() {
+  if (OSRM_CACHE.size <= OSRM_CACHE_MAX) return;
+  const drop = OSRM_CACHE.size - OSRM_CACHE_MAX + 8;
+  const it = OSRM_CACHE.keys();
+  for (let i = 0; i < drop; i += 1) {
+    const k = it.next().value;
+    if (k == null) break;
+    OSRM_CACHE.delete(k);
+  }
+}
+
+function readOsrmCache(url) {
+  const row = OSRM_CACHE.get(url);
+  if (!row) return undefined;
+  if (Date.now() - row.t > OSRM_CACHE_TTL_MS) {
+    OSRM_CACHE.delete(url);
+    return undefined;
+  }
+  return row.json;
+}
+
+function writeOsrmCache(url, json) {
+  OSRM_CACHE.set(url, { t: Date.now(), json });
+  pruneOsrmCache();
+}
+
+async function osrmThrottle() {
+  const now = Date.now();
+  const cd = osrmCooldownUntil - now;
+  if (cd > 0) await sleep(Math.min(cd, 45000));
+  const wait = lastOsrmFetchAt + OSRM_MIN_INTERVAL_MS - Date.now();
+  if (wait > 0) await sleep(wait);
+  lastOsrmFetchAt = Date.now();
+}
+
+async function fetchOsrmJsonWithFallback({ service, profile, coordPath, qs }) {
+  const endpoints = endpointsForOsrmRequest(service, profile);
+  for (const ep of endpoints) {
+    const url = buildOsrmUrl(ep, service, profile, coordPath, qs);
+    const cached = readOsrmCache(url);
+    if (cached !== undefined) return cached;
+
+    const inflight = OSRM_INFLIGHT.get(url);
+    if (inflight) {
+      const j = await inflight;
+      if (j) return j;
+      continue;
+    }
+
+    const promise = (async () => {
+      const proxy = buildOsrmWorkerProxyUrl(url);
+      const fetchUrls = [proxy, url].filter((u, i, a) => u && a.indexOf(u) === i);
+      for (const fetchUrl of fetchUrls) {
+        await osrmThrottle();
+        try {
+          const res = await fetch(fetchUrl);
+          if (res.status === 429) {
+            osrmCooldownUntil = Math.max(osrmCooldownUntil, Date.now() + 12000);
+            return null;
+          }
+          if (!res.ok) continue;
+          const json = await res.json();
+          writeOsrmCache(url, json);
+          return json;
+        } catch {
+          continue;
+        }
+      }
+      return null;
+    })();
+
+    OSRM_INFLIGHT.set(url, promise);
+    let out;
+    try {
+      out = await promise;
+    } finally {
+      OSRM_INFLIGHT.delete(url);
+    }
+    if (out) return out;
+  }
+  return null;
+}
+
+function polylinePathKm(latLngs) {
+  if (!latLngs?.length) return 0;
+  let d = 0;
+  for (let i = 1; i < latLngs.length; i += 1) {
+    d += haversineKm(
+      { lat: latLngs[i - 1][0], lng: latLngs[i - 1][1] },
+      { lat: latLngs[i][0], lng: latLngs[i][1] }
+    );
+  }
+  return d;
+}
+
+function samplePolylinePoint(latLngs, t01) {
+  if (!latLngs?.length) return null;
+  if (latLngs.length === 1) {
+    return { lat: latLngs[0][0], lng: latLngs[0][1] };
+  }
+  const t = Math.max(0, Math.min(1, Number(t01) || 0));
+  const idx = t * (latLngs.length - 1);
+  const lo = Math.floor(idx);
+  const hi = Math.min(latLngs.length - 1, lo + 1);
+  const k = idx - lo;
+  const a = latLngs[lo];
+  const b = latLngs[hi];
+  return {
+    lat: a[0] + (b[0] - a[0]) * k,
+    lng: a[1] + (b[1] - a[1]) * k
+  };
+}
+
+function routeDivergenceStatsKm(aLatLngs, bLatLngs) {
+  const samples = 13;
+  let maxKm = 0;
+  let sumKm = 0;
+  let count = 0;
+  for (let i = 0; i < samples; i += 1) {
+    const t = i / (samples - 1);
+    const pa = samplePolylinePoint(aLatLngs, t);
+    const pb = samplePolylinePoint(bLatLngs, t);
+    if (!pa || !pb) continue;
+    const d = haversineKm(pa, pb);
+    if (!Number.isFinite(d)) continue;
+    sumKm += d;
+    count += 1;
+    if (d > maxKm) maxKm = d;
+  }
+  return {
+    maxKm,
+    meanKm: count > 0 ? sumKm / count : 0
+  };
+}
+
+/** Разные геометрии — не склеивать в один вариант. */
+function routesGeometryDistinct(a, b) {
+  if (!a?.latLngs?.length || !b?.latLngs?.length) return true;
+  const la = polylinePathKm(a.latLngs);
+  const lb = polylinePathKm(b.latLngs);
+  if (la > 0.25 && lb > 0.25) {
+    const rl = Math.abs(la - lb) / Math.max(la, lb);
+    if (rl > 0.006) return true;
+  }
+  const dv = routeDivergenceStatsKm(a.latLngs, b.latLngs);
+  if (dv.maxKm > 0.08) return true;
+  if (dv.meanKm > 0.03) return true;
+  const midA = a.latLngs[Math.floor(a.latLngs.length / 2)];
+  const midB = b.latLngs[Math.floor(b.latLngs.length / 2)];
+  return haversineKm({ lat: midA[0], lng: midA[1] }, { lat: midB[0], lng: midB[1] }) > 0.06;
+}
+
 function routesNearlyIdentical(a, b) {
+  if (routesGeometryDistinct(a, b)) return false;
   const da = Number(a.distanceM);
   const db = Number(b.distanceM);
   const ta = Number(a.durationS);
@@ -1597,8 +2323,8 @@ function routesNearlyIdentical(a, b) {
     const rd = Math.abs(da - db) / Math.max(da, db);
     if (Number.isFinite(ta) && Number.isFinite(tb) && ta > 5 && tb > 5) {
       const rt = Math.abs(ta - tb) / Math.max(ta, tb);
-      if (rd < 0.035 && rt < 0.035) return true;
-    } else if (rd < 0.035) return true;
+      if (rd < 0.02 && rt < 0.02) return true;
+    } else if (rd < 0.02) return true;
   }
   return false;
 }
@@ -1611,25 +2337,216 @@ function dedupeAlternativeRoutes(routes) {
   return out;
 }
 
-async function fetchRouteAlternativesForMap(points) {
-  let merged = [];
-  merged.push(...(await fetchOsrmAlternativeRoutes(points, 'foot', { altCount: 3 })));
-  merged.push(...(await fetchOsrmAlternativeRoutes(points, 'driving', { altCount: 3 })));
-  merged = dedupeAlternativeRoutes(merged);
-  merged.sort((a, b) => (Number(a.durationS) || 1e15) - (Number(b.durationS) || 1e15));
+function routeIdentityKey(route) {
+  const latLngs = route?.latLngs || [];
+  if (!latLngs.length) return 'empty';
+  const picks = [0, 0.2, 0.4, 0.6, 0.8, 1];
+  const sig = picks
+    .map((t) => {
+      const p = samplePolylinePoint(latLngs, t);
+      if (!p) return 'x';
+      return `${p.lat.toFixed(4)},${p.lng.toFixed(4)}`;
+    })
+    .join('|');
+  const km = polylinePathKm(latLngs);
+  const dur = Number(route?.durationS);
+  const d = Number(route?.distanceM);
+  const durPart = Number.isFinite(dur) ? dur.toFixed(1) : 'na';
+  const distPart = Number.isFinite(d) ? d.toFixed(1) : km.toFixed(3);
+  return `${sig}|${distPart}|${durPart}`;
+}
 
-  if (merged.length < 2) {
-    merged.push(
-      ...(await fetchOsrmAlternativeRoutes(points, 'driving', {
-        altCount: 3,
+/** Оставляем до max маршрутов: только явные дубликаты убираем. */
+function selectMaxDistinctRoutes(routes, max = 5) {
+  const pool = routes.filter(isPlausibleDrivingRoute);
+  const uniq = [];
+  const seen = new Set();
+  for (const r of pool) {
+    const key = routeIdentityKey(r);
+    if (seen.has(key)) continue;
+    seen.add(key);
+    uniq.push(r);
+  }
+  uniq.sort((a, b) => (Number(a.durationS) || 1e15) - (Number(b.durationS) || 1e15));
+  const out = [];
+  for (const r of uniq) {
+    if (out.length >= max) break;
+    out.push(r);
+  }
+  return out;
+}
+
+function mergeRouteCandidates(list) {
+  return selectMaxDistinctRoutes(list, 5);
+}
+
+function mergeLegRouteAlts(legs) {
+  if (!legs?.length) return null;
+  const merged = [];
+  let distanceM = 0;
+  let durationS = 0;
+  for (const leg of legs) {
+    if (!leg?.latLngs?.length) return null;
+    distanceM += Number(leg.distanceM) || 0;
+    durationS += Number(leg.durationS) || 0;
+    let coords = leg.latLngs;
+    if (merged.length) {
+      const prev = merged[merged.length - 1];
+      const head = coords[0];
+      if (nearlySameLatLngPair(prev, head)) coords = coords.slice(1);
+    }
+    merged.push(...coords);
+  }
+  if (merged.length < 2) return null;
+  return { latLngs: merged, distanceM, durationS };
+}
+
+/** Варианты по каждому отрезку A→B (работает даже при многих via). */
+async function fetchPerLegRouteAlternatives(points) {
+  if (points.length < 2) return [];
+  const segAlts = [];
+  for (let i = 0; i < points.length - 1; i += 1) {
+    const pair = [points[i], points[i + 1]];
+    let alts = await fetchOsrmAlternativeRoutes(pair, ROUTE_PROFILE_DRIVING, {
+      altCount: 5,
+      continueStraight: true
+    });
+    if (alts.length < 2) {
+      alts.push(
+        ...(await fetchOsrmAlternativeRoutes(pair, ROUTE_PROFILE_DRIVING, {
+          altCount: 5,
+          continueStraight: false
+        }))
+      );
+    }
+    if (!alts.length) {
+      const one = await fetchOsrmFullRoute(pair, { continueStraight: true });
+      if (one) alts = [one];
+    }
+    if (!alts.length) {
+      const chord = [
+        [points[i].lat, points[i].lng],
+        [points[i + 1].lat, points[i + 1].lng]
+      ];
+      const km = haversineKm(points[i], points[i + 1]);
+      alts = [{ latLngs: chord, distanceM: km * 1000, durationS: NaN }];
+    }
+    segAlts.push(dedupeAlternativeRoutes(alts.filter(isPlausibleDrivingRoute)));
+  }
+
+  const out = [];
+  const baseLegs = segAlts.map((list) => list[0]);
+  const baseRoute = mergeLegRouteAlts(baseLegs);
+  if (baseRoute) out.push(baseRoute);
+
+  const segRank = [];
+  for (let i = 0; i < points.length - 1; i += 1) {
+    if (segAlts[i].length < 2) continue;
+    segRank.push({
+      seg: i,
+      km: haversineKm(points[i], points[i + 1]),
+      altCount: segAlts[i].length
+    });
+  }
+  segRank.sort((a, b) => b.km - a.km);
+
+  for (const { seg } of segRank) {
+    for (let j = 1; j < segAlts[seg].length; j += 1) {
+      const legs = segAlts.map((list, idx) => (idx === seg ? segAlts[seg][j] : list[0]));
+      const variant = mergeLegRouteAlts(legs);
+      if (variant) out.push(variant);
+      if (out.length >= 8) return out;
+    }
+  }
+  const topSegs = segRank.slice(0, 3).map((x) => x.seg);
+  for (let i = 0; i < topSegs.length; i += 1) {
+    for (let j = i + 1; j < topSegs.length; j += 1) {
+      const a = topSegs[i];
+      const b = topSegs[j];
+      const altA = segAlts[a]?.[1];
+      const altB = segAlts[b]?.[1];
+      if (!altA || !altB) continue;
+      const legs = segAlts.map((list, idx) => {
+        if (idx === a) return altA;
+        if (idx === b) return altB;
+        return list[0];
+      });
+      const variant = mergeLegRouteAlts(legs);
+      if (variant) out.push(variant);
+      if (out.length >= 10) return out;
+    }
+  }
+  for (let i = 0; i < topSegs.length; i += 1) {
+    const a = topSegs[i];
+    const altsA = segAlts[a] || [];
+    for (let j = 1; j < altsA.length; j += 1) {
+      const altA = altsA[j];
+      if (!altA) continue;
+      const legs = segAlts.map((list, idx) => (idx === a ? altA : list[0]));
+      const variant = mergeLegRouteAlts(legs);
+      if (variant) out.push(variant);
+      if (out.length >= 12) return out;
+    }
+  }
+  return out;
+}
+
+async function fetchRouteAlternativesForMap(points) {
+  const candidates = [];
+  candidates.push(
+    ...(await fetchOsrmAlternativeRoutes(points, ROUTE_PROFILE_DRIVING, {
+      altCount: 5,
+      continueStraight: true
+    }))
+  );
+  if (!candidates.length) {
+    const fullStrict = await fetchOsrmFullRoute(points, { continueStraight: true });
+    if (fullStrict) candidates.push(fullStrict);
+  }
+  if (candidates.length < 2) {
+    candidates.push(
+      ...(await fetchOsrmAlternativeRoutes(points, ROUTE_PROFILE_DRIVING, {
+        altCount: 5,
         continueStraight: false
       }))
     );
-    merged = dedupeAlternativeRoutes(merged);
-    merged.sort((a, b) => (Number(a.durationS) || 1e15) - (Number(b.durationS) || 1e15));
   }
+  const merged = mergeRouteCandidates(candidates);
+  if (merged.length > 0) return merged;
+  const fallbackMerged = await fetchRoadPolylineRoute(points, { continueStraight: true });
+  if (fallbackMerged) return [fallbackMerged];
+  return [];
+}
 
-  if (merged.length > 5) merged = merged.slice(0, 5);
+async function fetchRouteAlternativesDeep(points, seed = []) {
+  const candidates = [];
+  candidates.push(...(seed || []));
+
+  const byLegsStrict = await fetchRoadPolylineRoute(points, { continueStraight: true });
+  const byLegsFlexible = await fetchRoadPolylineRoute(points, { continueStraight: false });
+  const fullStrict = await fetchOsrmFullRoute(points, { continueStraight: true });
+  const fullFlexible = await fetchOsrmFullRoute(points, { continueStraight: false });
+  if (byLegsStrict) candidates.push(byLegsStrict);
+  if (byLegsFlexible) candidates.push(byLegsFlexible);
+  if (fullStrict) candidates.push(fullStrict);
+  if (fullFlexible) candidates.push(fullFlexible);
+
+  candidates.push(
+    ...(await fetchOsrmAlternativeRoutes(points, ROUTE_PROFILE_DRIVING, {
+      altCount: 5,
+      continueStraight: true
+    }))
+  );
+  candidates.push(
+    ...(await fetchOsrmAlternativeRoutes(points, ROUTE_PROFILE_DRIVING, {
+      altCount: 5,
+      continueStraight: false
+    }))
+  );
+
+  candidates.push(...(await fetchPerLegRouteAlternatives(points)));
+
+  const merged = mergeRouteCandidates(candidates);
   if (merged.length > 0) return merged;
 
   const fallbackMerged = await fetchRoadPolyline(points);
@@ -1642,6 +2559,8 @@ async function fetchRouteAlternativesForMap(points) {
 function clearRoutePolylines() {
   routeMapPolylineLayers.forEach((layer) => layer.remove());
   routeMapPolylineLayers = [];
+  routeMapHitLayers.forEach((layer) => layer.remove());
+  routeMapHitLayers = [];
 }
 
 function clearLegMarkers() {
@@ -1746,7 +2665,8 @@ function formatAltChipLabel(alt, idx) {
     parts.push(`${(alt.distanceM / 1000).toFixed(1)} ${t('route.altKmSuffix', dictI18n)}`);
   }
   if (Number.isFinite(alt.durationS)) {
-    parts.push(`${Math.round(alt.durationS / 60)} ${t('route.altMinSuffix', dictI18n)}`);
+    const dur = formatRouteDuration(alt.durationS);
+    if (dur) parts.push(dur);
   }
   return parts.join(' · ');
 }
@@ -1770,6 +2690,13 @@ function applyRouteAlternativeStyles() {
     });
     if (isSel && routeMap) layer.bringToFront();
   });
+  routeMapHitLayers.forEach((layer, idx) => {
+    const isSel = idx === selectedRouteAlternativeIndex;
+    layer.setStyle({ weight: isSel ? 28 : 22, opacity: 0.01 });
+    if (isSel && routeMap) layer.bringToFront();
+  });
+  const selectedVisible = routeMapPolylineLayers[selectedRouteAlternativeIndex];
+  if (selectedVisible && routeMap) selectedVisible.bringToFront();
 }
 
 function renderRouteAltPicker() {
@@ -1803,8 +2730,24 @@ function selectRouteAlternative(idx) {
   refreshLegMarkersForSelection();
 }
 
-function paintStraightFallback(latLngs, gen, waypointBounds) {
+async function paintStraightFallback(latLngs, gen, waypointBounds, pts) {
   if (gen !== routeMapGeometryGen) return;
+
+  if (pts?.length >= 2) {
+    const road = await fetchRoadPolylineRoute(pts);
+    if (road && gen === routeMapGeometryGen) {
+      routeAlternativesCache = [road];
+      addAlternativePolylinesToMap([road]);
+      routeAltSectionEl?.classList.add('hidden');
+      if (routeAltPickerEl) routeAltPickerEl.innerHTML = '';
+      try {
+        routeMap.fitBounds(waypointBounds.pad(0.15), { animate: false });
+      } catch {}
+      refreshLegMarkersForSelection();
+      return;
+    }
+  }
+
   clearRoutePolylines();
   routeAlternativesCache = [];
   routeAltSectionEl?.classList.add('hidden');
@@ -1813,7 +2756,8 @@ function paintStraightFallback(latLngs, gen, waypointBounds) {
     const poly = L.polyline(latLngs, {
       color: '#1f5ec2',
       weight: 4,
-      opacity: 0.9
+      opacity: 0.9,
+      dashArray: '8 10'
     }).addTo(routeMap);
     routeMapPolylineLayers.push(poly);
   }
@@ -1821,33 +2765,48 @@ function paintStraightFallback(latLngs, gen, waypointBounds) {
   renderLegMarkersStraightChord(lastRouteCoordsForMap);
 }
 
-function updateMap() {
-  if (!routeMap) return;
+function updateMap(options = {}) {
+  if (!routeMap || !L) return;
+  const force = options.force === true;
+
+  const routeCoords = getRouteCoords();
+  const fp = routeCoordsFingerprint(routeCoords);
+  if (!routeCoords.length) {
+    lastRouteCoordsFingerprint = '';
+    routeMapMarkers.forEach((m) => m.remove());
+    routeMapMarkers = [];
+    clearRoutePolylines();
+    clearLegMarkers();
+    routeAlternativesCache = [];
+    routeAltSectionEl?.classList.add('hidden');
+    if (routeAltPickerEl) routeAltPickerEl.innerHTML = '';
+    lastRouteCoordsForMap = [];
+    return;
+  }
+
+  if (!force && fp === lastRouteCoordsFingerprint && hasValidRoadGeometry()) {
+    lastRouteCoordsForMap = routeCoords;
+    refreshRouteMarkers(routeCoords);
+    repaintRouteFromCache();
+    return;
+  }
+
+  lastRouteCoordsFingerprint = fp;
   routeMapGeometryGen += 1;
   const gen = routeMapGeometryGen;
 
-  routeMapMarkers.forEach((m) => m.remove());
-  routeMapMarkers = [];
-  clearRoutePolylines();
+  lastRouteCoordsForMap = routeCoords;
+  refreshRouteMarkers(routeCoords);
   clearLegMarkers();
-  routeAlternativesCache = [];
   routeAltSectionEl?.classList.add('hidden');
   if (routeAltPickerEl) routeAltPickerEl.innerHTML = '';
-
-  const routeCoords = getRouteCoords();
-  lastRouteCoordsForMap = routeCoords;
-  if (!routeCoords.length) return;
-
-  routeCoords.forEach((point, idx) => {
-    const marker = L.marker([point.lat, point.lng]).addTo(routeMap);
-    marker.bindTooltip(`${idx + 1}. ${point.label}`);
-    routeMapMarkers.push(marker);
-  });
 
   const waypointBounds = L.latLngBounds(routeCoords.map((x) => [x.lat, x.lng]));
   const straightLatLngs = routeCoords.map((x) => [x.lat, x.lng]);
 
   if (routeCoords.length < 2) {
+    clearRoutePolylines();
+    routeAlternativesCache = [];
     routeMap.fitBounds(waypointBounds.pad(0.15), { animate: false });
     clearLegMarkers();
     return;
@@ -1855,42 +2814,53 @@ function updateMap() {
 
   const pts = dedupeAdjacentWaypoints(routeCoords.map((x) => ({ lat: x.lat, lng: x.lng })));
   if (pts.length < 2) {
-    paintStraightFallback(straightLatLngs, gen, waypointBounds);
+    paintStraightFallback(straightLatLngs, gen, waypointBounds, pts);
     return;
   }
 
-  fetchRouteAlternativesForMap(pts)
-    .then((alternatives) => {
-      if (gen !== routeMapGeometryGen) return;
-      selectedRouteAlternativeIndex = 0;
-      if (!alternatives?.length) {
-        paintStraightFallback(straightLatLngs, gen, waypointBounds);
-        return;
-      }
-      routeAlternativesCache = alternatives;
-      clearRoutePolylines();
-      alternatives.forEach((alt, idx) => {
-        const poly = L.polyline(alt.latLngs, {
-          color: '#94a3b8',
-          weight: 3,
-          opacity: 0.42,
-          dashArray: '10 14',
-          interactive: true
-        });
-        poly.on('click', () => selectRouteAlternative(idx));
-        poly.addTo(routeMap);
-        routeMapPolylineLayers.push(poly);
+  try {
+    routeMap.fitBounds(waypointBounds.pad(0.12), { maxZoom: 16, animate: false });
+  } catch {}
+
+  clearTimeout(routeGeometryDebounceTimer);
+  const runGen = gen;
+  routeGeometryDebounceTimer = setTimeout(() => {
+    routeGeometryDebounceTimer = null;
+    if (runGen !== routeMapGeometryGen) return;
+    fetchRouteAlternativesForMap(pts)
+      .then(async (alternatives) => {
+        if (runGen !== routeMapGeometryGen) return;
+        selectedRouteAlternativeIndex = 0;
+        if (!alternatives?.length) {
+          await paintStraightFallback(straightLatLngs, runGen, waypointBounds, pts);
+          return;
+        }
+        routeAlternativesCache = alternatives;
+        addAlternativePolylinesToMap(alternatives);
+        applyRouteAlternativeStyles();
+        renderRouteAltPicker();
+        const bounds = boundsCoveringAlternatives(alternatives, routeCoords);
+        routeMap.fitBounds(bounds.pad(0.15), { animate: false });
+        refreshLegMarkersForSelection();
+        fetchRouteAlternativesDeep(pts, alternatives)
+          .then((enriched) => {
+            if (runGen !== routeMapGeometryGen) return;
+            if (!enriched?.length) return;
+            if (enriched.length <= routeAlternativesCache.length) return;
+            routeAlternativesCache = enriched;
+            selectedRouteAlternativeIndex = Math.min(selectedRouteAlternativeIndex, enriched.length - 1);
+            addAlternativePolylinesToMap(enriched);
+            applyRouteAlternativeStyles();
+            renderRouteAltPicker();
+            refreshLegMarkersForSelection();
+          })
+          .catch(() => {});
+      })
+      .catch(async () => {
+        if (runGen !== routeMapGeometryGen) return;
+        await paintStraightFallback(straightLatLngs, runGen, waypointBounds, pts);
       });
-      applyRouteAlternativeStyles();
-      renderRouteAltPicker();
-      const bounds = boundsCoveringAlternatives(alternatives, routeCoords);
-      routeMap.fitBounds(bounds.pad(0.15), { animate: false });
-      refreshLegMarkersForSelection();
-    })
-    .catch(() => {
-      if (gen !== routeMapGeometryGen) return;
-      paintStraightFallback(straightLatLngs, gen, waypointBounds);
-    });
+  }, 140);
 }
 
 function getRouteCoords() {
@@ -1905,7 +2875,7 @@ function getRouteCoords() {
   }
 
   const items = trip.items || [];
-  const dayCount = Math.max(1, Math.min(4, Number(dayCountEl?.value || 1)));
+  const dayCount = getRouteDayCount();
 
   if (dayCount <= 1 || !items.length) {
     items.forEach((item, i) => {
@@ -1919,7 +2889,8 @@ function getRouteCoords() {
     });
   } else {
     syncOvernightSlots();
-    const chunks = splitIntoDays(items, dayCount);
+    ensureDayAssignments();
+    const chunks = buildDayChunks(items, dayCount, dayAssignments);
     let pi = 0;
     chunks.forEach((chunk, chunkIdx) => {
       chunk.forEach((item) => {
@@ -1932,7 +2903,7 @@ function getRouteCoords() {
           label: `${t('route.point', dictI18n)} ${pi}: ${item.name || item.id}`
         });
       });
-      if (chunkIdx < chunks.length - 1) {
+      if (chunkIdx < dayCount - 1) {
         const night = overnightStops[chunkIdx];
         if (night && Number.isFinite(night.lat) && Number.isFinite(night.lng)) {
           out.push({
@@ -1960,23 +2931,18 @@ function getRouteCoords() {
   return out;
 }
 
-function splitIntoDays(items, dayCount) {
-  const chunks = [];
-  const perDay = Math.ceil(items.length / dayCount);
-  for (let i = 0; i < dayCount; i += 1) {
-    const from = i * perDay;
-    const to = from + perDay;
-    const part = items.slice(from, to);
-    if (part.length) chunks.push(part);
-  }
-  return chunks;
-}
 
 function estimateChunkDistance(chunk, start, end) {
   const nodes = chunk
     .map((x) => ({ coord: getPlaceCoord(x.id) }))
     .filter((x) => x.coord);
   return routeDistance(nodes, start || null, end || null);
+}
+
+function estimateChunkDurationSec(chunk, start, end) {
+  const km = estimateChunkDistance(chunk, start, end);
+  if (!Number.isFinite(km) || km <= 0) return NaN;
+  return (km / AVG_DRIVE_KMH) * 3600;
 }
 
 function getLastCoord(chunk) {

@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dashboard — Админ</title>
   <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://traces-media-upload.lipouski-daniil.workers.dev" />
+  <link rel="preconnect" href="https://www.gstatic.com" />
+  <link rel="preconnect" href="https://firestore.googleapis.com" />
   <link rel="stylesheet" href="../../css/style.css" />
   <link rel="stylesheet" href="../css/layout-v2.css" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
@@ -83,8 +86,47 @@
       color: var(--c-text-muted);
       margin-top: 4px;
     }
+    .dash-top-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 16px;
+      align-items: stretch;
+      margin-bottom: 8px;
+    }
+    .dash-top-layout__kpis {
+      min-width: 0;
+    }
+    .dash-top-layout__integrations.dash-card {
+      min-width: 0;
+      height: 100%;
+      box-sizing: border-box;
+    }
+    .dash-top-layout__kpis .admin-kpi-grid {
+      margin: 0;
+      grid-template-columns: 1fr 1fr;
+      grid-auto-rows: auto;
+    }
+    @media (max-width: 480px) {
+      .dash-top-layout__kpis .admin-kpi-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .dash-integrations__title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--c-text-muted);
+      margin: 0 0 14px;
+    }
+    .dash-integrations__divider {
+      border: none;
+      border-top: 1px solid var(--c-border-light);
+      margin: 18px 0;
+    }
     @media (max-width: 900px) {
       .dash-grid { grid-template-columns: 1fr; }
+      .dash-top-layout { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -118,10 +160,6 @@
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
           Страницы
         </a>
-        <a href="media.html">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
-          Медиа
-        </a>
         <a href="feedback.html">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
           Обратная связь
@@ -147,35 +185,69 @@
         <h1 class="admin-main__title">Dashboard</h1>
       </div>
 
-      <!-- KPI -->
-      <div class="admin-kpi-grid">
-        <article class="admin-kpi-card">
-          <h3 class="admin-kpi-card__label">Места</h3>
-          <div class="admin-kpi-card__value" id="kpi-places">—</div>
-          <div class="admin-kpi-card__delta" id="kpi-places-sub"></div>
-        </article>
-        <article class="admin-kpi-card">
-          <h3 class="admin-kpi-card__label">Отзывы о местах</h3>
-          <div class="admin-kpi-card__value" id="kpi-reviews">—</div>
-          <div class="admin-kpi-card__delta" id="kpi-reviews-sub"></div>
-        </article>
-        <article class="admin-kpi-card">
-          <h3 class="admin-kpi-card__label">На модерации</h3>
-          <div class="admin-kpi-card__value" id="kpi-pending">—</div>
-          <div class="admin-kpi-card__delta" id="kpi-pending-sub"></div>
-        </article>
-        <article class="admin-kpi-card">
-          <h3 class="admin-kpi-card__label">Обратная связь</h3>
-          <div class="admin-kpi-card__value" id="kpi-feedback">—</div>
-          <div class="admin-kpi-card__delta" id="kpi-feedback-sub"></div>
-        </article>
+      <div class="dash-top-layout">
+        <div class="dash-top-layout__kpis">
+          <div class="admin-kpi-grid">
+            <article class="admin-kpi-card">
+              <h3 class="admin-kpi-card__label">Места</h3>
+              <div class="admin-kpi-card__value" id="kpi-places">—</div>
+              <div class="admin-kpi-card__delta" id="kpi-places-sub"></div>
+            </article>
+            <article class="admin-kpi-card">
+              <h3 class="admin-kpi-card__label">Отзывы о местах</h3>
+              <div class="admin-kpi-card__value" id="kpi-reviews">—</div>
+              <div class="admin-kpi-card__delta" id="kpi-reviews-sub"></div>
+            </article>
+            <article class="admin-kpi-card">
+              <h3 class="admin-kpi-card__label">На модерации</h3>
+              <div class="admin-kpi-card__value" id="kpi-pending">—</div>
+              <div class="admin-kpi-card__delta" id="kpi-pending-sub"></div>
+            </article>
+            <article class="admin-kpi-card">
+              <h3 class="admin-kpi-card__label">Обратная связь</h3>
+              <div class="admin-kpi-card__value" id="kpi-feedback">—</div>
+              <div class="admin-kpi-card__delta" id="kpi-feedback-sub"></div>
+            </article>
+          </div>
+        </div>
+
+        <aside class="dash-top-layout__integrations dash-card">
+          <p class="dash-integrations__title" data-i18n="admin.dashboard.integrationsTitle">Интеграции</p>
+          <p style="margin:0 0 12px;font-size:.8125rem;line-height:1.55;color:var(--c-text-muted)">
+            <span data-i18n="admin.dashboard.integrationsHint">
+              Worker: подпись загрузок фото и 3D в R2 (<code>/api/media/sign</code>), синхронизация админов в KV. URL хранится в
+              <code>config/site.mediaWorkerUrl</code>; пустое поле — значение по умолчанию в коде.
+            </span>
+          </p>
+          <label class="form-label" for="site-media-worker-url" data-i18n="admin.dashboard.workerUrlLabel">Базовый URL Cloudflare Worker</label>
+          <input type="url" id="site-media-worker-url" class="form-control" placeholder="https://….workers.dev" autocomplete="off" />
+          <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+            <button type="button" class="btn btn--primary btn--sm" id="site-media-worker-save" data-i18n="admin.dashboard.workerUrlSave">Сохранить URL</button>
+            <span id="site-media-worker-status" style="font-size:.8125rem;color:var(--c-text-muted)"></span>
+          </div>
+
+          <hr class="dash-integrations__divider" />
+
+          <p class="form-label" style="margin-bottom:6px" data-i18n="admin.dashboard.apkTitle">Android-приложение (APK для футера / QR)</p>
+          <p style="margin:0 0 10px;font-size:.8125rem;line-height:1.5;color:var(--c-text-muted)">
+            <span data-i18n="admin.dashboard.apkHint">
+              Загрузка в R2 как <code>app/traces.apk</code>; ссылка на сайте:
+              <code>/app/traces.apk</code> на домене воркера.
+            </span>
+          </p>
+          <input type="file" id="site-app-apk" accept=".apk,application/vnd.android.package-archive" style="display:none" />
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+            <button type="button" class="btn btn--outline btn--sm" id="site-app-apk-btn" data-i18n="admin.dashboard.apkPick">Выбрать APK…</button>
+            <span id="site-app-apk-status" style="font-size:.8125rem;color:var(--c-text-muted)"></span>
+          </div>
+        </aside>
       </div>
 
       <!-- Charts -->
       <p class="dash-section-title">Аналитика</p>
       <div class="dash-grid">
         <div class="dash-card">
-          <p class="dash-card__title">Отзывы по статусу</p>
+          <p class="dash-card__title">Отзывы о местах: статусы модерации</p>
           <div class="dash-chart-wrap">
             <canvas id="chart-review-status"></canvas>
           </div>

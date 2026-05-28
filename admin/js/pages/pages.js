@@ -17,6 +17,9 @@ const contentEl = document.getElementById('page-content');
 const titleEnEl = document.getElementById('page-title-en');
 const subtitleEnEl = document.getElementById('page-subtitle-en');
 const contentEnEl = document.getElementById('page-content-en');
+const titleBeEl = document.getElementById('page-title-be');
+const subtitleBeEl = document.getElementById('page-subtitle-be');
+const contentBeEl = document.getElementById('page-content-be');
 const addBtn = document.getElementById('add-page-btn');
 const saveBtn = document.getElementById('save-page-btn');
 const deleteBtn = document.getElementById('delete-page-btn');
@@ -40,6 +43,9 @@ addBtn.addEventListener('click', () => {
   if (titleEnEl) titleEnEl.value = '';
   if (subtitleEnEl) subtitleEnEl.value = '';
   if (contentEnEl) contentEnEl.value = '';
+  if (titleBeEl) titleBeEl.value = '';
+  if (subtitleBeEl) subtitleBeEl.value = '';
+  if (contentBeEl) contentBeEl.value = '';
   renderList();
   updatePublicSlugHint();
   slugEl.focus();
@@ -83,6 +89,7 @@ function renderList() {
 function openPage(slug) {
   const page = pages.find(p => p.slug === slug);
   const en = page?.i18n?.en || {};
+  const be = page?.i18n?.be || {};
   activeSlug = slug;
   slugEl.value = page?.slug || slug;
   titleEl.value = page?.title || '';
@@ -91,6 +98,9 @@ function openPage(slug) {
   if (titleEnEl) titleEnEl.value = en.title ?? '';
   if (subtitleEnEl) subtitleEnEl.value = en.subtitle ?? '';
   if (contentEnEl) contentEnEl.value = en.content ?? '';
+  if (titleBeEl) titleBeEl.value = be.title ?? '';
+  if (subtitleBeEl) subtitleBeEl.value = be.subtitle ?? '';
+  if (contentBeEl) contentBeEl.value = be.content ?? '';
   renderList();
   updatePublicSlugHint();
 }
@@ -103,6 +113,9 @@ async function savePage() {
   const titleEn = (titleEnEl?.value ?? '').trim();
   const subtitleEn = (subtitleEnEl?.value ?? '').trim();
   const contentEn = (contentEnEl?.value ?? '').trim();
+  const titleBe = (titleBeEl?.value ?? '').trim();
+  const subtitleBe = (subtitleBeEl?.value ?? '').trim();
+  const contentBe = (contentBeEl?.value ?? '').trim();
   if (!slug) {
     showToast('Укажите slug', 'error');
     return;
@@ -118,6 +131,11 @@ async function savePage() {
           title: titleEn,
           subtitle: subtitleEn,
           content: contentEn
+        },
+        be: {
+          title: titleBe,
+          subtitle: subtitleBe,
+          content: contentBe
         }
       },
       updatedAt: serverTimestamp()
@@ -148,6 +166,9 @@ async function deletePageCurrent() {
       if (titleEnEl) titleEnEl.value = '';
       if (subtitleEnEl) subtitleEnEl.value = '';
       if (contentEnEl) contentEnEl.value = '';
+      if (titleBeEl) titleBeEl.value = '';
+      if (subtitleBeEl) subtitleBeEl.value = '';
+      if (contentBeEl) contentBeEl.value = '';
       updatePublicSlugHint();
     }
   } catch (err) {

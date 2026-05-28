@@ -12,6 +12,7 @@ import { getLang, loadDict, t } from '../../../js/shared/i18n.js';
 import { bindAdminLogout, gateAdmin } from '../shared/admin-guard.js';
 import { normalizeUserProfile, ROLE_ADMIN, ROLE_USER } from '../../../js/shared/user-profile.js';
 import { sendUserNotification, NTYPE } from '../shared/send-user-notification.js';
+import { resolveMediaWorkerUrl } from '../../../js/shared/media-worker-url.js';
 
 initNav('../../');
 bindAdminLogout();
@@ -27,11 +28,6 @@ const td = (key, fallback) => (dict ? t(key, dict) : null) || fallback;
 const tbodyEl = document.getElementById('users-tbody');
 const searchEl = document.getElementById('users-search');
 const countMetaEl = document.getElementById('users-count');
-const MEDIA_WORKER_URL =
-  (typeof window !== 'undefined' && window.__TRACES_MEDIA_WORKER_URL__)
-    ? String(window.__TRACES_MEDIA_WORKER_URL__).trim().replace(/\/+$/, '')
-    : '';
-
 /** @type {Array<{ id: string, email: string, displayName: string, role: string, commentsBanned: boolean }>} */
 let allRows = [];
 
@@ -172,15 +168,18 @@ async function saveRow(uid) {
         await syncAdminKv(uid, true);
         await notifyQuiet({
           type: NTYPE.ROLE_ADMIN_GRANTED,
-          title: 'Вам выдан доступ к админ-панели',
-          body: 'Вы можете управлять контентом и модерацией на сайте в разделе «Админ».'
+          title: td('admin.users.notifyAdminGrantedTitle', 'Вам выдан доступ к админ-панели'),
+          body: td(
+            'admin.users.notifyAdminGrantedBody',
+            'Вы можете управлять контентом и модерацией на сайте в разделе «Админ».'
+          )
         });
       } else if (prevRole === ROLE_ADMIN) {
         await syncAdminKv(uid, false);
         await notifyQuiet({
           type: NTYPE.ROLE_ADMIN_REVOKED,
-          title: 'Права администратора сняты',
-          body: 'Доступ к веб-админке для этого аккаунта отключён.'
+          title: td('admin.users.notifyAdminRevokedTitle', 'Права администратора сняты'),
+          body: td('admin.users.notifyAdminRevokedBody', 'Доступ к веб-админке для этого аккаунта отключён.')
         });
       }
     }
@@ -188,14 +187,14 @@ async function saveRow(uid) {
       if (commentsBanned) {
         await notifyQuiet({
           type: NTYPE.COMMENTS_BANNED,
-          title: 'Ограничение отзывов',
-          body: 'Вам временно запрещено оставлять отзывы о местах.'
+          title: td('admin.users.notifyCommentsBannedTitle', 'Ограничение отзывов'),
+          body: td('admin.users.notifyCommentsBannedBody', 'Вам временно запрещено оставлять отзывы о местах.')
         });
       } else {
         await notifyQuiet({
           type: NTYPE.COMMENTS_UNBANNED,
-          title: 'Отзывы снова доступны',
-          body: 'Ограничение на публикацию отзывов снято.'
+          title: td('admin.users.notifyCommentsUnbannedTitle', 'Отзывы снова доступны'),
+          body: td('admin.users.notifyCommentsUnbannedBody', 'Ограничение на публикацию отзывов снято.')
         });
       }
     }
@@ -207,12 +206,13 @@ async function saveRow(uid) {
 }
 
 async function syncAdminKv(uid, makeAdmin) {
-  if (!MEDIA_WORKER_URL) return;
+  const base = resolveMediaWorkerUrl();
+  if (!base) return;
   try {
     const token = await auth.currentUser?.getIdToken?.();
     if (!token) throw new Error('no_token');
     const endpoint = makeAdmin ? '/api/admins/add' : '/api/admins/remove';
-    const res = await fetch(`${MEDIA_WORKER_URL}${endpoint}`, {
+    const res = await fetch(`${base}${endpoint}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

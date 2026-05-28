@@ -4,6 +4,9 @@ import { doc, setDoc, serverTimestamp, collection, getDocs, query, where } from 
 import { getPlaces } from '../shared/places.js';
 import { syncGuestDataWithAccount } from '../features/account-sync.js';
 import { notifyProfileSecurityChanges } from '../features/profile-notifications.js';
+import { listUserRoutes } from '../features/user-saved-routes.js';
+import { buildRoutePageFullUrl } from '../shared/route-url.js';
+import { buildRoutePageUrlWithSnapshot } from '../shared/route-snapshot.js';
 import {
   onAuthStateChanged,
   updateProfile,
@@ -45,8 +48,14 @@ const currentPasswordEl = document.getElementById('current-password');
 const newPasswordEl = document.getElementById('new-password');
 const passwordSaveBtn = document.getElementById('password-save');
 const myReviewsListEl = document.getElementById('my-reviews-list');
+const routesPreviewEl = document.getElementById('saved-routes-preview');
 const favoritesListEl = document.getElementById('favorites-list');
 const historyListEl = document.getElementById('history-list');
+
+const PREVIEW_REVIEWS_LIMIT = 3;
+const PREVIEW_ROUTES_LIMIT = 3;
+const PREVIEW_FAVORITES_LIMIT = 3;
+const PREVIEW_HISTORY_LIMIT = 5;
 
 let currentUser = null;
 
@@ -68,6 +77,7 @@ async function initProfile(user) {
     console.warn('syncGuestDataWithAccount failed', err);
   }
   loadMyReviews(user.uid);
+  renderRoutesPreview(user.uid);
   renderFavorites();
   renderHistory();
 }
@@ -204,7 +214,7 @@ async function loadMyReviews(uid) {
       return;
     }
 
-    myReviewsListEl.innerHTML = reviews.slice(0, 20).map(r => {
+    myReviewsListEl.innerHTML = reviews.slice(0, PREVIEW_REVIEWS_LIMIT).map(r => {
       const stars = '★'.repeat(Number(r.rating || 0)) + '☆'.repeat(Math.max(0, 5 - Number(r.rating || 0)));
       const date = r?.createdAt?.toDate
         ? r.createdAt.toDate().toLocaleDateString(dateLoc, { day: 'numeric', month: 'short', year: 'numeric' })
@@ -240,6 +250,55 @@ async function loadMyReviews(uid) {
   }
 }
 
+function formatRouteSavedAt(ts) {
+  if (!ts || typeof ts.toDate !== 'function') return '';
+  const d = ts.toDate();
+  const loc = lang === 'en' ? 'en-GB' : 'ru-RU';
+  try {
+    return new Intl.DateTimeFormat(loc, {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric'
+    }).format(d);
+  } catch {
+    return d.toLocaleDateString();
+  }
+}
+
+async function renderRoutesPreview(uid) {
+  if (!routesPreviewEl) return;
+  routesPreviewEl.innerHTML = `<p class="user-empty">${esc(t('profileDashboard.loading', dictI18n))}</p>`;
+  try {
+    const routes = await listUserRoutes(uid);
+    if (!routes.length) {
+      routesPreviewEl.innerHTML = `<p class="user-empty">${esc(t('profileRoutes.empty', dictI18n))}</p>`;
+      return;
+    }
+    routesPreviewEl.innerHTML = routes.slice(0, PREVIEW_ROUTES_LIMIT).map((route) => {
+      const title = String(route.title || '').trim() || t('profileRoutes.unnamed', dictI18n);
+      const items = Array.isArray(route.items) ? route.items : [];
+      const n = items.length;
+      const snap = route.snapshot && route.snapshot.v === 1 ? route.snapshot : null;
+      const openHref = snap
+        ? buildRoutePageUrlWithSnapshot(snap, lang)
+        : buildRoutePageFullUrl(items, lang);
+      const when = formatRouteSavedAt(route.createdAt);
+      const pointsLabel = t('profileRoutes.pointCount', dictI18n).replace('{n}', String(n));
+      return `
+        <article class="user-list-item">
+          <div class="user-list-item__row">
+            <a class="user-list-item__title" href="${esc(openHref)}">${esc(title)}</a>
+          </div>
+          <div class="user-list-item__foot">${esc(pointsLabel)}${when ? ` · ${esc(when)}` : ''}</div>
+        </article>
+      `;
+    }).join('');
+  } catch (err) {
+    console.error(err);
+    routesPreviewEl.innerHTML = `<p class="user-empty">${esc(t('profileRoutes.loadError', dictI18n))}</p>`;
+  }
+}
+
 function renderFavorites() {
   if (!favoritesListEl) return;
   const list = readLs('profile_favorites');
@@ -247,7 +306,7 @@ function renderFavorites() {
     favoritesListEl.innerHTML = `<p class="user-empty">${esc(t('profileDashboard.favoritesEmptyPreview', dictI18n))}</p>`;
     return;
   }
-  favoritesListEl.innerHTML = list.slice(0, 30).map(item => `
+  favoritesListEl.innerHTML = list.slice(0, PREVIEW_FAVORITES_LIMIT).map(item => `
     <article class="user-list-item">
       <div class="user-list-item__row">
         <a class="user-list-item__title" href="${esc(withLang(`../../pages/place.html?id=${encodeURIComponent(item.id)}`, lang))}">${esc(item.name || item.id)}</a>
@@ -273,7 +332,7 @@ function renderHistory() {
     historyListEl.innerHTML = `<p class="user-empty">${esc(t('profileDashboard.historyEmptyPreview', dictI18n))}</p>`;
     return;
   }
-  historyListEl.innerHTML = list.slice(0, 30).map(item => `
+  historyListEl.innerHTML = list.slice(0, PREVIEW_HISTORY_LIMIT).map(item => `
     <article class="user-list-item">
       <a class="user-list-item__title" href="${esc(withLang(`../../pages/place.html?id=${encodeURIComponent(item.id)}`, lang))}">${esc(item.name || item.id)}</a>
       <div class="user-list-item__foot">${esc(t('profileDashboard.viewedPrefix', dictI18n))} ${esc(new Date(item.viewedAt || Date.now()).toLocaleString(dateLoc))}</div>

@@ -1,6 +1,6 @@
 import { initNav } from '../shared/nav.js';
-import { getPlaces } from '../shared/places.js';
-import { showToast, showSkeletons, markActiveNav } from '../shared/utils.js';
+import { getPlaces, deriveCityFromAddress } from '../shared/places.js';
+import { showToast, showSkeletons, markActiveNav, pluralRu as plural } from '../shared/utils.js';
 import { pickPlaceDateLabel } from '../shared/placeDate.js';
 import { getLang, loadDict, applyDict, applyLanguageSeo, pickI18n, t } from '../shared/i18n.js';
 import { addToTrip, removeFromTrip, isInTrip } from './trips.js';
@@ -20,11 +20,27 @@ const sentinelEl = document.getElementById('catalog-sentinel');
 // filters UI
 const fHas3d = document.getElementById('f-has3d');
 const fHasPhotos = document.getElementById('f-hasphotos');
-const fCity = document.getElementById('f-city');
-const fTags = document.getElementById('f-tags');
 const fDateFrom = document.getElementById('f-datefrom');
 const fDateTo = document.getElementById('f-dateto');
 const sortEl = document.getElementById('sort');
+
+// custom dropdowns
+const cityDropdown = createDropdown({
+  rootId: 'dd-city',
+  btnId: 'dd-city-btn',
+  listId: 'dd-city-list',
+  multi: false,
+  emptyLabelKey: 'catalog.any',
+  onChange: (value) => { state.city = value; applyState(); }
+});
+const tagsDropdown = createDropdown({
+  rootId: 'dd-tags',
+  btnId: 'dd-tags-btn',
+  listId: 'dd-tags-list',
+  multi: true,
+  emptyLabelKey: 'catalog.tagsAny',
+  onChange: (values) => { state.tags = values; applyState(); }
+});
 
 let allPlaces = [];
 let dict = {
@@ -187,16 +203,14 @@ function computeView(places, s) {
     if (s.hasphotos && !((p.photos && p.photos.length) || p.hasPhotos)) return false;
 
     if (s.city) {
-      const city = extractCity(p.location?.address || '');
-      if (city !== s.city) return false;
+      if (getPlaceCity(p) !== s.city) return false;
     }
 
     if (tagSet.size) {
       const tags = Array.isArray(p.tags) ? p.tags.map(String) : [];
-      // AND semantics: all selected tags must be present
-      for (const t of tagSet) {
-        if (!tags.includes(t)) return false;
-      }
+      // OR semantics: place must carry at least one of the selected tags
+      const matches = tags.some(t => tagSet.has(t));
+      if (!matches) return false;
     }
 
     if (s.dateFrom != null || s.dateTo != null) {
@@ -326,15 +340,12 @@ function applyStateToUi(s) {
   if (search) search.value = s.q || '';
   if (fHas3d) fHas3d.checked = !!s.has3d;
   if (fHasPhotos) fHasPhotos.checked = !!s.hasphotos;
-  if (fCity) fCity.value = s.city || '';
   if (fDateFrom) fDateFrom.value = s.dateFrom != null ? String(s.dateFrom) : '';
   if (fDateTo) fDateTo.value = s.dateTo != null ? String(s.dateTo) : '';
   if (sortEl) sortEl.value = s.sort || DEFAULT_STATE.sort;
 
-  if (fTags) {
-    const want = new Set(s.tags || []);
-    Array.from(fTags.options).forEach(o => { o.selected = want.has(o.value); });
-  }
+  cityDropdown.setValue(s.city || '');
+  tagsDropdown.setValues(Array.isArray(s.tags) ? s.tags : []);
 }
 
 function wireUiEvents() {
@@ -348,7 +359,6 @@ function wireUiEvents() {
 
   fHas3d.addEventListener('change', () => { state.has3d = fHas3d.checked; applyState(); });
   fHasPhotos.addEventListener('change', () => { state.hasphotos = fHasPhotos.checked; applyState(); });
-  fCity.addEventListener('change', () => { state.city = fCity.value; applyState(); });
   sortEl.addEventListener('change', () => { state.sort = sortEl.value; applyState(); });
 
   fDateFrom.addEventListener('input', () => {
@@ -357,11 +367,6 @@ function wireUiEvents() {
   });
   fDateTo.addEventListener('input', () => {
     state.dateTo = parseIntOrNull(fDateTo.value);
-    applyState();
-  });
-
-  fTags.addEventListener('change', () => {
-    state.tags = Array.from(fTags.selectedOptions).map(o => o.value);
     applyState();
   });
 }
@@ -415,45 +420,33 @@ function chipUi(label, onRemove, { strong = false } = {}) {
 }
 
 function hydrateFiltersFromData(places) {
-  // city list
   const cities = new Set();
   const tags = new Set();
 
   places.forEach(p => {
-    const city = extractCity(p.location?.address || '');
+    const city = getPlaceCity(p);
     if (city) cities.add(city);
     (Array.isArray(p.tags) ? p.tags : []).forEach(t => tags.add(String(t)));
   });
 
-  if (fCity) {
-    const current = fCity.value;
-    const opts = Array.from(cities).sort((a, b) => a.localeCompare(b, 'ru'));
-    fCity.innerHTML = `<option value="">${esc(t('catalog.any', dictI18n))}</option>` + opts.map(c => `<option value="${escAttr(c)}">${esc(c)}</option>`).join('');
-    fCity.value = current;
-  }
+  const cityOpts = Array.from(cities).sort((a, b) => a.localeCompare(b, 'ru'));
+  const tagOpts = Array.from(tags).sort((a, b) => a.localeCompare(b, 'ru'));
 
-  if (fTags) {
-    const currentSel = new Set(Array.from(fTags.selectedOptions || []).map(o => o.value));
-    const opts = Array.from(tags).sort((a, b) => a.localeCompare(b, 'ru'));
-    fTags.innerHTML = opts.map(t => `<option value="${escAttr(t)}"${currentSel.has(t) ? ' selected' : ''}>${esc(t)}</option>`).join('');
-  }
+  cityDropdown.setOptions(cityOpts);
+  tagsDropdown.setOptions(tagOpts);
 }
 
-function extractCity(address) {
-  const a = String(address || '').trim();
-  if (!a) return '';
-  const parts = a.split(',').map(s => s.trim()).filter(Boolean);
-  if (!parts.length) return '';
-
-  const streetRe = /^(ул\.?|улица|просп\.?|проспект|пр-т|пер\.?|переулок|бул\.?|бульвар|наб\.?|набережная|пл\.?|площадь|шоссе|тракт|дом|д\.)\b/i;
-  const cityPrefixRe = /^(г\.?|город|city|town|деревня|поселок|посёлок)\s+/i;
-
-  for (const part of parts) {
-    if (cityPrefixRe.test(part)) return part.replace(cityPrefixRe, '').trim();
-  }
-
-  const nonStreet = parts.find(part => !streetRe.test(part));
-  return nonStreet || parts[parts.length - 1] || '';
+// Pull city from the new dedicated field; fall back to legacy address parsing
+function getPlaceCity(place) {
+  // 1) explicit i18n city in current language
+  const fromI18n = String(pickI18n(place, lang).city || '').trim();
+  if (fromI18n) return fromI18n;
+  // 2) top-level city (RU canonical)
+  const fromTop = String(place?.city || '').trim();
+  if (fromTop) return fromTop;
+  // 3) heuristic over the language-appropriate address (legacy fallback)
+  const address = String(pickI18n(place, lang).address || place?.location?.address || '');
+  return deriveCityFromAddress(address);
 }
 
 function getYearForFilter(place) {
@@ -481,7 +474,7 @@ function placeCard(p, idx) {
   `;
   const img = p.photos?.[0]
     ? `<div class="card__img-wrap">
-        <img class="card__img" src="${escAttr(p.photos[0])}" alt="${escAttr(name)}" loading="lazy" />
+        <img class="card__img" src="${escAttr(p.photos[0])}" alt="${escAttr(name)}" loading="lazy" onerror="this.onerror=null;this.replaceWith(Object.assign(document.createElement('div'),{className:'card__img--placeholder',textContent:'нет фото'}))" />
         ${badges}
        </div>`
     : `<div class="card__img-wrap">
@@ -546,6 +539,202 @@ function chip(kind, value) {
   return `<span class="card__meta-item">${icon}${esc(value)}</span>`;
 }
 
+// ── custom dropdown widget ────────────────────────────────────────────────
+// Builds a single- or multi-select dropdown with a max of ~7 visible rows
+// (overflow scrolls). Returns an interface with setOptions/setValue(s).
+function createDropdown({ rootId, btnId, listId, multi, emptyLabelKey, onChange }) {
+  const rootEl = document.getElementById(rootId);
+  const btnEl  = document.getElementById(btnId);
+  const listEl = document.getElementById(listId);
+  const labelEl = btnEl?.querySelector('.dropdown__btn-label');
+
+  let options = [];           // string[]
+  let value = multi ? [] : ''; // string | string[]
+
+  function emptyLabel() {
+    return t(emptyLabelKey, dictI18n);
+  }
+
+  function refreshLabel() {
+    if (!labelEl) return;
+    if (multi) {
+      const selected = Array.isArray(value) ? value : [];
+      if (!selected.length) {
+        labelEl.textContent = emptyLabel();
+        const pill = btnEl.querySelector('.dropdown__count-pill');
+        if (pill) pill.remove();
+      } else if (selected.length === 1) {
+        labelEl.textContent = selected[0];
+        const pill = btnEl.querySelector('.dropdown__count-pill');
+        if (pill) pill.remove();
+      } else {
+        labelEl.textContent = selected[0];
+        let pill = btnEl.querySelector('.dropdown__count-pill');
+        if (!pill) {
+          pill = document.createElement('span');
+          pill.className = 'dropdown__count-pill';
+          btnEl.appendChild(pill);
+        }
+        pill.textContent = `+${selected.length - 1}`;
+      }
+    } else {
+      labelEl.textContent = value || emptyLabel();
+    }
+  }
+
+  function renderList() {
+    if (!listEl) return;
+    if (!options.length) {
+      listEl.innerHTML = `<div class="dropdown__empty">${esc(t('catalog.dropdownEmpty', dictI18n))}</div>`;
+      return;
+    }
+
+    const items = [];
+    if (!multi) {
+      // single-select: a leading "Any" row to clear
+      const isAny = !value;
+      items.push(`
+        <div class="dropdown__item${isAny ? ' is-selected' : ''}" data-value="" role="option" aria-selected="${isAny}">
+          <span>${esc(emptyLabel())}</span>
+        </div>
+      `);
+    }
+    options.forEach(opt => {
+      const selected = multi
+        ? (Array.isArray(value) && value.includes(opt))
+        : value === opt;
+      if (multi) {
+        items.push(`
+          <label class="dropdown__item${selected ? ' is-selected' : ''}" data-value="${escAttr(opt)}">
+            <input type="checkbox" ${selected ? 'checked' : ''} />
+            <span>${esc(opt)}</span>
+          </label>
+        `);
+      } else {
+        items.push(`
+          <div class="dropdown__item${selected ? ' is-selected' : ''}" data-value="${escAttr(opt)}" role="option" aria-selected="${selected}">
+            <span>${esc(opt)}</span>
+          </div>
+        `);
+      }
+    });
+    listEl.innerHTML = items.join('');
+  }
+
+  function bindListScroll(listEl) {
+    if (!listEl || listEl.dataset.scrollBound) return;
+    listEl.dataset.scrollBound = '1';
+    listEl.addEventListener(
+      'wheel',
+      (e) => {
+        const { scrollTop, scrollHeight, clientHeight } = listEl;
+        const dy = e.deltaY;
+        const atTop = scrollTop <= 0;
+        const atBottom = scrollTop + clientHeight >= scrollHeight - 1;
+        if ((dy < 0 && atTop) || (dy > 0 && atBottom)) e.preventDefault();
+        e.stopPropagation();
+      },
+      { passive: false }
+    );
+  }
+
+  function setDropdownPageScrollLocked(locked) {
+    document.documentElement.classList.toggle('catalog-dropdown-open', locked);
+  }
+
+  function open() {
+    closeAllDropdowns();
+    rootEl.classList.add('is-open');
+    btnEl?.setAttribute('aria-expanded', 'true');
+    setDropdownPageScrollLocked(true);
+  }
+  function close() {
+    rootEl.classList.remove('is-open');
+    btnEl?.setAttribute('aria-expanded', 'false');
+    if (!document.querySelector('.dropdown.is-open')) {
+      setDropdownPageScrollLocked(false);
+    }
+  }
+
+  bindListScroll(listEl);
+
+  btnEl?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (rootEl.classList.contains('is-open')) close();
+    else open();
+  });
+
+  listEl?.addEventListener('click', (e) => {
+    const item = e.target.closest('.dropdown__item');
+    if (!item) return;
+    const v = item.dataset.value || '';
+    if (multi) {
+      // checkbox model
+      const arr = Array.isArray(value) ? value.slice() : [];
+      const idx = arr.indexOf(v);
+      if (idx >= 0) arr.splice(idx, 1); else arr.push(v);
+      value = arr;
+      renderList();
+      refreshLabel();
+      onChange(arr);
+      // keep panel open for multi-select
+    } else {
+      value = v;
+      renderList();
+      refreshLabel();
+      close();
+      onChange(v);
+    }
+  });
+
+  return {
+    setOptions(opts) {
+      options = Array.isArray(opts) ? opts.slice() : [];
+      // sanitize current value(s)
+      if (multi) {
+        const set = new Set(options);
+        value = (Array.isArray(value) ? value : []).filter(x => set.has(x));
+      } else if (value && !options.includes(value)) {
+        // keep selected value even if it's not in the options list, so URL state
+        // survives a (re)render — but if it's clearly stale we just drop it.
+      }
+      renderList();
+      refreshLabel();
+    },
+    setValue(v) {
+      value = String(v || '');
+      renderList();
+      refreshLabel();
+    },
+    setValues(vs) {
+      const set = new Set(options);
+      value = (Array.isArray(vs) ? vs : []).filter(x => set.has(x) || true);
+      renderList();
+      refreshLabel();
+    },
+    getValue() { return value; },
+    refreshLabel
+  };
+}
+
+function closeAllDropdowns() {
+  document.querySelectorAll('.dropdown.is-open').forEach(d => {
+    d.classList.remove('is-open');
+    const btn = d.querySelector('.dropdown__btn');
+    if (btn) btn.setAttribute('aria-expanded', 'false');
+  });
+  document.documentElement.classList.remove('catalog-dropdown-open');
+}
+
+// Global click + Escape to close any open dropdown
+document.addEventListener('click', (e) => {
+  if (e.target.closest('.dropdown')) return;
+  closeAllDropdowns();
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeAllDropdowns();
+});
+
 // ── helpers ───────────────────────────────────────────────────────────────
 
 function esc(str) {
@@ -558,14 +747,6 @@ function esc(str) {
 
 function escAttr(str) {
   return esc(str).replace(/'/g, '&#39;');
-}
-
-function plural(n, one, few, many) {
-  const mod10  = n % 10;
-  const mod100 = n % 100;
-  if (mod10 === 1 && mod100 !== 11) return one;
-  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 10 || mod100 >= 20)) return few;
-  return many;
 }
 
 function isStateDirty(s) {

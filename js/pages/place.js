@@ -12,6 +12,8 @@ import { addToTrip, removeFromTrip, isInTrip } from './trips.js';
 initNav('../');
 const lang = getLang();
 let dictI18n = null;
+let photos = [];
+let lbIndex = 0;
 try {
   dictI18n = await loadDict(lang);
   applyDict(dictI18n);
@@ -135,11 +137,18 @@ function render(place) {
   saveHistoryEntry(place.id, placeName);
 
   // show reviews section
-  document.getElementById('reviews-section').classList.remove('hidden');
+  const reviewsSectionEl = document.getElementById('reviews-section');
+  reviewsSectionEl.classList.remove('hidden');
   initReviews(place.id);
 
   skeletonEl.classList.add('hidden');
   contentEl.classList.remove('hidden');
+
+  if (location.hash === '#reviews-section') {
+    requestAnimationFrame(() => {
+      reviewsSectionEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  }
 }
 
 function initTripButton(placeId, placeName) {
@@ -214,12 +223,10 @@ function setMetaById(id, value, attr = 'content') {
 
 // ── gallery + lightbox ────────────────────────────────────────────────────
 
-var photos = [];
-var lbIndex = 0;
-
 function renderGallery(arr) {
-  photos = arr;
+  photos = Array.isArray(arr) ? arr : [];
   const galleryEl = document.getElementById('gallery');
+  if (!galleryEl) return;
 
   if (!photos.length) {
     galleryEl.innerHTML = `<div class="gallery__main--placeholder">${esc(t('place.noPhotos', dictI18n))}</div>`;
@@ -228,27 +235,27 @@ function renderGallery(arr) {
 
   galleryEl.innerHTML = `
     <div class="gallery__main-wrap" id="main-wrap">
-      <img id="gallery-main" class="gallery__main" src="${esc(photos[0])}" alt="${esc(t('place.galleryAlt', dictI18n))}" />
+      <img id="gallery-main" class="gallery__main" src="${esc(photos[0])}" alt="${esc(t('place.galleryAlt', dictI18n))}" onerror="this.onerror=null;this.replaceWith(Object.assign(document.createElement('div'),{className:'gallery__main--placeholder',textContent:'нет фото'}))" />
       <span class="gallery__zoom-hint">${esc(t('place.zoomHint', dictI18n))}</span>
     </div>
     ${photos.length > 1 ? `<div class="gallery__thumbs">
       ${photos.map((url, i) => `
         <img class="gallery__thumb${i === 0 ? ' active' : ''}"
-          src="${esc(url)}" alt="${esc(t('place.photoAlt', dictI18n))} ${i+1}"
-          data-idx="${i}" loading="lazy" />
+          src="${esc(url)}" alt="${esc(t('place.photoAlt', dictI18n))} ${i + 1}"
+          data-idx="${i}" loading="lazy" onerror="this.onerror=null;this.remove()" />
       `).join('')}
     </div>` : ''}
   `;
 
-  const mainImg  = document.getElementById('gallery-main');
+  const mainImg = document.getElementById('gallery-main');
   const mainWrap = document.getElementById('main-wrap');
 
   // thumb click → change main
-  galleryEl.querySelectorAll('.gallery__thumb').forEach(th => {
+  galleryEl.querySelectorAll('.gallery__thumb').forEach((th) => {
     th.addEventListener('click', () => {
-      const idx = parseInt(th.dataset.idx);
+      const idx = parseInt(th.dataset.idx, 10);
       mainImg.src = photos[idx];
-      galleryEl.querySelectorAll('.gallery__thumb').forEach(t => t.classList.remove('active'));
+      galleryEl.querySelectorAll('.gallery__thumb').forEach((t) => t.classList.remove('active'));
       th.classList.add('active');
       lbIndex = idx;
     });

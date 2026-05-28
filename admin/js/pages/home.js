@@ -3,6 +3,7 @@ import { db } from '../../../js/shared/firebase-init.js';
 import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 import { showToast } from '../../../js/shared/utils.js';
 import { bindAdminLogout, gateAdmin } from '../shared/admin-guard.js';
+import { initAdminImageField } from '../shared/admin-image-field.js';
 
 initNav('../../');
 bindAdminLogout();
@@ -15,12 +16,16 @@ const el = {
   homeGithubUrl: document.getElementById('home-github-url'),
   heroEyebrowRu: document.getElementById('hero-eyebrow-ru'),
   heroEyebrowEn: document.getElementById('hero-eyebrow-en'),
+  heroEyebrowBe: document.getElementById('hero-eyebrow-be'),
   heroTitleRu: document.getElementById('hero-title-ru'),
   heroTitleEn: document.getElementById('hero-title-en'),
+  heroTitleBe: document.getElementById('hero-title-be'),
   heroSubtitleRu: document.getElementById('hero-subtitle-ru'),
   heroSubtitleEn: document.getElementById('hero-subtitle-en'),
+  heroSubtitleBe: document.getElementById('hero-subtitle-be'),
   introTextRu: document.getElementById('intro-text-ru'),
   introTextEn: document.getElementById('intro-text-en'),
+  introTextBe: document.getElementById('intro-text-be'),
   teaserMapImage: document.getElementById('teaser-map-image'),
   teaserGuideImage: document.getElementById('teaser-guide-image'),
   previewImg: document.getElementById('preview-img'),
@@ -34,10 +39,10 @@ const el = {
 let state = {
   heroImage: '',
   links: { apiEnabled: false, github: '' },
-  heroEyebrow: { ru: '', en: '' },
-  heroTitle: { ru: '', en: '' },
-  heroSubtitle: { ru: '', en: '' },
-  introText: { ru: '', en: '' },
+  heroEyebrow: { ru: '', en: '', be: '' },
+  heroTitle: { ru: '', en: '', be: '' },
+  heroSubtitle: { ru: '', en: '', be: '' },
+  introText: { ru: '', en: '', be: '' },
   teasers: { mapImage: '', guideImage: '' },
   collections: []
 };
@@ -45,6 +50,7 @@ let state = {
 await load();
 wire();
 render();
+initImageFields();
 
 async function load() {
   try {
@@ -81,12 +87,16 @@ function wire() {
     state.links.github = el.homeGithubUrl.value.trim();
     state.heroEyebrow.ru = el.heroEyebrowRu.value.trim();
     state.heroEyebrow.en = el.heroEyebrowEn.value.trim();
+    state.heroEyebrow.be = el.heroEyebrowBe?.value?.trim?.() || '';
     state.heroTitle.ru = el.heroTitleRu.value.trim();
     state.heroTitle.en = el.heroTitleEn.value.trim();
+    state.heroTitle.be = el.heroTitleBe?.value?.trim?.() || '';
     state.heroSubtitle.ru = el.heroSubtitleRu.value.trim();
     state.heroSubtitle.en = el.heroSubtitleEn.value.trim();
+    state.heroSubtitle.be = el.heroSubtitleBe?.value?.trim?.() || '';
     state.introText.ru = el.introTextRu.value.trim();
     state.introText.en = el.introTextEn.value.trim();
+    state.introText.be = el.introTextBe?.value?.trim?.() || '';
     state.teasers.mapImage = el.teaserMapImage.value.trim();
     state.teasers.guideImage = el.teaserGuideImage.value.trim();
     renderPreview();
@@ -98,12 +108,16 @@ function wire() {
     el.homeGithubUrl.addEventListener(evt, onChange);
     el.heroEyebrowRu.addEventListener(evt, onChange);
     el.heroEyebrowEn.addEventListener(evt, onChange);
+    el.heroEyebrowBe?.addEventListener(evt, onChange);
     el.heroTitleRu.addEventListener(evt, onChange);
     el.heroTitleEn.addEventListener(evt, onChange);
+    el.heroTitleBe?.addEventListener(evt, onChange);
     el.heroSubtitleRu.addEventListener(evt, onChange);
     el.heroSubtitleEn.addEventListener(evt, onChange);
+    el.heroSubtitleBe?.addEventListener(evt, onChange);
     el.introTextRu.addEventListener(evt, onChange);
     el.introTextEn.addEventListener(evt, onChange);
+    el.introTextBe?.addEventListener(evt, onChange);
     el.teaserMapImage.addEventListener(evt, onChange);
     el.teaserGuideImage.addEventListener(evt, onChange);
   });
@@ -111,8 +125,8 @@ function wire() {
   el.addCollection.addEventListener('click', () => {
     state.collections.push(normalizeCollection({
       id: '',
-      title: { ru: '', en: '' },
-      description: { ru: '', en: '' },
+      title: { ru: '', en: '', be: '' },
+      description: { ru: '', en: '', be: '' },
       cover: '',
       filter: ''
     }));
@@ -122,18 +136,46 @@ function wire() {
   el.saveBtn.addEventListener('click', save);
 }
 
+function initImageFields() {
+  initAdminImageField({
+    input: el.heroImage,
+    onChange: () => {
+      state.heroImage = el.heroImage.value.trim();
+      renderPreview();
+    }
+  });
+  initAdminImageField({
+    input: el.teaserMapImage,
+    onChange: () => { state.teasers.mapImage = el.teaserMapImage.value.trim(); }
+  });
+  initAdminImageField({
+    input: el.teaserGuideImage,
+    onChange: () => { state.teasers.guideImage = el.teaserGuideImage.value.trim(); }
+  });
+}
+
+function initCollectionCoverFields() {
+  el.collections.querySelectorAll('input[data-k="cover"]').forEach(inp => {
+    initAdminImageField({ input: inp });
+  });
+}
+
 function render() {
   el.heroImage.value = state.heroImage;
   el.homeApiEnabled.value = state.links.apiEnabled ? 'true' : 'false';
   el.homeGithubUrl.value = state.links.github || '';
   el.heroEyebrowRu.value = state.heroEyebrow.ru || '';
   el.heroEyebrowEn.value = state.heroEyebrow.en || '';
+  if (el.heroEyebrowBe) el.heroEyebrowBe.value = state.heroEyebrow.be || '';
   el.heroTitleRu.value = state.heroTitle.ru || '';
   el.heroTitleEn.value = state.heroTitle.en || '';
+  if (el.heroTitleBe) el.heroTitleBe.value = state.heroTitle.be || '';
   el.heroSubtitleRu.value = state.heroSubtitle.ru || '';
   el.heroSubtitleEn.value = state.heroSubtitle.en || '';
+  if (el.heroSubtitleBe) el.heroSubtitleBe.value = state.heroSubtitle.be || '';
   el.introTextRu.value = state.introText.ru || '';
   el.introTextEn.value = state.introText.en || '';
+  if (el.introTextBe) el.introTextBe.value = state.introText.be || '';
   el.teaserMapImage.value = state.teasers.mapImage || '';
   el.teaserGuideImage.value = state.teasers.guideImage || '';
   renderPreview();
@@ -171,7 +213,7 @@ function renderCollections() {
           <input class="form-control" data-k="id" value="${escAttr(c.id)}" maxlength="80" placeholder="wwii" />
         </div>
         <div class="form-group">
-          <label class="form-label">Cover URL</label>
+          <label class="form-label">Cover</label>
           <input class="form-control" data-k="cover" value="${escAttr(c.cover)}" />
         </div>
       </div>
@@ -184,6 +226,10 @@ function renderCollections() {
           <label class="form-label">Title (EN)</label>
           <input class="form-control" data-k="titleEn" value="${escAttr(c.title.en)}" maxlength="140" />
         </div>
+        <div class="form-group">
+          <label class="form-label">Title (BE)</label>
+          <input class="form-control" data-k="titleBe" value="${escAttr(c.title.be)}" maxlength="140" />
+        </div>
       </div>
 
       <div class="row">
@@ -194,6 +240,10 @@ function renderCollections() {
         <div class="form-group">
           <label class="form-label">Description (EN)</label>
           <input class="form-control" data-k="descriptionEn" value="${escAttr(c.description.en)}" maxlength="200" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Description (BE)</label>
+          <input class="form-control" data-k="descriptionBe" value="${escAttr(c.description.be)}" maxlength="200" />
         </div>
       </div>
       <div class="row-1">
@@ -210,8 +260,10 @@ function renderCollections() {
         const value = inp.value.trim();
         if (k === 'titleRu') state.collections[i].title.ru = value;
         else if (k === 'titleEn') state.collections[i].title.en = value;
+        else if (k === 'titleBe') state.collections[i].title.be = value;
         else if (k === 'descriptionRu') state.collections[i].description.ru = value;
         else if (k === 'descriptionEn') state.collections[i].description.en = value;
+        else if (k === 'descriptionBe') state.collections[i].description.be = value;
         else state.collections[i][k] = value;
       });
     });
@@ -240,6 +292,7 @@ function renderCollections() {
 
     el.collections.appendChild(item);
   });
+  initCollectionCoverFields();
 }
 
 async function save() {
@@ -292,11 +345,12 @@ function normalizeLocalized(value) {
   if (value && typeof value === 'object') {
     return {
       ru: String(value.ru || '').trim(),
-      en: String(value.en || '').trim()
+      en: String(value.en || '').trim(),
+      be: String(value.be || '').trim()
     };
   }
   const str = String(value || '').trim();
-  return { ru: str, en: '' };
+  return { ru: str, en: '', be: '' };
 }
 
 function escAttr(str) {

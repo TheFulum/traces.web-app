@@ -29,6 +29,24 @@ export function initNav(root = '') {
     buildNav(null);
   }).catch(() => {});
 
+  // Prevent "NAV.HOME" flashes when dict is not loaded yet (CSS uppercases).
+  const FALLBACK_RU = {
+    'nav.home': 'Главная',
+    'nav.catalog': 'Каталог',
+    'nav.map': 'Карта',
+    'nav.route': 'Маршрут',
+    'nav.chat': 'Гид',
+    'nav.more': 'Ещё',
+    'nav.feedback': 'Обратная связь',
+    'nav.login': 'Войти',
+    'nav.profile': 'Профиль',
+    'nav.notifications': 'Уведомления',
+    'nav.menu': 'Меню',
+    'nav.admin': 'Админ',
+    'nav.searchPlaceholder': 'Поиск мест…',
+    'nav.searchNoMatches': 'Ничего не найдено'
+  };
+
   const links = [
     { href: `${root}index.html`,    key: 'nav.home' },
     { href: `${root}pages/catalog.html`,  key: 'nav.catalog' },
@@ -46,7 +64,7 @@ export function initNav(root = '') {
   async function buildNav(user) {
     const navLinks = links.map(l => ({
       href: withLang(l.href, lang),
-      label: dict ? t(l.key, dict) : l.key
+      label: (dict ? t(l.key, dict) : null) || FALLBACK_RU[l.key] || l.key
     }));
 
     if (!cachedExtraPages) {
@@ -55,13 +73,14 @@ export function initNav(root = '') {
         cachedExtraPages = snap.docs
           .map(d => {
             const data = d.data();
-            const ruTitle = String(data.title || d.id || '').trim();
-            const enTitle = String(data.i18n?.en?.title || '').trim();
-            const title = lang === 'en' ? (enTitle || ruTitle) : ruTitle;
+        const ruTitle = String(data.title || d.id || '').trim();
+        const enTitle = String(data.i18n?.en?.title || '').trim();
+        const beTitle = String(data.i18n?.be?.title || '').trim();
+        const title = lang === 'en' ? (enTitle || ruTitle) : lang === 'be' ? (beTitle || ruTitle) : ruTitle;
             return { slug: d.id, title };
           })
           .filter(p => p.slug && p.title);
-        const sortLoc = lang === 'en' ? 'en' : 'ru';
+        const sortLoc = lang === 'en' ? 'en' : lang === 'be' ? 'be' : 'ru';
         cachedExtraPages.sort((a, b) => a.title.localeCompare(b.title, sortLoc));
       } catch (err) {
         console.warn('nav extra pages:', err);
@@ -131,9 +150,11 @@ export function initNav(root = '') {
       : `<a href="${withLang(isAdminPath ? `${root}admin/pages/login.html` : `${root}pages/auth.html`, lang)}" class="nav__drawer__login">${dict ? t('nav.login', dict) : 'Войти'}</a>`;
 
     const langSwitch = `
-      <button class="nav__login" id="lang-btn" style="padding:7px 12px">
-        ${lang.toUpperCase()}
-      </button>
+      <div class="nav__lang-switch" role="group" aria-label="Language">
+        <button class="nav__lang-btn${lang === 'ru' ? ' is-active' : ''}" type="button" data-lang="ru">RU</button>
+        <button class="nav__lang-btn${lang === 'en' ? ' is-active' : ''}" type="button" data-lang="en">EN</button>
+        <button class="nav__lang-btn${lang === 'be' ? ' is-active' : ''}" type="button" data-lang="be">BE</button>
+      </div>
     `;
 
     const searchBlock = !isAdminPath ? `
@@ -141,7 +162,7 @@ export function initNav(root = '') {
         <svg class="nav__search-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
         </svg>
-        <input id="nav-place-search-input" class="nav__search-input" type="text" placeholder="${dict ? t('nav.searchPlaceholder', dict) : 'Поиск мест...'}" />
+        <input id="nav-place-search-input" class="nav__search-input" type="text" placeholder="${(dict ? t('nav.searchPlaceholder', dict) : null) || FALLBACK_RU['nav.searchPlaceholder']}" />
         <div id="nav-place-search-results" class="nav__search-results"></div>
       </div>
     ` : '';
@@ -178,11 +199,11 @@ export function initNav(root = '') {
             `).join('')}
             <li class="nav__dropdown" id="nav-dropdown">
               <button class="nav__dropdown-btn" id="nav-dropdown-btn" aria-expanded="false">
-                ${dict ? t('nav.more', dict) : 'Ещё'}
+                ${(dict ? t('nav.more', dict) : null) || FALLBACK_RU['nav.more']}
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left:4px"><polyline points="6 9 12 15 18 9"></polyline></svg>
               </button>
               <div class="nav__dropdown-menu" id="nav-dropdown-menu">
-                <a href="${withLang(`${root}pages/feedback.html`, lang)}">${dict ? t('nav.feedback', dict) : 'Обратная связь'}</a>
+                <a href="${withLang(`${root}pages/feedback.html`, lang)}">${(dict ? t('nav.feedback', dict) : null) || FALLBACK_RU['nav.feedback']}</a>
                 ${cachedExtraPages?.length ? cachedExtraPages.map(p => {
                   const href = withLang(`${root}pages/page.html?slug=${encodeURIComponent(p.slug)}`, lang);
                   return `<a href="${esc(href)}">${esc(p.title)}</a>`;
@@ -193,7 +214,7 @@ export function initNav(root = '') {
           <div class="nav__bottom-tail">${bottomAdminSlot}</div>
         </div>
 
-        <button class="nav__burger" id="nav-burger" aria-label="${dict ? t('nav.menu', dict) : 'Меню'}" aria-expanded="false" aria-controls="nav-drawer">
+        <button class="nav__burger" id="nav-burger" aria-label="${(dict ? t('nav.menu', dict) : null) || FALLBACK_RU['nav.menu']}" aria-expanded="false" aria-controls="nav-drawer">
           <span></span><span></span><span></span>
         </button>
       </div>
@@ -203,13 +224,18 @@ export function initNav(root = '') {
           <a href="${l.href}"${isActive(l.href) ? ' class="active"' : ''}>${l.label}</a>
         `).join('')}
         <div class="nav__drawer__divider"></div>
-        <a href="${withLang(`${root}pages/feedback.html`, lang)}" class="nav__drawer__login" style="text-transform:none;letter-spacing:normal;font-weight:400">${dict ? t('nav.feedback', dict) : 'Обратная связь'}</a>
+        <a href="${withLang(`${root}pages/feedback.html`, lang)}" class="nav__drawer__login" style="text-transform:none;letter-spacing:normal;font-weight:400">${(dict ? t('nav.feedback', dict) : null) || FALLBACK_RU['nav.feedback']}</a>
         ${cachedExtraPages?.length ? cachedExtraPages.map(p => {
           const href = withLang(`${root}pages/page.html?slug=${encodeURIComponent(p.slug)}`, lang);
           return `<a href="${esc(href)}" class="nav__drawer__login" style="text-transform:none;letter-spacing:normal;font-weight:400">${esc(p.title)}</a>`;
         }).join('') : ''}
         <div class="nav__drawer__divider"></div>
-        <a href="#" id="lang-btn-drawer" class="nav__drawer__login" style="margin-top:8px">${lang.toUpperCase()}</a>
+        <div class="nav__drawer__divider"></div>
+        <div class="nav__drawer__lang" role="group" aria-label="Language">
+          <button class="nav__drawer__lang-btn${lang === 'ru' ? ' is-active' : ''}" type="button" data-lang="ru">RU</button>
+          <button class="nav__drawer__lang-btn${lang === 'en' ? ' is-active' : ''}" type="button" data-lang="en">EN</button>
+          <button class="nav__drawer__lang-btn${lang === 'be' ? ' is-active' : ''}" type="button" data-lang="be">BE</button>
+        </div>
         ${drawerAuthBtn}
       </div>
     `;
@@ -285,11 +311,12 @@ export function initNav(root = '') {
     });
 
     // language switch
-    const next = lang === 'ru' ? 'en' : 'ru';
-    document.getElementById('lang-btn')?.addEventListener('click', () => setLang(next));
-    document.getElementById('lang-btn-drawer')?.addEventListener('click', (e) => {
-      e.preventDefault();
-      setLang(next);
+    navEl.querySelectorAll('[data-lang]').forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const target = btn.getAttribute('data-lang');
+        setLang(target);
+      });
     });
 
     initPlaceSearch();

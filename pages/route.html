@@ -6,12 +6,12 @@
   <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
   <title>Маршрут — Следы прошлого</title>
   <meta name="description" content="Соберите список мест, чтобы спланировать прогулку, поделиться маршрутом и продолжить на карте." />
+  <link rel="preconnect" href="https://traces-media-upload.lipouski-daniil.workers.dev" />
   <link rel="preconnect" href="https://www.gstatic.com" />
   <link rel="preconnect" href="https://firestore.googleapis.com" />
   <link rel="stylesheet" href="../css/style.css" />
   <link rel="stylesheet" href="../css/user-pages.css" />
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" />
   <style>
     .route-wrap { padding-bottom: 72px; }
     .route-planner {
@@ -21,7 +21,44 @@
       background: var(--c-surface);
       box-shadow: var(--shadow-xs);
       padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .route-planner__group {
+      border: 1px solid var(--c-border-light);
+      border-radius: var(--radius-md);
+      background: var(--c-bg);
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .route-planner__group-title {
+      margin: 0;
+      font-size: .72rem;
+      font-weight: 600;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--c-text-muted);
+    }
+    .route-planner__grid {
       display: grid;
+      gap: 10px 12px;
+      align-items: end;
+    }
+    .route-planner__grid--2 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .route-planner__grid--days {
+      grid-template-columns: minmax(0, 0.55fr) minmax(0, 1fr) auto;
+    }
+    .route-planner__grid--optimize {
+      grid-template-columns: minmax(0, 1fr) auto auto;
+    }
+    .route-planner__results {
+      display: flex;
+      flex-direction: column;
       gap: 10px;
     }
     .route-planner__row {
@@ -54,29 +91,14 @@
       flex: 0 0 auto;
       align-self: center;
     }
-    .route-planner__row--actions {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 8px;
-      align-items: stretch;
-      width: 100%;
+    .route-planner__grid .btn {
+      white-space: nowrap;
+      height: 45.75px;
     }
-    .route-planner__row--actions .btn {
-      min-width: 0;
-      justify-content: center;
-      text-align: center;
-      line-height: 1.25;
-      white-space: normal;
-      hyphens: auto;
-    }
-    /* Все выпадающие настройки маршрута — один ряд */
-    .route-planner__fields--controls {
-      grid-template-columns:
-        minmax(0, 1.15fr)
-        minmax(0, 1.15fr)
-        minmax(0, 0.52fr)
-        minmax(0, 1.35fr);
-      align-items: end;
+    .route-planner__grid--days .btn,
+    .route-planner__grid--optimize .btn {
+      align-self: end;
+      height: 45.75px;
     }
     /* Инфраструктура: один ряд — режим, цель, тип, радиус, кнопка */
     .route-planner__fields--poi {
@@ -359,11 +381,55 @@
       background: var(--c-surface);
       padding: 14px 16px;
       box-shadow: var(--shadow-xs);
-      display:flex;
+      display: flex;
       gap: 12px;
       justify-content: space-between;
       align-items: flex-start;
       flex-wrap: wrap;
+    }
+    .route-item__day {
+      flex: 0 0 auto;
+      min-width: 72px;
+    }
+    .route-item__day-label {
+      display: block;
+      font-size: .72rem;
+      font-weight: 600;
+      color: var(--c-text-muted);
+      margin-bottom: 4px;
+    }
+    .route-item__day-select {
+      min-width: 64px;
+      padding: 6px 8px;
+      font-size: .85rem;
+    }
+    .route-item__main {
+      flex: 1 1 160px;
+      min-width: 0;
+    }
+    .route-plan-split-mode {
+      flex: 0 1 auto;
+      min-width: 148px;
+      max-width: 200px;
+      font-size: .85rem;
+      padding: 8px 10px;
+    }
+    .route-day__empty {
+      color: var(--c-text-muted);
+      font-style: italic;
+      list-style: none;
+      margin-left: -18px;
+    }
+    .route-night-error {
+      margin: 0 0 8px;
+      font-size: .82rem;
+      color: #b42318;
+      line-height: 1.45;
+    }
+    .route-night-row--error {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
     }
     .route-item__title { font-weight: 700; }
     .route-item__title:hover { color: var(--c-accent); }
@@ -394,23 +460,23 @@
       text-align: center;
       line-height: 1.65;
     }
-    @media (max-width: 960px) {
-      .route-planner__fields--controls {
-        display: flex;
-        flex-wrap: nowrap;
-        align-items: flex-end;
-        gap: 10px;
-        overflow-x: auto;
-        overflow-y: visible;
-        padding-bottom: 6px;
-        -webkit-overflow-scrolling: touch;
+    @media (max-width: 900px) {
+      .route-planner__grid--2 {
+        grid-template-columns: 1fr;
       }
-      .route-planner__fields--controls .route-field {
-        flex: 1 0 min(34vw, 220px);
-        min-width: 148px;
+      .route-planner__grid--days {
+        grid-template-columns: 1fr 1fr;
       }
-      .route-planner__fields--controls .route-field:first-child {
-        min-width: min(280px, 85vw);
+      .route-planner__grid--days .btn {
+        grid-column: 1 / -1;
+      }
+      .route-planner__grid--optimize {
+        grid-template-columns: 1fr;
+      }
+      .route-planner__grid--optimize .btn {
+        width: 100%;
+        height: 45.75px;
+        justify-content: center;
       }
     }
     @media (max-width: 900px) {
@@ -430,11 +496,6 @@
       }
       .route-planner__fields--poi .route-field--poi-action {
         flex: 0 0 auto;
-      }
-    }
-    @media (max-width: 720px) {
-      .route-planner__row--actions {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
     }
     @media (max-width: 600px) {
@@ -465,7 +526,7 @@
       }
     }
     @media (max-width: 420px) {
-      .route-planner__row--actions {
+      .route-planner__grid--days {
         grid-template-columns: 1fr;
       }
     }
@@ -486,74 +547,100 @@
 
   <main class="container route-wrap">
     <section class="route-planner">
-      <div class="route-planner__fields route-planner__fields--controls">
-        <div class="route-field">
-          <label class="form-label" for="start-mode" data-i18n="route.startMode">Старт</label>
-          <div class="route-field__inline">
-            <select id="start-mode" class="form-control">
-              <option value="none" data-i18n="route.startNone">Без старта</option>
-              <option value="geo" data-i18n="route.startGeo">Моё местоположение</option>
-              <option value="address" data-i18n="route.startAddress">Адрес</option>
+      <div class="route-planner__group">
+        <p class="route-planner__group-title" data-i18n="route.plannerGroupEndpoints">Старт и финиш</p>
+        <div class="route-planner__grid route-planner__grid--2">
+          <div class="route-field">
+            <label class="form-label" for="start-mode" data-i18n="route.startMode">Старт</label>
+            <div class="route-field__inline">
+              <select id="start-mode" class="form-control">
+                <option value="none" data-i18n="route.startNone">Без старта</option>
+                <option value="geo" data-i18n="route.startGeo">Моё местоположение</option>
+                <option value="address" data-i18n="route.startAddress">Адрес</option>
+              </select>
+              <button type="button" class="btn btn--outline btn--sm" id="btn-detect-start" data-i18n="route.detectStart">Определить старт</button>
+            </div>
+          </div>
+          <div class="route-field">
+            <label class="form-label" for="end-mode" data-i18n="route.endMode">Финиш</label>
+            <select id="end-mode" class="form-control">
+              <option value="last" data-i18n="route.endLast">На последней точке</option>
+              <option value="return" data-i18n="route.endReturn">Вернуться к старту</option>
+              <option value="hotel" data-i18n="route.endHotel">В отель (geo)</option>
+              <option value="address" data-i18n="route.endAddress">По адресу</option>
             </select>
-            <button type="button" class="btn btn--outline btn--sm" id="btn-detect-start" data-i18n="route.detectStart">Определить старт</button>
           </div>
         </div>
-        <div class="route-field">
-          <label class="form-label" for="end-mode" data-i18n="route.endMode">Финиш</label>
-          <select id="end-mode" class="form-control">
-            <option value="last" data-i18n="route.endLast">На последней точке</option>
-            <option value="return" data-i18n="route.endReturn">Вернуться к старту</option>
-            <option value="hotel" data-i18n="route.endHotel">В отель (geo)</option>
-            <option value="address" data-i18n="route.endAddress">По адресу</option>
-          </select>
+        <div id="start-address-row" class="route-address-row hidden">
+          <label class="form-label" for="start-address-input" data-i18n="route.addressLabelStart">Адрес старта</label>
+          <div class="route-address-row__inputs">
+            <input type="text" id="start-address-input" class="form-control" autocomplete="street-address" data-i18n-placeholder="route.addressPlaceholder" placeholder="Улица, дом, город…" />
+            <button type="button" class="btn btn--outline btn--sm" id="btn-geocode-start" data-i18n="route.geocodeFind">Найти на карте</button>
+          </div>
         </div>
-        <div class="route-field">
-          <label class="form-label" for="day-count" data-i18n="route.dayCount">Дней</label>
-          <select id="day-count" class="form-control">
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-          </select>
+        <div id="end-address-row" class="route-address-row hidden">
+          <label class="form-label" for="end-address-input" data-i18n="route.addressLabelEnd">Адрес финиша</label>
+          <div class="route-address-row__inputs">
+            <input type="text" id="end-address-input" class="form-control" autocomplete="street-address" data-i18n-placeholder="route.addressPlaceholder" placeholder="Улица, дом, город…" />
+            <button type="button" class="btn btn--outline btn--sm" id="btn-geocode-end" data-i18n="route.geocodeFind">Найти на карте</button>
+          </div>
         </div>
-        <div class="route-field">
-          <label class="form-label" for="optimize-mode" data-i18n="route.optimizeMode">Оптимизация</label>
-          <select id="optimize-mode" class="form-control">
-            <option value="fast" data-i18n="route.optimizeModeFast">Быстро (эвристика)</option>
-            <option value="api" data-i18n="route.optimizeModeApi">Через routing API</option>
-          </select>
-        </div>
-      </div>
-      <div id="start-address-row" class="route-address-row hidden">
-        <label class="form-label" for="start-address-input" data-i18n="route.addressLabelStart">Адрес старта</label>
-        <div class="route-address-row__inputs">
-          <input type="text" id="start-address-input" class="form-control" autocomplete="street-address" data-i18n-placeholder="route.addressPlaceholder" placeholder="Улица, дом, город…" />
-          <button type="button" class="btn btn--outline btn--sm" id="btn-geocode-start" data-i18n="route.geocodeFind">Найти на карте</button>
-        </div>
-      </div>
-      <div id="end-address-row" class="route-address-row hidden">
-        <label class="form-label" for="end-address-input" data-i18n="route.addressLabelEnd">Адрес финиша</label>
-        <div class="route-address-row__inputs">
-          <input type="text" id="end-address-input" class="form-control" autocomplete="street-address" data-i18n-placeholder="route.addressPlaceholder" placeholder="Улица, дом, город…" />
-          <button type="button" class="btn btn--outline btn--sm" id="btn-geocode-end" data-i18n="route.geocodeFind">Найти на карте</button>
-        </div>
-      </div>
-      <div id="route-end-hotel-slot" class="route-end-hotel-slot hidden" aria-live="polite"></div>
-      <div class="route-planner__row route-planner__row--actions">
-        <button type="button" class="btn btn--primary btn--sm" id="btn-optimize" data-i18n="route.optimize">Оптимизировать</button>
-        <button type="button" class="btn btn--outline btn--sm" id="btn-plan-days" data-i18n="route.planDays">Разбить по дням</button>
-        <button type="button" class="btn btn--outline btn--sm" id="btn-open-gmaps" data-i18n="route.openMaps">Открыть в Google Maps</button>
+        <div id="route-end-hotel-slot" class="route-end-hotel-slot hidden" aria-live="polite"></div>
         <button type="button" class="btn btn--outline btn--sm hidden" id="btn-detect-end-hotel" data-i18n="route.detectEndHotel">Найти отели для финиша</button>
       </div>
-      <div class="route-summary" id="route-summary"></div>
-      <div id="route-alt-section" class="route-alt-section hidden" aria-live="polite">
-        <p class="form-label route-alt-section__title" data-i18n="route.altVariantsTitle">Варианты маршрута</p>
-        <p class="route-alt-section__hint" data-i18n="route.altVariantsHint">Разные пути по улицам и кварталам — выберите удобный.</p>
-        <div id="route-alt-picker" class="route-alt-picker" role="radiogroup"></div>
+
+      <div class="route-planner__group">
+        <p class="route-planner__group-title" data-i18n="route.plannerGroupDays">Дни поездки</p>
+        <div class="route-planner__grid route-planner__grid--days">
+          <div class="route-field">
+            <label class="form-label" for="day-count" data-i18n="route.dayCount">Дней</label>
+            <select id="day-count" class="form-control">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+            </select>
+          </div>
+          <div class="route-field">
+            <label class="form-label" for="plan-split-mode" data-i18n="route.planSplitMode">Разбивка</label>
+            <select id="plan-split-mode" class="form-control">
+              <option value="count" data-i18n="route.planSplitCount">Поровну по точкам</option>
+              <option value="km" data-i18n="route.planSplitKm">Поровну по км</option>
+            </select>
+          </div>
+          <button type="button" class="btn btn--outline btn--sm" id="btn-plan-days" data-i18n="route.planDays">Разбить по дням</button>
+        </div>
       </div>
-      <div class="route-map" id="route-map" aria-label="Карта маршрута"></div>
-      <div class="route-days" id="route-days"></div>
-    </section>
+
+      <div class="route-planner__group">
+        <p class="route-planner__group-title" data-i18n="route.plannerGroupOptimize">Построение и карта</p>
+        <div class="route-planner__grid route-planner__grid--optimize">
+          <div class="route-field">
+            <label class="form-label" for="optimize-mode" data-i18n="route.optimizeMode">Оптимизация</label>
+            <select id="optimize-mode" class="form-control">
+              <option value="fast" data-i18n="route.optimizeModeFast">Быстро (эвристика)</option>
+              <option value="api" data-i18n="route.optimizeModeApi">Через routing API</option>
+            </select>
+          </div>
+          <button type="button" class="btn btn--primary btn--sm" id="btn-optimize" data-i18n="route.optimize">Оптимизировать</button>
+          <button type="button" class="btn btn--outline btn--sm" id="btn-open-gmaps" data-i18n="route.openMaps">Google Maps</button>
+        </div>
+      </div>
+
+      <div class="route-planner__results">
+        <div class="route-summary" id="route-summary"></div>
+        <div id="route-alt-section" class="route-alt-section hidden" aria-live="polite">
+          <p class="form-label route-alt-section__title" data-i18n="route.altVariantsTitle">Варианты маршрута</p>
+          <p class="route-alt-section__hint" data-i18n="route.altVariantsHint">Разные пути по дорогам (на машине) — выберите подходящий.</p>
+          <div id="route-alt-picker" class="route-alt-picker" role="radiogroup"></div>
+        </div>
+        <div class="route-map" id="route-map" aria-label="Карта маршрута"></div>
+        <div class="route-days" id="route-days"></div>
+      </div>
+    </section>    </section>
 
     <div class="route-actions">
       <button class="btn btn--primary" id="btn-share" data-i18n="route.share">Поделиться</button>
@@ -690,9 +777,6 @@
 
   <div id="toast" class="toast"></div>
 
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
-  <script src="https://unpkg.com/@maplibre/maplibre-gl-leaflet@0.1.2/leaflet-maplibre-gl.js"></script>
   <script type="module" src="../js/scroll.js"></script>
   <script type="module" src="../js/transitions.js"></script>
   <script type="module" src="../js/pages/route.js"></script>

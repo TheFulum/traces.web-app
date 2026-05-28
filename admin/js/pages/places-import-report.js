@@ -46,8 +46,10 @@ function reportToText(rep) {
         (r.reason || '').replace(/\r?\n/g, ' '),
         `RU файл: ${r.nameRuFile || '—'}`,
         `EN файл: ${r.nameEnFile || '—'}`,
+        `BE файл: ${r.nameBeFile || '—'}`,
         `RU БД: ${r.nameRuDb || '—'}`,
-        `EN БД: ${r.nameEnDb || '—'}`
+        `EN БД: ${r.nameEnDb || '—'}`,
+        `BE БД: ${r.nameBeDb || '—'}`
       ].join(' | ')
     );
   }
@@ -135,8 +137,10 @@ gateAdmin(() => {
       <td>${String(r.reason || '').replace(/</g, '&lt;')}</td>
       <td><small>${String(r.nameRuFile || '—').replace(/</g, '&lt;')}</small></td>
       <td><small>${String(r.nameEnFile || '—').replace(/</g, '&lt;')}</small></td>
+      <td><small>${String(r.nameBeFile || '—').replace(/</g, '&lt;')}</small></td>
       <td><small>${String(r.nameRuDb || '—').replace(/</g, '&lt;')}</small></td>
       <td><small>${String(r.nameEnDb || '—').replace(/</g, '&lt;')}</small></td>
+      <td><small>${String(r.nameBeDb || '—').replace(/</g, '&lt;')}</small></td>
     </tr>`
     )
     .join('');

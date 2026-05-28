@@ -6,17 +6,20 @@
   <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
   <title>Каталог — Следы прошлого</title>
   <meta name="description" content="Каталог памятных мест с фильтрами по 3D, фото, тегам, городу и диапазону дат создания." />
-  <link rel="preconnect" href="https://res.cloudinary.com" />
+  <link rel="preconnect" href="https://traces-media-upload.lipouski-daniil.workers.dev" />
   <link rel="preconnect" href="https://www.gstatic.com" />
   <link rel="preconnect" href="https://firestore.googleapis.com" />
   <link rel="stylesheet" href="../css/style.css" />
   <link rel="stylesheet" href="../css/user-pages.css" />
   <style>
     .catalog-header {
+      position: relative;
+      z-index: 50;
       padding: 56px 0 28px;
       border-bottom: 1px solid var(--c-border);
       margin-bottom: 26px;
       background: linear-gradient(180deg, var(--c-surface-warm) 0%, var(--c-bg) 100%);
+      overflow: visible;
     }
     .catalog-header__eyebrow {
       font-size: .75rem;
@@ -47,10 +50,8 @@
       letter-spacing: .02em;
     }
     .toolbar__row2 {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
+      margin-top: 10px;
+    }
     .control--search {
       min-width: 280px;
       flex: 1 1 300px;
@@ -81,10 +82,140 @@
       color: var(--c-text-light);
     }
 
-      gap: 12px;
-      margin-top: 10px;
+    /* ── custom dropdowns (city + tags) ── */
+    .dropdown { position: relative; z-index: 1; }
+    .dropdown.is-open { z-index: 60; }
+    .dropdown__btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-width: 160px;
+      max-width: 260px;
+      padding: 6px 28px 6px 10px;
+      border: 1px solid var(--c-border);
+      border-radius: 8px;
+      background: var(--c-surface);
+      color: var(--c-text);
+      font-size: .875rem;
+      font-family: var(--font-body);
+      cursor: pointer;
+      text-align: left;
+      position: relative;
+      outline: none;
+      transition: border-color var(--transition), box-shadow var(--transition);
+    }
+    .dropdown__btn::after {
+      content: '';
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      width: 7px;
+      height: 7px;
+      border-right: 1.5px solid var(--c-text-muted);
+      border-bottom: 1.5px solid var(--c-text-muted);
+      transform: translateY(-70%) rotate(45deg);
+      pointer-events: none;
+      transition: transform .15s;
+    }
+    .dropdown.is-open .dropdown__btn::after {
+      transform: translateY(-25%) rotate(-135deg);
+    }
+    .dropdown__btn:hover { border-color: var(--c-accent); }
+    .dropdown__btn:focus {
+      border-color: var(--c-accent);
+      box-shadow: 0 0 0 3px var(--c-accent-soft);
+    }
+    .dropdown__btn-label {
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .dropdown__panel {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      min-width: 100%;
+      width: max-content;
+      max-width: 320px;
+      z-index: 100;
+      background: var(--c-surface);
+      border: 1px solid var(--c-border);
+      border-radius: 10px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.12);
+      padding: 4px;
+      display: none;
+    }
+    .dropdown.is-open .dropdown__panel { display: block; }
+    html.catalog-dropdown-open,
+    html.catalog-dropdown-open body {
+      overflow: hidden;
+    }
+    .dropdown__list {
+      max-height: calc(7 * 34px + 6px);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      padding: 2px;
+      scrollbar-width: thin;
+    }
+    .dropdown__list::-webkit-scrollbar { width: 8px; }
+    .dropdown__list::-webkit-scrollbar-thumb {
+      background: var(--c-border);
+      border-radius: 999px;
+    }
+    .dropdown__item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 10px;
+      font-size: .875rem;
+      color: var(--c-text);
+      cursor: pointer;
+      border-radius: 6px;
+      white-space: nowrap;
+      user-select: none;
+      line-height: 1.3;
+    }
+    .dropdown__item:hover { background: var(--c-accent-soft); }
+    .dropdown__item.is-selected {
+      background: var(--c-accent-soft);
+      color: var(--c-accent);
+      font-weight: 500;
+    }
+    .dropdown__item input[type="checkbox"] {
+      flex-shrink: 0;
+      width: 14px;
+      height: 14px;
+      accent-color: var(--c-accent);
+      cursor: pointer;
+      margin: 0;
+    }
+    .dropdown__empty {
+      padding: 12px 10px;
+      font-size: .82rem;
+      color: var(--c-text-muted);
+      text-align: center;
+    }
+    .dropdown__count-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 18px;
+      height: 18px;
+      padding: 0 6px;
+      border-radius: 999px;
+      background: var(--c-accent);
+      color: #fff;
+      font-size: .68rem;
+      font-weight: 700;
+      line-height: 1;
+      margin-left: 4px;
     }
 
+    .toolbar__row2,
+    .controls {
+      overflow: visible;
+    }
     .controls {
       display: flex;
       flex-wrap: wrap;
@@ -100,6 +231,7 @@
       border-radius: var(--radius-md);
       background: rgba(255,255,255,.55);
       backdrop-filter: blur(10px);
+      overflow: visible;
     }
     .control label {
       font-size: .72rem;
@@ -120,6 +252,10 @@
       outline: none;
     }
     .control input[type="number"] { width: 92px; }
+    .control--sort select {
+      min-width: 200px;
+      max-width: min(280px, 100%);
+    }
 
     .toggles {
       display: inline-flex;
@@ -215,16 +351,27 @@
           </span>
 
           <span class="control">
-            <label for="f-city" data-i18n="catalog.city">Город</label>
-            <select id="f-city">
-              <option value="" data-i18n="catalog.any">Любой</option>
-            </select>
+            <label data-i18n="catalog.city">Город</label>
+            <div class="dropdown" id="dd-city">
+              <button type="button" class="dropdown__btn" id="dd-city-btn" aria-haspopup="listbox" aria-expanded="false">
+                <span class="dropdown__btn-label" data-i18n="catalog.any">Любой</span>
+              </button>
+              <div class="dropdown__panel" role="listbox" aria-label="Список городов">
+                <div class="dropdown__list" id="dd-city-list"></div>
+              </div>
+            </div>
           </span>
 
           <span class="control">
-            <label for="f-tags" data-i18n="catalog.tags">Теги</label>
-            <select id="f-tags" multiple size="1" style="min-width: 220px">
-            </select>
+            <label data-i18n="catalog.tags">Теги</label>
+            <div class="dropdown" id="dd-tags">
+              <button type="button" class="dropdown__btn" id="dd-tags-btn" aria-haspopup="listbox" aria-expanded="false">
+                <span class="dropdown__btn-label" data-i18n="catalog.tagsAny">Любые</span>
+              </button>
+              <div class="dropdown__panel" role="listbox" aria-label="Список тегов" aria-multiselectable="true">
+                <div class="dropdown__list" id="dd-tags-list"></div>
+              </div>
+            </div>
           </span>
 
           <span class="control">
@@ -235,19 +382,19 @@
               <input type="number" id="f-dateto" placeholder="До" min="0" step="1" data-i18n-placeholder="catalog.to" />
             </div>
           </span>
-        </div>
 
-        <span class="control" aria-label="Сортировка">
-          <label for="sort" data-i18n="catalog.sort">Сортировка</label>
-          <select id="sort">
-            <option value="updated_desc" data-i18n="catalog.sortUpdatedDesc">Обновлённые (новые → старые)</option>
-            <option value="updated_asc" data-i18n="catalog.sortUpdatedAsc">Обновлённые (старые → новые)</option>
-            <option value="created_desc" data-i18n="catalog.sortCreatedDesc">Создание (новые → старые)</option>
-            <option value="created_asc" data-i18n="catalog.sortCreatedAsc">Создание (старые → новые)</option>
-            <option value="name_asc" data-i18n="catalog.sortNameAsc">Название (А→Я)</option>
-            <option value="name_desc" data-i18n="catalog.sortNameDesc">Название (Я→А)</option>
-          </select>
-        </span>
+          <span class="control control--sort" aria-label="Сортировка">
+            <label for="sort" data-i18n="catalog.sort">Сортировка</label>
+            <select id="sort">
+              <option value="updated_desc" data-i18n="catalog.sortUpdatedDesc">Обновлённые (новые → старые)</option>
+              <option value="updated_asc" data-i18n="catalog.sortUpdatedAsc">Обновлённые (старые → новые)</option>
+              <option value="created_desc" data-i18n="catalog.sortCreatedDesc">Создание (новые → старые)</option>
+              <option value="created_asc" data-i18n="catalog.sortCreatedAsc">Создание (старые → новые)</option>
+              <option value="name_asc" data-i18n="catalog.sortNameAsc">Название (А→Я)</option>
+              <option value="name_desc" data-i18n="catalog.sortNameDesc">Название (Я→А)</option>
+            </select>
+          </span>
+        </div>
       </div>
 
       <div class="chips" id="chips" aria-label="Активные фильтры"></div>

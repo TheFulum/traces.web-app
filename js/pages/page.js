@@ -6,25 +6,37 @@ import { getLang, loadDict, applyDict, t } from '../shared/i18n.js';
 const lang = getLang();
 const dict = await loadDict(lang);
 
-/** Корневые поля документа — русская версия; `i18n.en` — английская (с подстановкой с ru при пустых). */
+/** Корневые поля документа — русская версия; `i18n.en`/`i18n.be` — переводы (с подстановкой с ru при пустых). */
 function resolvePageFields(data, slug, locale) {
   const ruTitle = String(data.title || slug).trim() || slug;
   const ruSubtitle = String(data.subtitle || '').trim();
   const ruContent = String(data.content || '');
-  const en = data.i18n?.en || {};
-  const enTitle = String(en.title || '').trim();
-  const enSubtitle = String(en.subtitle || '').trim();
-  const enContent = String(en.content || '').trim();
 
-  if (locale !== 'en') {
-    return { title: ruTitle, subtitle: ruSubtitle, content: ruContent };
+  if (locale === 'en') {
+    const en = data.i18n?.en || {};
+    const enTitle = String(en.title || '').trim();
+    const enSubtitle = String(en.subtitle || '').trim();
+    const enContent = String(en.content || '').trim();
+    return {
+      title: enTitle || ruTitle,
+      subtitle: enSubtitle || ruSubtitle,
+      content: enContent ? enContent : ruContent
+    };
   }
 
-  return {
-    title: enTitle || ruTitle,
-    subtitle: enSubtitle || ruSubtitle,
-    content: enContent.trim() ? enContent : ruContent
-  };
+  if (locale === 'be') {
+    const be = data.i18n?.be || {};
+    const beTitle = String(be.title || '').trim();
+    const beSubtitle = String(be.subtitle || '').trim();
+    const beContent = String(be.content || '').trim();
+    return {
+      title: beTitle || ruTitle,
+      subtitle: beSubtitle || ruSubtitle,
+      content: beContent ? beContent : ruContent
+    };
+  }
+
+  return { title: ruTitle, subtitle: ruSubtitle, content: ruContent };
 }
 applyDict(dict);
 

@@ -25,5 +25,16 @@ yarn-error.log*
 Thumbs.db
 Desktop.ini
 
+# ── Binaries / installers (don’t commit; Firebase Hosting Spark blocks many executables) ──
+*.apk
+*.aab
+*.ipa
+*.exe
+*.msi
+*.dmg
+
 # ── Editors ──────────────────────────────────────────────────────────────────
 .idea/
+
+# ── Claude Code (local worktrees, sessions, agent state) ─────────────────────
+.claude/

@@ -15,7 +15,7 @@
   <meta name="twitter:title" content="Следы прошлого" id="tw-title" />
   <meta name="twitter:description" content="Подробная страница памятного места." id="tw-description" />
   <meta name="twitter:image" content="" id="tw-image" />
-  <link rel="preconnect" href="https://res.cloudinary.com" />
+  <link rel="preconnect" href="https://traces-media-upload.lipouski-daniil.workers.dev" />
   <link rel="preconnect" href="https://www.gstatic.com" />
   <link rel="preconnect" href="https://firestore.googleapis.com" />
   <link rel="stylesheet" href="../css/style.css" />
@@ -107,7 +107,7 @@
     .lightbox {
       position: fixed; inset: 0;
       background: rgba(0,0,0,.92);
-      z-index: 500;
+      z-index: 1250;
       display: flex; align-items: center; justify-content: center;
       animation: fadeIn .2s ease;
     }
@@ -375,6 +375,11 @@
     }
 
     /* ── reviews section ── */
+    #reviews-section {
+      scroll-margin-top: calc(var(--nav-h, 96px) + 16px);
+      padding-left: clamp(14px, 4vw, 24px);
+      padding-right: clamp(14px, 4vw, 24px);
+    }
     .reviews-section {
       padding: 48px 0 80px;
     }
@@ -617,9 +622,9 @@
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/></svg>
             <span id="btn-favorite-label">В избранное</span>
           </button>
-          <a href="feedback.html" class="btn-share" style="text-decoration:none">
+          <a href="#reviews-section" class="btn-share" style="text-decoration:none">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-            <span data-i18n="place.leaveReview">Оставить отзыв</span>
+            <span data-i18n="place.leaveReview">Оставить отзыв о месте</span>
           </a>
         </div>
 

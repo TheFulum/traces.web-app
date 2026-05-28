@@ -1,8 +1,9 @@
 import { initNav } from '../shared/nav.js';
 import { getPlaces } from '../shared/places.js';
 import { showToast, getParam } from '../shared/utils.js';
-import { getLang, loadDict, applyDict, applyLanguageSeo, pickI18n, t } from '../shared/i18n.js';
-import { fetchLocalizedLibertyStyle } from '../shared/map-liberty-style.js';
+import { getLang, loadDict, applyDict, applyLanguageSeo, pickI18n, t, nominatimAcceptLanguage } from '../shared/i18n.js';
+import { ensureLeafletReady } from '../shared/load-leaflet.js';
+import { tryUpsellToLocalizedVectorBasemap } from '../shared/map-vector-basemap.js';
 import { pickPlaceDateLabel } from '../shared/placeDate.js';
 import { addToTrip, isInTrip } from './trips.js';
 
@@ -19,6 +20,11 @@ try {
 
 // ── map init ──────────────────────────────────────────────────────────────
 const loadingEl = document.getElementById('map-loading');
+try {
+  await ensureLeafletReady();
+} catch (e) {
+  console.warn(e);
+}
 const L = window.L;
 if (!L || !document.getElementById('map')) {
   loadingEl?.classList.add('hidden');
@@ -80,20 +86,42 @@ try {
 }
 
 async function initializeBaseMap() {
-  try {
-    const style = await fetchLocalizedLibertyStyle(lang);
-    const canUseMapLibre = window.maplibregl && typeof L.maplibreGL === 'function';
-    if (!canUseMapLibre) throw new Error('maplibre_missing');
-    L.maplibreGL({
-      style,
-      maplibreOptions: { attributionControl: false }
-    }).addTo(map);
-  } catch {
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-      maxZoom: 19,
-      subdomains: 'abcd'
-    }).addTo(map);
-  }
+  // Raster first (reliable), then try vector Liberty so labels follow UI language (ru/en/be).
+  const primaryTiles = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+    maxZoom: 19,
+    subdomains: 'abcd'
+  });
+  primaryTiles.addTo(map);
+
+  let currentRaster = primaryTiles;
+  let tileErr = 0;
+  primaryTiles.on('tileerror', () => {
+    tileErr += 1;
+    if (tileErr === 6) {
+      try {
+        currentRaster.remove();
+      } catch {}
+      currentRaster = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        subdomains: 'abc'
+      }).addTo(map);
+    }
+  });
+
+  void tryUpsellToLocalizedVectorBasemap({
+    L,
+    map,
+    siteLang: lang,
+    getRasterLayer: () => currentRaster
+  }).then((upgraded) => {
+    if (upgraded) {
+      requestAnimationFrame(() => {
+        map.invalidateSize(true);
+        setTimeout(() => map.invalidateSize(true), 260);
+      });
+    }
+  });
+
   requestAnimationFrame(() => {
     map.invalidateSize(true);
     setTimeout(() => map.invalidateSize(true), 260);
@@ -128,7 +156,7 @@ function buildPopup(place) {
   const photosCount = Array.isArray(place.photos) ? place.photos.length : 0;
   const has3d = !!(place.modelUrl || place.sketchfabUrl || place.has3D);
   const img = place.photos?.[0]
-    ? `<img class="map-popup__img" src="${esc(place.photos[0])}" alt="${esc(placeName)}" />`
+    ? `<img class="map-popup__img" src="${esc(place.photos[0])}" alt="${esc(placeName)}" onerror="this.onerror=null;this.replaceWith(Object.assign(document.createElement('div'),{className:'map-popup__img--placeholder',textContent:'нет фото'}))" />`
     : `<div class="map-popup__img--placeholder">${esc(t('place.noPhotos', dictI18n))}</div>`;
   const badges = `
     <div class="map-popup__badges">
@@ -236,7 +264,7 @@ async function runGlobalSearch(query) {
   const seq = ++searchRequestSeq;
   renderSearchSuggestions(query, [], true);
   try {
-    const acceptLang = lang === 'en' ? 'en' : 'ru';
+    const acceptLang = nominatimAcceptLanguage(lang);
     const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=5&accept-language=${encodeURIComponent(acceptLang)}`;
     const res  = await fetch(url, {
       headers: { 'Accept-Language': acceptLang, 'User-Agent': 'TracesOfThePast/1.0' }

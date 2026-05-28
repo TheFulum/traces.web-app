@@ -1,6 +1,16 @@
 import { initNav } from '../../../js/shared/nav.js';
-import { db } from '../../../js/shared/firebase-init.js';
-import { collection, getDocs, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+import { auth, db } from '../../../js/shared/firebase-init.js';
+import { resolveMediaWorkerUrl } from '../../../js/shared/media-worker-url.js';
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  limit,
+  orderBy,
+  query,
+  setDoc
+} from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 import { showToast } from '../../../js/shared/utils.js';
 import { getLang, loadDict, t } from '../../../js/shared/i18n.js';
 import { bindAdminLogout, gateAdmin } from '../shared/admin-guard.js';
@@ -18,6 +28,8 @@ try {
 const td = (key, fallback) => (dict ? t(key, dict) : null) || fallback;
 
 gateAdmin(async () => {
+
+await initSiteMediaIntegrations();
 
 // ── fetch all data ────────────────────────────────────────────────────────
 
@@ -70,7 +82,7 @@ document.querySelectorAll('.dash-section-title').forEach((el, i) => {
 
 document.querySelectorAll('.dash-card__title').forEach((el, i) => {
   const titles = [
-    td('admin.dashboard.reviewsByStatus', 'Отзывы по статусу'),
+    td('admin.dashboard.reviewsByStatus', 'Отзывы о местах: статусы модерации'),
     td('admin.dashboard.topTags', 'Топ тегов'),
     td('admin.dashboard.feedbackRatings', 'Распределение оценок обратной связи'),
     td('admin.dashboard.placesCompleteness', 'Полнота данных мест'),
@@ -394,6 +406,140 @@ function fmtDate(date) {
 
 function esc(str) {
   return String(str ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function putFileToSignedUrl(putUrl, file, putHeaders, contentType, onProgress) {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open('PUT', putUrl);
+    if (putHeaders && typeof putHeaders === 'object') {
+      Object.entries(putHeaders).forEach(([k, v]) => {
+        try { xhr.setRequestHeader(String(k), String(v)); } catch {}
+      });
+    }
+    if (contentType) {
+      try { xhr.setRequestHeader('Content-Type', contentType); } catch {}
+    }
+    if (onProgress) {
+      xhr.upload.addEventListener('progress', (e) => {
+        if (e.lengthComputable) onProgress(Math.round((e.loaded / e.total) * 100));
+      });
+    }
+    xhr.onload = () => {
+      if (xhr.status >= 200 && xhr.status < 300) resolve();
+      else reject(new Error(`Upload failed: ${xhr.status}`));
+    };
+    xhr.onerror = () => reject(new Error('Ошибка сети при загрузке'));
+    xhr.send(file);
+  });
+}
+
+async function uploadDashboardAppApk(file, onProgress) {
+  const base = resolveMediaWorkerUrl().replace(/\/+$/, '');
+  const token = await auth.currentUser?.getIdToken?.();
+  if (!token) throw new Error('Нет авторизации');
+
+  const signRes = await fetch(`${base}/api/media/sign`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    },
+    body: JSON.stringify({ kind: 'app_apk', filename: file.name || 'app.apk' })
+  });
+  const signData = await signRes.json().catch(() => ({}));
+  if (!signRes.ok) {
+    const raw = String(signData?.error || '').trim();
+    if (raw === 'Unsupported kind' || raw.includes('Unsupported kind')) {
+      throw new Error(
+        'Воркер не знает загрузку APK (нет kind «app_apk»). Задеплойте актуальный workers/media-upload (wrangler deploy) и проверьте базовый URL в Интеграциях.'
+      );
+    }
+    throw new Error(raw || `sign: ${signRes.status}`);
+  }
+
+  const putUrl = String(signData?.putUrl || '');
+  const putHeaders = signData?.putHeaders && typeof signData.putHeaders === 'object' ? signData.putHeaders : {};
+  if (!putUrl) throw new Error('Нет putUrl');
+
+  await putFileToSignedUrl(
+    putUrl,
+    file,
+    putHeaders,
+    'application/vnd.android.package-archive',
+    onProgress
+  );
+}
+
+async function initSiteMediaIntegrations() {
+  const input = document.getElementById('site-media-worker-url');
+  const btn = document.getElementById('site-media-worker-save');
+  const status = document.getElementById('site-media-worker-status');
+  const apkInput = document.getElementById('site-app-apk');
+  const apkBtn = document.getElementById('site-app-apk-btn');
+  const apkStatus = document.getElementById('site-app-apk-status');
+  if (!input || !btn) return;
+  try {
+    const snap = await getDoc(doc(db, 'config', 'site'));
+    if (snap.exists()) input.value = String(snap.data()?.mediaWorkerUrl || '').trim();
+  } catch {
+    // ignore
+  }
+  btn.addEventListener('click', async () => {
+    const url = input.value.trim();
+    if (url && !/^https:\/\/.+/i.test(url)) {
+      showToast('Нужен HTTPS URL или оставьте поле пустым', 'error');
+      return;
+    }
+    try {
+      await setDoc(doc(db, 'config', 'site'), { mediaWorkerUrl: url }, { merge: true });
+      if (url) window.__TRACES_MEDIA_WORKER_URL__ = url.replace(/\/+$/, '');
+      else delete window.__TRACES_MEDIA_WORKER_URL__;
+      if (status) {
+        status.textContent = url
+          ? 'Сохранено. Эта вкладка уже использует новый URL.'
+          : 'Сохранено. Используется URL по умолчанию из кода.';
+      }
+      showToast('Сохранено', 'success');
+    } catch (err) {
+      console.error(err);
+      showToast('Не удалось сохранить (проверьте права админа в Firestore)', 'error');
+    }
+  });
+
+  apkBtn?.addEventListener('click', () => apkInput?.click());
+  apkInput?.addEventListener('change', async () => {
+    const file = apkInput.files?.[0];
+    const clearInput = () => { apkInput.value = ''; };
+    if (!file) return;
+    const name = file.name.toLowerCase();
+    if (!name.endsWith('.apk')) {
+      showToast('Нужен файл .apk', 'error');
+      clearInput();
+      return;
+    }
+    const maxBytes = 150 * 1024 * 1024;
+    if (file.size > maxBytes) {
+      showToast('Файл больше 150 МБ', 'error');
+      clearInput();
+      return;
+    }
+    if (apkStatus) apkStatus.textContent = 'Загрузка…';
+    try {
+      await uploadDashboardAppApk(file, (p) => {
+        if (apkStatus) apkStatus.textContent = `Загрузка… ${p}%`;
+      });
+      if (apkStatus) {
+        apkStatus.textContent = 'Готово. Скачивание: …/app/traces.apk на домене воркера.';
+      }
+      showToast('APK обновлён', 'success');
+    } catch (err) {
+      console.error(err);
+      if (apkStatus) apkStatus.textContent = '';
+      showToast(String(err?.message || 'Ошибка загрузки APK'), 'error');
+    }
+    clearInput();
+  });
 }
 
 }); // gateAdmin

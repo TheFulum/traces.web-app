@@ -75,6 +75,7 @@ export function fingerprintSnapshot(snap) {
   const norm = {
     p: (snap.places || []).map((x) => String(x?.id || '').trim()),
     dc: snap.dayCount || 1,
+    da: Array.isArray(snap.dayAssignments) ? snap.dayAssignments.map((d) => Math.round(Number(d)) || 1) : [],
     o: (snap.overnight || []).map((x) =>
       x && Number.isFinite(Number(x.lat))
         ? `${round6(x.lat)},${round6(x.lng)},${String(x.name || '').slice(0, 120)}`
