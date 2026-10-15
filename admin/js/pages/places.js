@@ -976,24 +976,9 @@ async function initPickerMap() {
   const initialZoom = parsed ? 14 : 7;
 
   pickerMap = L.map('coord-map', { attributionControl: false }).setView([lat, lng], initialZoom);
-  const primaryTiles = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-    maxZoom: 19,
-    subdomains: 'abcd'
-  });
-  primaryTiles.addTo(pickerMap);
-  let tileErr = 0;
-  primaryTiles.on('tileerror', () => {
-    tileErr += 1;
-    if (tileErr === 6) {
-      try {
-        primaryTiles.remove();
-      } catch {}
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        subdomains: 'abc'
-      }).addTo(pickerMap);
-    }
-  });
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19
+  }).addTo(pickerMap);
 
   if (parsed) setPickerMarker(lat, lng);
 
@@ -1411,7 +1396,7 @@ async function save() {
   saveBtn.disabled = true;
   saveBtn.textContent = 'Сохранение…';
 
-  // Карта тянет десятки тайлов с cartocdn — на слабой сети мешает загрузке в R2.
+  // Карта тянет десятки тайлов OpenStreetMap — на слабой сети мешает загрузке в R2.
   const restorePickerMapAfterSave = Boolean(pickerMap);
   if (pickerMap) {
     pickerMap.remove();

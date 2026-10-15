@@ -87,26 +87,12 @@ try {
 
 async function initializeBaseMap() {
   // Raster first (reliable), then try vector Liberty so labels follow UI language (ru/en/be).
-  const primaryTiles = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+  const currentRaster = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
-    subdomains: 'abcd'
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>'
   });
-  primaryTiles.addTo(map);
-
-  let currentRaster = primaryTiles;
-  let tileErr = 0;
-  primaryTiles.on('tileerror', () => {
-    tileErr += 1;
-    if (tileErr === 6) {
-      try {
-        currentRaster.remove();
-      } catch {}
-      currentRaster = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        subdomains: 'abc'
-      }).addTo(map);
-    }
-  });
+  currentRaster.addTo(map);
+  L.control.attribution({ prefix: false }).addTo(map);
 
   void tryUpsellToLocalizedVectorBasemap({
     L,

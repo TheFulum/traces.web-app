@@ -1834,31 +1834,14 @@ async function initRouteMap() {
   }
   // Use raster tiles by default for maximum reliability.
   // Some environments load MapLibre but fail to render WebGL, resulting in a blank map without console errors.
-  const primaryTiles = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
-    subdomains: 'abcd',
-    attribution: ''
-  });
-  primaryTiles.addTo(routeMap);
-
-  let currentRaster = primaryTiles;
-  let tileErr = 0;
-  primaryTiles.on('tileerror', () => {
-    tileErr += 1;
-    if (tileErr === 6) {
-      try {
-        currentRaster.remove();
-      } catch {}
-      currentRaster = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        subdomains: 'abc',
-        attribution: ''
-      }).addTo(routeMap);
-    }
-  });
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>'
+  }).addTo(routeMap);
+  L.control.attribution({ prefix: false }).addTo(routeMap);
 
   // Векторный Liberty на странице маршрута отключён: с маркерами/полилинией даёт дёрганье при pan.
-  // Подложка — только растр Carto (+ fallback OSM).
+  // Подложка — только растр OpenStreetMap.
 
   requestAnimationFrame(() => {
     routeMap.invalidateSize(true);
